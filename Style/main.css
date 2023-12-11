@@ -1,7 +1,7 @@
 :root {
-  --bg1: #C4B1AE;
-  --bg2: #B5FFE1;
-  --banner: #388697;
+    --bg1: #1a2f42;
+    --bg2: #e3e3e3;
+    --banner: #c46e04;
 
   --fontSize: calc((1vw + 1vh));
 }
@@ -18,17 +18,18 @@ body {
 h2 {
   font: var(--fontSize)/250% 'Forte';
   font-size: 250%;
+  margin: -35px;
   color: inherit;
 }
 
 h3 {
-  font: var(--fontSize)/200% 'Times New Roman';
+  font: var(--fontSize)/200% 'Berlin Sans FB';
   font-size: 200%;
   color: inherit;
 }
 
 pre {
-    font: var(--fontSize)/170% 'Times New Roman';
+    font: var(--fontSize)/170% 'Berlin Sans FB';
     font-size: 170%;
     color: inherit;
     padding-bottom: 0px;
@@ -40,13 +41,14 @@ pre {
 }
 
 ul {
-  margin: 1;
-  padding: 0;
-  color: black;
+    font: var(--fontSize)/170% 'Berlin Sans FB';
+    margin: 1;
+    padding: 0;
+    color: black;
 
-  background: inherit;
+    background: inherit;
 
-  text-align: center;
+    text-align: center;
 }
 
 ul li {
@@ -112,15 +114,19 @@ ul table td {
 
   border-radius: 15px;
   list-style-type: none;
+
   background: #83B8BF;
 }
 
 ul table:hover {
-  background: #8DB0B5;
+    transition: 0.3s;
+    background: var(--banner);
+    color: var(--bg2);
+
 }
 
 ul table.checked {
-  background: #83B8BF;
+  background: var(--banner);
   color: var(--bg2);
   text-decoration: line-through;
 }
@@ -192,8 +198,9 @@ input {
   background-color: var(--bg2);
 }
 
-.addBtn {
+.projectsButton {
   background: var(--bg2);
+  font: var(--fontSize)/170% 'Berlin Sans FB';
   color: var(--bg1);
   padding: 10px;
   
@@ -209,8 +216,8 @@ input {
   border-radius: 5px;
 }
 
-.addBtn:hover {
-  background-color: var(--bg1);
+.projectsButton:hover {
+  background-color: var(--banner);
   color: var(--bg2);
 }
 
