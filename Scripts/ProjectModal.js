@@ -19,7 +19,9 @@ document.getElementsByClassName("closeModal")[0].onclick = function()
 function findParentTable(element) 
 {
     while (element && element.tagName != 'TABLE')
+    {
         element = element.parentNode;
+    }
     return element;
 }
 
@@ -36,18 +38,12 @@ function showModal(table)
     document.getElementById("name_m").value = task.name;
     document.getElementById("time_m").value = task.time;
     document.getElementById("date_m").value = task.date;
-
-    const workInHours = (task.todaysLabour + task.previousLabour) * 60;
-    document.getElementById("slider").value = workInHours;
     
     updateModalSlider();
 }
 
 function hideModal() 
 {
-    list.get(index).description = document.getElementById("description").innerHTML;
-    list.setLocalStorage();;
-
     modal.style.display = "none";
 
     location.reload();
