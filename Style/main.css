@@ -9,7 +9,7 @@
 body {
   margin: 0;
   min-width: 250px;
-  background-color: var(--bg1);
+  background-color: #4a4a4a; /*__Change to new color*/
   color: var(--bg2);
 
   background-size: cover;
@@ -335,3 +335,120 @@ table.fixed td:nth-of-type(2) {
 table.fixed td:nth-of-type(3) {
   width: 33.33%;
 }
+
+
+/*Calender CSS*/ 
+.calender{
+  margin: 40px;
+  display: grid;
+  grid-template-columns: 60px 50%;
+  grid-template-rows: 30% repeat(9, 30%); /* ___ ((maxTime+2)-minTime)/2     | eks.  ((22+2)-6)/2 */
+}
+.calender-title {
+  grid-column: 1/3;
+  background-color: var(--banner);
+  border-radius: 70px 70px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.calender-time{
+  grid-row: 2/14;
+  display: grid;
+  background-color: var(--bg1);
+}
+.calender-tasks{
+  background-color: var(--bg1);
+  grid-row: 2/14;
+  padding: 0 10px;
+  
+}
+.calender-tasks-1{
+  position: relative;
+  top:50%;
+  height: 15%; 
+}
+
+.calender-tasks div {
+
+  border-radius: 20px;
+  background-color: #19456C;
+  display: grid;
+  grid-template-columns: 40% 25% 25% 10%;
+  padding-top: 10px; /*___Create other solution: Center verical*/
+}
+
+.wakeUp{
+  position: relative;
+  top: 90%;
+  padding-right: 30px;
+  text-align: right;
+  border-top: 3px solid var(--banner);
+}
+
+.bedtime{
+  position: relative;
+  top: 0%;
+  padding-right: 30px;
+  text-align: right;
+  border-bottom: 3px solid var(--banner);
+}
+.currentTime{
+  position: relative;
+  top: 40%;
+  border-bottom: 3px dashed var(--banner);
+  text-align: left;
+  padding-left: 10px;
+}
+
+
+/*.calenderTable{
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 60%;
+  grid-gap: 5px;
+  grid-template-rows: repeat(13, 50px) /* 24/2 + 1 = 13*/
+/* }
+.calenderTableDay{
+  margin-top: -25px;
+  border-radius: 40px 40px 0 0;
+  background-color: var(--banner);
+  text-align: center;
+}
+
+.calenderTable div{
+  background-color: #888;
+}
+.calenderTable div ul{
+  color: var(--bg2);
+  padding-left: 10px;
+  text-align: left;
+  vertical-align: center;
+}
+
+.shortBlock{
+  align-items: left;
+} */
+
+/*ShortBlock:
+    ul : time
+    li : TaskName
+    p1 : TimerPeriod*/
+
+/* .shortBlock p1 {
+  align-items: start;
+}
+
+
+.calenderTable div{
+  display: grid;
+  grid-template-columns: 20% 50% 30%;
+  align-items: center;
+}
+ */
+
+
+
+
