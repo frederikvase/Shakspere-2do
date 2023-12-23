@@ -67,6 +67,7 @@ function addTimeStamps(wakeUp, bedtime)
 function addTaskToCalendar(taskName, taskDuration, taskPlacement, taskDone = false, taskSubtask = "")
 {
     allCalendarTasks.push([taskName, taskDuration, taskPlacement, taskDone, taskSubtask]);
+    console.log("ALL tasks: " + allCalendarTasks);
 }
 
 function displayTasks(){
