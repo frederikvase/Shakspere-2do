@@ -383,7 +383,7 @@ table.fixed td:nth-of-type(3) {
   position: relative; /* Add this line */
 
   display: grid;
-  grid-template-columns: 40% 25% 25% 10%;
+  grid-template-columns: 35% 25% 25% 5%;
   padding-top: 8px; /*___Create other solution: Center verical*/
 }
 

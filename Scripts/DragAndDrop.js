@@ -1,4 +1,5 @@
 let containsAllTasks = [] // <- in Localstorage 
+let mouseOver = null
 
 showCalendarTasks();
 
@@ -18,9 +19,18 @@ calendarTasksPlace.addEventListener("dragenter", dragEnter);
 calendarTasksPlace.addEventListener("dragleave", dragLeave);
 calendarTasksPlace.addEventListener("drop", dragDrop);
 
+function checkElementId(event) {
+    // Access the id property of the event target
+    var elementId = event.target.id;
+    mouseOver = elementId ? elementId : mouseOver;
+    // Log the id to the console or do something else with it
+    console.log("Mouse is over element with id:", elementId, mouseOver);
+  }
+
 function dragStart(event) {
     console.log("Start DRAG");
-    event.dataTransfer.setData('text/plain', event.target.id);
+    const theDraggedID = event.target.id; //__ can be changed back/removed (look next line:)
+    event.dataTransfer.setData('text/plain', theDraggedID); // event.dataTransfer.setData('text/plain', event.target.id);
     this.classList.add("hold");
     setTimeout(() => (this.classList.add("invisible")), 0);
 }
@@ -38,11 +48,11 @@ function dragOver(event) {
 function dragEnter() {
     console.log("Enter");
     this.classList.add("over");
+    this.classList.remove("over");
 }
 
 function dragLeave() {
     console.log("Leave");
-    this.classList.remove("over");
 }
 
 function dragDrop(event) {
@@ -52,21 +62,24 @@ function dragDrop(event) {
     const draggedItemId = event.dataTransfer.getData('text/plain'); //Dragged ID
     const draggedItem = document.getElementById(draggedItemId); //HTML elements
 
+    const theDraggedID = event.dataTransfer.getData('text/plain'); //Donsent work :( empty string in some cases
+    const letID = theDraggedID;
+
+
+    console.log("In drop -> ID: " + draggedItemId + " | Item: " + draggedItem + " | IDV2: " + letID)
     if (draggedItem) {
+        console.log("Has been dropped and found. ID: " + draggedItemId + " | Item: " + draggedItem)
         // Place item based on y-axis
         const rect = this.getBoundingClientRect();
-        const relativeY = event.clientY - rect.top;
+        const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
         const relativePercentage = (relativeY / rect.height) * 100;
     
         const clone = draggedItem.cloneNode(true);
         clone.classList.remove("invisible", "hold");
         
-        // clone.style.position = 'absolute';
-        // clone.style.top = `${relativePercentage}%`;
     
         // Give item a height based on task duration.
         const secondSpanValue = clone.querySelector('.todo-item span:nth-child(2)').textContent;
-        // clone.style.height = calculateHeight(secondSpanValue);
     
         // Give item time (from -> to) based on top: and duration:
         let timePeriod = calculatePeriod(relativePercentage, secondSpanValue);
@@ -85,18 +98,65 @@ function dragDrop(event) {
         console.log("IS there is " + isThere)
         if(!isThere){
             appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, draggedItemId)
+            console.log(`Task Appended: -> "Task", "SubTask", ${calculateHeight(secondSpanValue)}, ${secondSpanValue}, ${relativePercentage}, ${timePeriod}, false, ${draggedItemId}`)
         }
         
         showCalendarTasks(containsAllTasks);
         isPlacedAtSameTime()
 
-    
-        //this.appendChild(clone); //____ THIS ONE ADDDDDDS
-
-
-        // Remove the dragged item from todoDraggablePlace
         draggedItem.parentNode.removeChild(draggedItem);
-    }   
+    }else { // ___ remake this whole else statement, using checkElementId() isnt reliable in the long run.
+        // ID = mouseOver:
+        console.log("Hello - here's the ID: " + mouseOver);
+        if (mouseOver) { // Check if mouseOver has a valid value
+    
+            const rect = this.getBoundingClientRect();
+            const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
+            const relativePercentage = (relativeY / rect.height) * 100;
+    
+            const draggedItem = document.getElementById(mouseOver);
+    
+            if (draggedItem) { // Check if the element with mouseOver ID exists
+    
+                const clone = draggedItem.cloneNode(true);
+                clone.classList.remove("invisible", "hold");
+    
+                const secondSpan = clone.querySelector("span:nth-child(2)");
+                const secondSpanValue = secondSpan ? secondSpan.textContent : '';
+    
+                let timePeriod = calculatePeriod(relativePercentage, secondSpanValue);
+                const thirdSpan = clone.querySelector("span:nth-child(2)");
+                if (thirdSpan) {
+                    thirdSpan.textContent = timePeriod;
+                }
+    
+                // Append the clone to the calendarTasksPlace
+                calendarTasksPlace.appendChild(clone);
+    
+                // Make the clone draggable after it has been appended
+                clone.draggable = true;
+                clone.addEventListener("dragstart", dragStart);
+                clone.addEventListener("dragend", dragEnd);
+    
+                //Add and remove from local-storage
+                appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, `${mouseOver}1`);
+                removeTask(mouseOver)
+
+                isPlacedAtSameTime();
+                showCalendarTasks(containsAllTasks);
+
+                //remove previous element/task that was being dragged
+                var element = document.getElementById(mouseOver);
+                element.parentNode.removeChild(element);
+
+            } else {
+                alert("Element not found with ID: " + mouseOver);
+            }
+        } else {
+            alert("try again!");
+        }
+    }
+    
 }
 
 function calculateHeight(input) //Number of minutes: e.g. "120 min"
@@ -129,7 +189,8 @@ function calculatePeriod(top, height) //both top an height is procentage: input:
     return `${decimalToHoursAndMinutes(period)} - ${periodEndTime}`
 }
 
-function decimalToHoursAndMinutes(decimal) {
+function decimalToHoursAndMinutes(decimal)  // e.g. input: 7,5 -> output: "7:30"
+{
     // Extract the hours and minutes
     let hours = Math.floor(decimal);
     let minutes = Math.round((decimal % 1) * 60);
@@ -157,11 +218,19 @@ function removeTask(ID, arr = containsAllTasks)
             i--; 
 
             const elementBeingRemoved = document.getElementById(ID);
-            elementBeingRemoved.remove();
-        }
+            if (elementBeingRemoved) {
+                elementBeingRemoved.remove();
+            }
+            break; // exit the loop once the element is removed
+        } 
     }
     console.log(containsAllTasks)
     showCalendarTasks();
+    isPlacedAtSameTime()
+}
+function deleteTaskOnClick(ID){
+    console.log("Task should be deleted: " + ID )
+    removeTask(ID)
 }
 
 function showCalendarTasks(arr = containsAllTasks){
@@ -185,7 +254,9 @@ function showCalendarTasks(arr = containsAllTasks){
     
             const newTask = document.createElement("div");
             newTask.classList.add("calender-tasks-item");
-            newTask.setAttribute("id", `${element[7]}`)
+            newTask.setAttribute("id", `${element[7]}`);
+            newTask.setAttribute("onmouseover", "checkElementId(event)");
+            newTask.setAttribute("draggable","true");
             calendarTasksPlace.appendChild(newTask);
             
             //Placement of task:
@@ -195,7 +266,7 @@ function showCalendarTasks(arr = containsAllTasks){
 
 
             //Structure of task: inside <div>newTask</div> 
-                //<span> TaskName | Subtask </span>
+                //<span> TaskName & Subtask </span>
                 const taskName = document.createElement("span")
                 taskName.classList.add("calender-tasks-item-taskName")
                 taskName.innerHTML = `${element[0]}<br/><li>${element[1]}</li>`;    // [0] = taskName | [1] = subTaskName
@@ -216,14 +287,15 @@ function showCalendarTasks(arr = containsAllTasks){
                 newTask.appendChild(taskPeriod)
     
                 //<span> TaskDone? </span>
-                const taskDone = document.createElement("span")
-                
-                if(element[6]){ // [6] taskDone
-                    taskDone.innerHTML = `J`  
-                } else {
-                    taskDone.innerHTML = `O`
-                }
-    
+                const taskDone = document.createElement("button")
+                taskDone.addEventListener("click", () => deleteTaskOnClick(element[7]));
+                //styles:
+                taskDone.style.width = "20%"
+                taskDone.style.height = "25px"
+                taskDone.style.backgroundColor = "transparent"; 
+                taskDone.style.color = "red"
+
+                taskDone.innerHTML = element[6] ? "J" : "X" // [6] taskDone
                 taskDone.classList.add("calender-tasks-item-taskDone")
                 newTask.appendChild(taskDone)
         }
@@ -296,7 +368,7 @@ function findNeighboursOtOnce(arr) {
                 }
             }
     
-            ans.push([theID, maxLength+1]); //___maybe -1
+            ans.push([theID, maxLength+1]);
         } else {
             ans.push([theID, 0]);
         }
@@ -309,29 +381,33 @@ function findNeighboursOtOnce(arr) {
 
 
 function findOverlappingTasks(tasks) {
-const tasksOverlap = {};
+    const tasksOverlap = {};
 
-for (let i = 0; i < tasks.length; i++) {
-    for (let j = 0; j < tasks.length; j++) {
-    if (i !== j) {
-        const [idI, startI, endI] = tasks[i];
-        const [idJ, startJ, endJ] = tasks[j];
+    for (let i = 0; i < tasks.length; i++) {
+        for (let j = 0; j < tasks.length; j++) {
+        if (i !== j) {
+            const [idI, startI, endI] = tasks[i];
+            const [idJ, startJ, endJ] = tasks[j];
 
-        // Check for overlap
-        if (startI < endJ && endI > startJ) {
-        if (!tasksOverlap[idI]) {
-            tasksOverlap[idI] = [idJ];
-        } else {
-            tasksOverlap[idI].push(idJ);
+            // Check for overlap
+            if (startI < endJ && endI > startJ) {
+            if (!tasksOverlap[idI]) {
+                tasksOverlap[idI] = [idJ];
+            } else {
+                tasksOverlap[idI].push(idJ);
+            }
+            }
         }
         }
     }
+    console.log("overlap")
+    for (let key in tasksOverlap){
+        console.log(tasksOverlap[key])
     }
-}
-return tasksOverlap;
+    return tasksOverlap;
 }
 
-function calculateLeft(arr) // [["id", ]]
+function calculateLeft(arr) // [["id", startTime, endTime ]]
 {
     let arrWithLeftOffset = []
 
@@ -347,7 +423,60 @@ function calculateLeft(arr) // [["id", ]]
         if (taskWidth == 100){ //If not overlapping with anyone
             arrWithLeftOffset.push([theID, 0])
         } else { //Overlaps:
-            arrWithLeftOffset.push([theID, Math.floor(Math.random() * (50 - 0 + 1)) + 0]) //__change
+            let thingsToAdd = [] // 2d array -> [["id1", left], ["id2", left]...]
+            //thingsToAdd.push(taskWithID, 0);
+            
+            let allOverlaps = findOverlappingTasks(arr)
+            let overlapsWithID; // contains overlap with id, e.g. ["id1", "id3", "id8"]
+            
+            for (let key in allOverlaps){
+                if(key === theID){
+                    overlapsWithID = allOverlaps[key];
+                }
+            }
+            overlapsWithID.push(theID)
+
+            let extraPush = 0
+            console.log("overlapsWithID")
+            console.log(overlapsWithID)
+            for (let things of overlapsWithID){
+                let thingsElement = document.getElementById(things)
+                let thingsWidthString = thingsElement.style.width
+                let thingsWidth = parseInt(thingsWidthString.split("%"))
+
+                let overlappingLeft = 100 - (extraPush+thingsWidth+0.7)
+               
+                console.log(`if (${overlappingLeft} < ${taskWidth})`)
+                if (overlappingLeft < taskWidth) {
+                    //extraPush = 0;
+                    //overlappingLeft = 100 - (extraPush + thingsWidth + 0.7);
+                }
+                if (overlappingLeft < 0){ 
+                    overlappingLeft = 0;
+                }
+
+                extraPush += thingsWidth;
+
+                console.log("Added: " + things + " | " + overlappingLeft)
+                thingsToAdd.push([things, overlappingLeft])
+            }
+            
+
+            //Add to final arr
+            for (let l of thingsToAdd)
+            {
+                let inFinalArray = false
+                for (let m of arrWithLeftOffset)
+                {
+                    if(l[0] == m[0])
+                    {
+                        inFinalArray = true;
+                    }
+                }
+                if (!inFinalArray){
+                    arrWithLeftOffset.push([l[0], l[1]]);
+                }
+            }
         }
     }
 

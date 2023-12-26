@@ -26,6 +26,7 @@ addTimeStamps("6:50", "21:45");
 //CalederTasks
 const calendarTasks = document.createElement("div");
 calendarTasks.classList.add("calender-tasks");
+calendarTasks.setAttribute("id", "calendarTaskID")
 calendarSection.appendChild(calendarTasks);
 
 
