@@ -1,0 +1,32 @@
+.project
+{
+    cursor: pointer;
+    position: relative;
+
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 0px;
+
+    table-layout: fixed;
+    width: 90%;
+
+    border-radius: 15px;
+    list-style-type: none;
+
+    background-color: var(--bg2);
+    outline-color: var(--bg1);
+    outline-width: 3px;
+    outline-style: solid;
+
+    font-size: 18px;
+
+    user-select: none;
+}
+
+.content 
+{
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}

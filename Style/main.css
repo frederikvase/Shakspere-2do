@@ -150,6 +150,13 @@ ul li.checked::before {
   width: 7px;
 }
 
+.projectTitle
+{
+  text-align: center; 
+  margin-top: -0px; 
+  margin-bottom: -15px;
+}
+
 .close {
   position: absolute;
   right: 0;
@@ -247,7 +254,7 @@ input {
 .closeModal {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: bold;
 }
 
@@ -334,4 +341,16 @@ table.fixed td:nth-of-type(2) {
 
 table.fixed td:nth-of-type(3) {
   width: 33.33%;
+}
+
+.projectName {
+  font-family: 'Berlin Sans FB';
+  font-size: xx-large;
+  background-color: var(--bg2);
+  border: none;
+  width: 100%;
+  margin-top: 5px;
+  text-align: center;
+  color: var(--bg1);
+  outline-style: none;
 }
