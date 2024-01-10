@@ -344,6 +344,7 @@ table.fixed td:nth-of-type(3) {
   /*grid-template-rows: 12% minmax(auto, 67vh); /* ___ ((maxTime+2)-minTime)/2     | eks.  ((22+2)-6)/2 */
   height: 90vh;
   overflow: auto;
+  border-radius: 30px
 }
 .calender-title {
   grid-column: 1/3;
@@ -500,6 +501,21 @@ table.fixed td:nth-of-type(3) {
   border: 2px dashed #333;
 }
 
+
+.calender-currentTime{
+  background-color: #c46e04;
+  height: 5px;
+  width: 100%;
+  z-index: 1;
+  opacity: 0.5;
+}
+.calender-startendtime{
+  background-color: #04c44e;
+  height: 5px;
+  width: 100%;
+  z-index: 1;
+  opacity: 0.5;
+}
 
 
 

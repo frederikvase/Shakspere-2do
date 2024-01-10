@@ -1,5 +1,10 @@
 const body = document.body;
 
+const date = new Date();
+const hour = date.getHours();
+const min = date.getMinutes();
+
+
 /* html layout but in js */
 allCalendarTasks = []
 allTimeStamps = []
@@ -21,7 +26,11 @@ calendarTimeStamps.classList.add("calender-time");
 calendarSection.appendChild(calendarTimeStamps);
 
 //Each timestamp:
-addTimeStamps("6:50", "21:45");
+let bedtime = "21:40";
+let wakeUp = "5:45";
+const interval = "0:10"
+addTimeStamps(wakeUp, bedtime);
+
 
 //CalederTasks
 const calendarTasks = document.createElement("div");
@@ -29,11 +38,33 @@ calendarTasks.classList.add("calender-tasks");
 calendarTasks.setAttribute("id", "calendarTaskID")
 calendarSection.appendChild(calendarTasks);
 
+//Line that shows current time:
+let currentTime = `${hour}:${min}`
+console.log(currentTime)
+let currentTimePlacement = calculatePlacement2(currentTime)
+
+const calendarCurrentTimeLine = document.createElement("section")
+calendarCurrentTimeLine.style.position = "absolute";
+calendarCurrentTimeLine.style.top = currentTimePlacement;
+calendarCurrentTimeLine.classList.add("calender-currentTime");
+calendarTasks.appendChild(calendarCurrentTimeLine);
+
+const wakeUpLine = document.createElement("section")
+wakeUpLine.style.position = "absolute";
+wakeUpLine.style.top = calculatePlacement2(wakeUp);
+wakeUpLine.classList.add("calender-startendtime");
+calendarTasks.appendChild(wakeUpLine);
+
+const bedtimeLine = document.createElement("section")
+bedtimeLine.style.position = "absolute";
+bedtimeLine.style.top = calculatePlacement2(bedtime);
+bedtimeLine.classList.add("calender-startendtime");
+calendarTasks.appendChild(bedtimeLine);
 
 /*addTaskToCalendar("Danish", 90, "10:00", false, "Conclusion");
 addTaskToCalendar("Danish", 90, "16:00", false, "Conclusion");
 addTaskToCalendar("Danish", 90, "12:00", false, "Conclusion");*/
-//addTaskToCalendar("Danish", 90, "12:00", false, "Conclusion");
+//addTaskToCalendar("Danish", 60, "12:00-13:00", false, "Conclusion");
 
 displayTasks();
 
@@ -106,7 +137,7 @@ function converTimeIntoHours(input) //input = "23:30" -> 23,5 timer
     return hours+minToHours;
 }
 
-function calculatePlacement(placementTime, index) {
+function calculatePlacement(placementTime, index = 0) {
     let regulatingNumber = 0;
     let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
     let endTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
@@ -114,10 +145,43 @@ function calculatePlacement(placementTime, index) {
     let placementProcentage = ((placementTimeStamp - startTimeStamp) / (endTimeStamp - startTimeStamp)) * 100;
     
     // Adding an index factor to differentiate tasks with the same placement time
+    console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp} - ${startTimeStamp})) * 100`)
     let adjustedPercentage = placementProcentage + index * regulatingNumber;
     console.log("placement: " + adjustedPercentage + " %");
     return adjustedPercentage + "%";
 }
+
+
+function calculatePlacement2(placementTime, index = 0) {
+    let regulatingNumber = 0;
+    let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
+    let endTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
+    let placementTimeStamp = converTimeIntoHours(placementTime);
+    let placementProcentage = ((placementTimeStamp - startTimeStamp) / ((endTimeStamp+2) - startTimeStamp)) * 100;
+    
+    // Adding an index factor to differentiate tasks with the same placement time
+    console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
+    let adjustedPercentage = placementProcentage + index * regulatingNumber;
+    console.log("placement: " + adjustedPercentage + " %");
+    return adjustedPercentage + "%";
+}
+
+function calculatePlacement3(placementTime, index = 0) {
+    let regulatingNumber = 0;
+    let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
+    let endTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
+    let placementTimeStamp = converTimeIntoHours(placementTime);
+    let placementProcentage = ((placementTimeStamp) / ((endTimeStamp+2) - startTimeStamp)) * 100;
+    
+    // Adding an index factor to differentiate tasks with the same placement time
+    console.log(`((${placementTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
+    let adjustedPercentage = placementProcentage + index * regulatingNumber;
+    console.log("placement: " + adjustedPercentage + " %");
+    return adjustedPercentage + "%";
+}
+
+
+
 
 
 

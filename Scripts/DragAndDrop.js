@@ -1,5 +1,17 @@
-let containsAllTasks = [] // <- in Localstorage 
-let mouseOver = null
+let containsAllTasks = []
+// let alredyMadeTasks = JSON.parse(localStorage.getItem("tasks")) || [] // <- in Localstorage 
+
+// console.log(alredyMadeTasks)
+console.log(containsAllTasks)
+
+// let containsAllTasks = []
+//Contains: [[]]
+//                       0         1                2                       3                4                        5                             6         7
+//containsAllTasks.push([taskName, taskSubtaskName, taskDurationProcentage, taskDurationMin, taskPlacementProcentage, taskPlacementStartEndHourMin, taskDone, ID]);
+//                       taskName  SubtaskName      height:                 amountMin        top:                     placementMinENDSTART         isTaskDone?  taskID
+
+
+let mouseOver = null;
 
 showCalendarTasks();
 
@@ -72,20 +84,24 @@ function dragDrop(event) {
         // Place item based on y-axis
         const rect = this.getBoundingClientRect();
         const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
-        const relativePercentage = (relativeY / rect.height) * 100;
-    
+        let relativePercentage = (relativeY / rect.height) * 100;
+
+        let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
+        const remainder = relativePercentage % val
+        relativePercentage -= remainder;
+        
         const clone = draggedItem.cloneNode(true);
         clone.classList.remove("invisible", "hold");
         
-    
+        
         // Give item a height based on task duration.
         const secondSpanValue = clone.querySelector('.todo-item span:nth-child(2)').textContent;
-    
+        
         // Give item time (from -> to) based on top: and duration:
         let timePeriod = calculatePeriod(relativePercentage, secondSpanValue);
         const thirdSpan = clone.querySelector('.todo-item span:nth-child(3)');
         thirdSpan.textContent = timePeriod;
-
+        
         //Added elent to array (if not alredy there):
         let isThere = false;
         for (let thing of containsAllTasks)
@@ -103,16 +119,20 @@ function dragDrop(event) {
         
         showCalendarTasks(containsAllTasks);
         isPlacedAtSameTime()
-
+        
         draggedItem.parentNode.removeChild(draggedItem);
     }else { // ___ remake this whole else statement, using checkElementId() isnt reliable in the long run.
         // ID = mouseOver:
         console.log("Hello - here's the ID: " + mouseOver);
         if (mouseOver) { // Check if mouseOver has a valid value
-    
+            
             const rect = this.getBoundingClientRect();
             const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
-            const relativePercentage = (relativeY / rect.height) * 100;
+
+            let relativePercentage = (relativeY / rect.height) * 100;
+            let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
+            const remainder = relativePercentage % val
+            relativePercentage -= remainder;
     
             const draggedItem = document.getElementById(mouseOver);
     
@@ -132,7 +152,7 @@ function dragDrop(event) {
     
                 // Append the clone to the calendarTasksPlace
                 calendarTasksPlace.appendChild(clone);
-    
+                
                 // Make the clone draggable after it has been appended
                 clone.draggable = true;
                 clone.addEventListener("dragstart", dragStart);
@@ -206,6 +226,9 @@ function appendTasks(taskName, taskSubtaskName, taskDurationProcentage, taskDura
     //                     0         1                2                       3                4                        5                             6         7
     containsAllTasks.push([taskName, taskSubtaskName, taskDurationProcentage, taskDurationMin, taskPlacementProcentage, taskPlacementStartEndHourMin, taskDone, ID]);
     //                     taskName  SubtaskName      height:                 amountMin        top:                     placementMinENDSTART         isTaskDone?  taskID
+    // let a = JSON.parse(localStorage.getItem("tasks"))
+    // a.push([taskName, taskSubtaskName, taskDurationProcentage, taskDurationMin, taskPlacementProcentage, taskPlacementStartEndHourMin, taskDone, ID])
+    // localStorage.setItem("tasks", a);
 }
 
 function removeTask(ID, arr = containsAllTasks) 
