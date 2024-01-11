@@ -1,5 +1,132 @@
 let containsAllTasks = []
+const todoDraggablePlace = document.getElementById('todo-draggable');
+const calendarTasksPlace = document.querySelector('.calender-tasks');
 // let alredyMadeTasks = JSON.parse(localStorage.getItem("tasks")) || [] // <- in Localstorage 
+let allClassTasks = []
+
+class newTaskClass{
+    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, taskDone = false)
+    {
+        this.taskName           = taskName;         //String -> "English Essay"
+        this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
+        this.taskDuration       = taskDuration;     //String -> "1:30"
+        this.taskPlacement      = taskPlacement     //Float -> 10  OR   -> string "11:30"
+        this.taskDone           = taskDone          //true/false        
+
+
+        if (typeof this.taskPlacement == 'string'){
+            this.type = "school"
+            this.startTime = this.taskPlacement
+        } else {
+            this.type = "project"
+            this.startTime = addTwoHours(calculateProcentageIntoDuration(this.taskPlacement), allTimeStamps[allTimeStamps.length - 1][0])
+        }
+        
+        this.top = calculateDurationIntoProcentage(subtractTwoHours(this.startTime, allTimeStamps[allTimeStamps.length - 1][0]))
+        this.endTime =  addTwoHours(this.startTime, this.taskDuration) //String "10:30"
+        this.height = calculateDurationIntoProcentage(taskDuration)
+
+        this.showTask()
+    }
+
+    showTask(){
+        const className = this.type == "school" ? "calender-tasks-school" : "calender-tasks-project"
+        const thisTask = document.createElement("div")
+        thisTask.classList.add(className);
+        thisTask.style.position = 'absolute';
+
+        thisTask.style.top = `${this.top}%`; 
+        thisTask.style.height = `${this.height}%`;
+        thisTask.style.border = `2px solid black`
+        thisTask.style.zIndex = `2`
+        calendarTasksPlace.appendChild(thisTask);
+
+
+        //First thing inside thisTask
+        const firstElement = document.createElement("span")
+        firstElement.classList.add("calender-tasks-item-taskName")
+        const textInnerHTML = this.type == "school" ? `${this.taskName}` : `${this.taskName}<br/><li>${this.taskSubtaskName}</li>` 
+        firstElement.innerHTML = textInnerHTML;
+        thisTask.appendChild(firstElement)
+        
+        //Secound thing inside thisTask
+        const secoundElement = document.createElement("span")
+        secoundElement.classList.add("calender-tasks-item-taskDuration")
+        secoundElement.innerHTML = `${this.taskDuration.split(":")[0] > 0 ? this.taskDuration.split(":")[0] + ' h ' : ''}${this.taskDuration.split(":")[1]} m`;
+        thisTask.appendChild(secoundElement)
+        
+        //Third thing inside thisTask
+        const thirdElement = document.createElement("span")
+        thirdElement.classList.add("calender-tasks-item-taskPeriod")
+        thirdElement.innerHTML = `${this.startTime} - ${this.endTime}`;
+        thisTask.appendChild(thirdElement)
+       
+        //Forth thing inside thisTask
+        if(this.type != "school"){
+            const forthElement = document.createElement("button")
+            forthElement.classList.add("calender-tasks-item-button")
+            // taskDone.addEventListener("click", () => deleteTaskOnClick(element[7]));
+            forthElement.innerHTML = this.taskDone ? "J" : "X" // [6] forthElement
+            thisTask.appendChild(forthElement)
+        }
+
+        // newTask.setAttribute("id", `${element[7]}`);
+        // newTask.setAttribute("onmouseover", "checkElementId(event)");
+        // newTask.setAttribute("draggable","true");
+    }
+}
+new newTaskClass("Math", "", "1:00", "8:15")
+new newTaskClass("Math", "", "1:00", "9:35")
+new newTaskClass("Danish", "", "1:00", "10:45")
+new newTaskClass("English", "", "1:00", "12:15")
+new newTaskClass("Chemistry", "", "1:00", "13:25")
+new newTaskClass("Chemistry", "", "1:00", "14:30")
+let thisEntity = new newTaskClass("English Essay", "Introduction", "1:30", 0)
+
+
+
+
+function calculateDurationIntoProcentage(duration){ //input: string "1:30" output: float 5
+    let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
+    let endTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
+    let placementTimeStamp = converTimeIntoHours(duration);
+
+    let placementProcentage = ((placementTimeStamp) / ((endTimeStamp+2) - startTimeStamp)) * 100;
+    
+    return placementProcentage;
+}
+
+function calculateProcentageIntoDuration(procentage) //Input: float 5 (%) -> output: string "1:30"
+{
+    let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
+    let endTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
+
+    let duration = (procentage/100)*((endTimeStamp+2) - startTimeStamp)
+
+    return convertDecimalIntoHours(duration)
+}
+
+function convertDecimalIntoHours(decimal) //input float 22.5 ouput string "22:30"
+{
+    let min = ((decimal % 1)*60).toFixed(0);
+    let hours = Math.floor(decimal)
+
+    return min < 10 ?  `${hours}:0${min}` :  `${hours}:${min}`
+}
+
+function addTwoHours(one, two) //Input ("7:30", "2:30") -> ouput ("10:00")
+{
+    let totalNum = converTimeIntoHours(one) + converTimeIntoHours(two)
+    return convertDecimalIntoHours(totalNum)
+}
+function subtractTwoHours(one,two) //input ("7:30", "2:30") -> ouput ("5:00")
+{
+    let totalNum = converTimeIntoHours(one) - converTimeIntoHours(two)
+    return convertDecimalIntoHours(totalNum)
+}
+
+
+
 
 // console.log(alredyMadeTasks)
 console.log(containsAllTasks)
@@ -15,8 +142,6 @@ let mouseOver = null;
 
 showCalendarTasks();
 
-const todoDraggablePlace = document.getElementById('todo-draggable');
-const calendarTasksPlace = document.querySelector('.calender-tasks');
 
 // Attach drag events to each todo-item
 const todoItems = todoDraggablePlace.querySelectorAll('.todo-item');
@@ -277,6 +402,7 @@ function showCalendarTasks(arr = containsAllTasks){
     
             const newTask = document.createElement("div");
             newTask.classList.add("calender-tasks-item");
+    
             newTask.setAttribute("id", `${element[7]}`);
             newTask.setAttribute("onmouseover", "checkElementId(event)");
             newTask.setAttribute("draggable","true");
@@ -286,7 +412,8 @@ function showCalendarTasks(arr = containsAllTasks){
             newTask.style.position = 'absolute';
             newTask.style.top = `${element[4]}%`; //value == relativePercentage == e.g. 46.5            == [4]taskPlacementProcentage
             newTask.style.height = element[2]; //value == calculateHeight(secondSpanValue) == "47.3%"   == 2[taskDurationProcentage]
-
+            newTask.style.border = `2px solid black`
+            newTask.style.zIndex = `2`
 
             //Structure of task: inside <div>newTask</div> 
                 //<span> TaskName & Subtask </span>

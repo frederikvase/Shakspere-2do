@@ -4,6 +4,11 @@ const date = new Date();
 const hour = date.getHours();
 const min = date.getMinutes();
 
+//Each timestamp:
+const bedtime = "21:40";
+const wakeUp = "5:45";
+const interval = "0:10" //Interval which you can place a task
+const timeLine = "1:00" //To indicate the time
 
 /* html layout but in js */
 allCalendarTasks = []
@@ -25,10 +30,6 @@ const calendarTimeStamps = document.createElement("div");
 calendarTimeStamps.classList.add("calender-time");
 calendarSection.appendChild(calendarTimeStamps);
 
-//Each timestamp:
-let bedtime = "21:40";
-let wakeUp = "5:45";
-const interval = "0:10"
 addTimeStamps(wakeUp, bedtime);
 
 
@@ -60,6 +61,17 @@ bedtimeLine.style.position = "absolute";
 bedtimeLine.style.top = calculatePlacement2(bedtime);
 bedtimeLine.classList.add("calender-startendtime");
 calendarTasks.appendChild(bedtimeLine);
+
+/* All lines that indicate the time */
+let val = calculateLinePlacement(timeLine);
+for (let element of val){
+    const divElement = document.createElement("section")
+    divElement.style.position = "absolute";
+    divElement.style.top = `${element}%`;
+    divElement.classList.add("calender-timeline");
+    calendarTasks.appendChild(divElement); //or append it to calendarTasks or calendarTimeStamps
+
+}
 
 /*addTaskToCalendar("Danish", 90, "10:00", false, "Conclusion");
 addTaskToCalendar("Danish", 90, "16:00", false, "Conclusion");
@@ -178,6 +190,31 @@ function calculatePlacement3(placementTime, index = 0) {
     let adjustedPercentage = placementProcentage + index * regulatingNumber;
     console.log("placement: " + adjustedPercentage + " %");
     return adjustedPercentage + "%";
+}
+
+function calculateLinePlacement(timePlacement) //Input "0:30" Returns: arr[0, 10, 20, 30...] <- all placements of procentage of whole calendar.
+{
+    let allPlacements = []
+
+    let num = converTimeIntoHours(timePlacement) // 1,0
+
+    let startTime = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
+    let endTime = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
+
+    let increasingDistance = parseFloat(calculatePlacement3(timePlacement).split("%")[0])
+    console.log(increasingDistance)
+
+    let startPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][0]).split("%")[0])
+    let endPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
+    
+    console.log(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
+    console.log(calculatePlacement2((timePlacement).split("%")[0]))
+
+    for(let i = startPlacement; i<100+startPlacement; i+=increasingDistance){ //___ i <= endPlacement
+        allPlacements.push(i - startPlacement)
+    }
+    console.log(allPlacements)
+    return allPlacements
 }
 
 
