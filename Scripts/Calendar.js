@@ -157,9 +157,9 @@ function calculatePlacement(placementTime, index = 0) {
     let placementProcentage = ((placementTimeStamp - startTimeStamp) / (endTimeStamp - startTimeStamp)) * 100;
     
     // Adding an index factor to differentiate tasks with the same placement time
-    console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp} - ${startTimeStamp})) * 100`)
+    // console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp} - ${startTimeStamp})) * 100`)
     let adjustedPercentage = placementProcentage + index * regulatingNumber;
-    console.log("placement: " + adjustedPercentage + " %");
+    // console.log("placement: " + adjustedPercentage + " %");
     return adjustedPercentage + "%";
 }
 
@@ -172,9 +172,9 @@ function calculatePlacement2(placementTime, index = 0) {
     let placementProcentage = ((placementTimeStamp - startTimeStamp) / ((endTimeStamp+2) - startTimeStamp)) * 100;
     
     // Adding an index factor to differentiate tasks with the same placement time
-    console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
+    // console.log(`((${placementTimeStamp} - ${startTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
     let adjustedPercentage = placementProcentage + index * regulatingNumber;
-    console.log("placement: " + adjustedPercentage + " %");
+    // console.log("placement: " + adjustedPercentage + " %");
     return adjustedPercentage + "%";
 }
 
@@ -186,9 +186,9 @@ function calculatePlacement3(placementTime, index = 0) {
     let placementProcentage = ((placementTimeStamp) / ((endTimeStamp+2) - startTimeStamp)) * 100;
     
     // Adding an index factor to differentiate tasks with the same placement time
-    console.log(`((${placementTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
+    // console.log(`((${placementTimeStamp}) / (${endTimeStamp+2} - ${startTimeStamp})) * 100`)
     let adjustedPercentage = placementProcentage + index * regulatingNumber;
-    console.log("placement: " + adjustedPercentage + " %");
+    // console.log("placement: " + adjustedPercentage + " %");
     return adjustedPercentage + "%";
 }
 
@@ -207,13 +207,13 @@ function calculateLinePlacement(timePlacement) //Input "0:30" Returns: arr[0, 10
     let startPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][0]).split("%")[0])
     let endPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
     
-    console.log(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
-    console.log(calculatePlacement2((timePlacement).split("%")[0]))
+    // console.log(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
+    // console.log(calculatePlacement2((timePlacement).split("%")[0]))
 
     for(let i = startPlacement; i<100+startPlacement; i+=increasingDistance){ //___ i <= endPlacement
         allPlacements.push(i - startPlacement)
     }
-    console.log(allPlacements)
+    // console.log(allPlacements)
     return allPlacements
 }
 

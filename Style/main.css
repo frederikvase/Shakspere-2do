@@ -385,9 +385,15 @@ table.fixed td:nth-of-type(3) {
   background-color: #19456C;
   position: relative; /* Add this line */
 
-  display: grid;
+  /* display: grid;
   grid-template-columns: 35% 25% 25% 5%;
-  padding-top: 8px; /*___Create other solution: Center verical*/
+  padding-top: 8px; ___Create other solution: Center verical */
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  padding-top: 6px;
 }
 
 .calender-tasks-project{
@@ -397,9 +403,11 @@ table.fixed td:nth-of-type(3) {
   background-color: #19456C;
   position: relative; /* Add this line */
 
-  display: grid;
-  grid-template-columns: 35% 25% 25% 5%;
-  padding-top: 8px; /*___Create other solution: Center verical*/
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  padding-top: 6px; /*___Create other solution: Center verical*/
 }
 
 .calender-tasks-school{
@@ -409,9 +417,12 @@ table.fixed td:nth-of-type(3) {
   background-color: #4a4a4a;
   position: relative; /* Add this line */
 
-  display: grid;
-  grid-template-columns: 35% 25% 25% 5%;
-  padding-top: 8px; /*___Create other solution: Center verical*/
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  padding-top: 6px; /*___Create other solution: Center verical*/
 }
 
 .calender-tasks-item-button{

@@ -1,90 +1,175 @@
 let containsAllTasks = []
 const todoDraggablePlace = document.getElementById('todo-draggable');
 const calendarTasksPlace = document.querySelector('.calender-tasks');
-// let alredyMadeTasks = JSON.parse(localStorage.getItem("tasks")) || [] // <- in Localstorage 
-let allClassTasks = []
+
+let allClassTasks = JSON.parse(localStorage.getItem("shown-tasks")) || [];
+let giveSchoolID = 1 
 
 class newTaskClass{
-    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, taskDone = false)
+    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, taskDone = false, )
     {
         this.taskName           = taskName;         //String -> "English Essay"
         this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
         this.taskDuration       = taskDuration;     //String -> "1:30"
         this.taskPlacement      = taskPlacement     //Float -> 10  OR   -> string "11:30"
-        this.taskDone           = taskDone          //true/false        
-
-
+        this.taskDone           = taskDone          //true/false   
+        //ID = task-project-3 OR task-school-2
+        //type = "school" OR "project"
+        
         if (typeof this.taskPlacement == 'string'){
-            this.type = "school"
-            this.startTime = this.taskPlacement
+            this.type = "school";
+            this.startTime = this.taskPlacement;
+
+            this.ID = `task-${this.type}-${giveSchoolID}`;
+            giveSchoolID++;
         } else {
-            this.type = "project"
-            this.startTime = addTwoHours(calculateProcentageIntoDuration(this.taskPlacement), allTimeStamps[allTimeStamps.length - 1][0])
+            this.type = "project";
+            this.startTime = addTwoHours(calculateProcentageIntoDuration(this.taskPlacement), allTimeStamps[allTimeStamps.length - 1][0]);
+            
+            //ID should be one higher than the current largest.
+            let currentNum = 0;
+            for (const key in allClassTasks){
+                const theTask = allClassTasks[key]
+                if(parseInt(theTask.ID.split("-")[2]) > currentNum && theTask.type == "project"){
+                    currentNum = parseInt(theTask.ID.split("-")[2])
+                }
+            }
+            let theProjectNumID = currentNum || 0
+            theProjectNumID ++;
+
+            this.ID = `task-${this.type}-${theProjectNumID}`;
         }
         
         this.top = calculateDurationIntoProcentage(subtractTwoHours(this.startTime, allTimeStamps[allTimeStamps.length - 1][0]))
         this.endTime =  addTwoHours(this.startTime, this.taskDuration) //String "10:30"
         this.height = calculateDurationIntoProcentage(taskDuration)
 
-        this.showTask()
-    }
-
-    showTask(){
-        const className = this.type == "school" ? "calender-tasks-school" : "calender-tasks-project"
-        const thisTask = document.createElement("div")
-        thisTask.classList.add(className);
-        thisTask.style.position = 'absolute';
-
-        thisTask.style.top = `${this.top}%`; 
-        thisTask.style.height = `${this.height}%`;
-        thisTask.style.border = `2px solid black`
-        thisTask.style.zIndex = `2`
-        calendarTasksPlace.appendChild(thisTask);
-
-
-        //First thing inside thisTask
-        const firstElement = document.createElement("span")
-        firstElement.classList.add("calender-tasks-item-taskName")
-        const textInnerHTML = this.type == "school" ? `${this.taskName}` : `${this.taskName}<br/><li>${this.taskSubtaskName}</li>` 
-        firstElement.innerHTML = textInnerHTML;
-        thisTask.appendChild(firstElement)
-        
-        //Secound thing inside thisTask
-        const secoundElement = document.createElement("span")
-        secoundElement.classList.add("calender-tasks-item-taskDuration")
-        secoundElement.innerHTML = `${this.taskDuration.split(":")[0] > 0 ? this.taskDuration.split(":")[0] + ' h ' : ''}${this.taskDuration.split(":")[1]} m`;
-        thisTask.appendChild(secoundElement)
-        
-        //Third thing inside thisTask
-        const thirdElement = document.createElement("span")
-        thirdElement.classList.add("calender-tasks-item-taskPeriod")
-        thirdElement.innerHTML = `${this.startTime} - ${this.endTime}`;
-        thisTask.appendChild(thirdElement)
-       
-        //Forth thing inside thisTask
-        if(this.type != "school"){
-            const forthElement = document.createElement("button")
-            forthElement.classList.add("calender-tasks-item-button")
-            // taskDone.addEventListener("click", () => deleteTaskOnClick(element[7]));
-            forthElement.innerHTML = this.taskDone ? "J" : "X" // [6] forthElement
-            thisTask.appendChild(forthElement)
+        //___ Maybe make sure the same id cant be there twice (Dosent work properly tho)
+        let doesItCurrentlyHaveThisTask = false;
+        for (let key in allClassTasks){
+            if (allClassTasks[key].ID === this.ID){
+                doesItCurrentlyHaveThisTask = true
+            }
         }
-
-        // newTask.setAttribute("id", `${element[7]}`);
-        // newTask.setAttribute("onmouseover", "checkElementId(event)");
-        // newTask.setAttribute("draggable","true");
+        if (!doesItCurrentlyHaveThisTask )
+        {
+            allClassTasks.push({ID : this.ID,                           taskName: this.taskName,                taskSubtaskName: this.taskSubtaskName,          taskDuration : this.taskDuration,
+                                taskPlacement : this.taskPlacement,     taskDone : this.taskDone,               type : this.type,                               height : this.height,
+                                startTime : this.startTime,             endTime : this.endTime,                 top : this.top})
+            updateLocalStorage();
+            showAllTasks();
+            isPlacedAtSameTimeButForClasses();
+        }
     }
 }
+
+
 new newTaskClass("Math", "", "1:00", "8:15")
 new newTaskClass("Math", "", "1:00", "9:35")
+new newTaskClass("Physics", "", "2:30", "10:30")
 new newTaskClass("Danish", "", "1:00", "10:45")
 new newTaskClass("English", "", "1:00", "12:15")
 new newTaskClass("Chemistry", "", "1:00", "13:25")
+new newTaskClass("Tech", "", "4:30", "14:00")
 new newTaskClass("Chemistry", "", "1:00", "14:30")
-let thisEntity = new newTaskClass("English Essay", "Introduction", "1:30", 0)
+// let thisEntity = new newTaskClass("Kav a Essay", "Introduction", "1:30", 75)
 
+showAllTasks();
+isPlacedAtSameTimeButForClasses();
+console.log(allClassTasks)
 
+function deleteTask(ID, arr = allClassTasks) {
+    for (let index = 0; index < arr.length; index++) 
+    {
+        const task = arr[index];
+        if (task.ID == ID) {
+            arr.splice(index, 1);
+            updateLocalStorage();
 
+            var element = document.getElementById(ID);
+            element.parentNode.removeChild(element);   
+            
+            // showAllTasks();
+            isPlacedAtSameTimeButForClasses();
+            break; // Once the task is found and removed, exit the loop
+        }
+    }
+    console.log(allClassTasks)
+    // Optionally, you may want to update the UI here (e.g., remove the corresponding DOM element).
+}
+
+function updateLocalStorage(arr = allClassTasks){
+    localStorage.setItem("shown-tasks", JSON.stringify(arr))
+}
+
+function showAllTasks(arr = allClassTasks) 
+{
+    for (const key in arr) 
+    {
+        if (arr.hasOwnProperty(key)) 
+        {
+            const taskVal = arr[key];
+            const element = document.getElementById(taskVal.ID);
+            if (element && element.parentNode) {
+                element.parentNode.removeChild(element);
+            }
+        }
+    }
+
+    console.log("Tasks BEING shown");
+
+    for (const key in arr) {
+        if (arr.hasOwnProperty(key)) 
+        {
+            const task = arr[key];
+            const placedElement = document.getElementById("element-id");
+
+            if (!placedElement) 
+            {
+                const className = task.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
+                const thisTask = document.createElement("div");
+                thisTask.setAttribute("id", `${task.ID}`);
+                
+                if(className == "calender-tasks-project"){
+                    thisTask.setAttribute("onmouseover", "checkElementId(event)");
+                    thisTask.setAttribute("draggable","true");
+                }
+                thisTask.classList.add(className);
+                thisTask.style.position = 'absolute';
+
+                thisTask.style.top = `${task.top}%`;
+                thisTask.style.height = `${task.height}%`;
+                thisTask.style.border = `2px solid black`;
+                thisTask.style.zIndex = `2`;
+                calendarTasksPlace.appendChild(thisTask);
+
+                const firstElement = document.createElement("span");
+                firstElement.classList.add("calender-tasks-item-taskName");
+                const textContent = task.type === "school" ? `${task.taskName}` : `${task.taskName} / ${task.taskSubtaskName}`;
+                firstElement.textContent = textContent;
+                thisTask.appendChild(firstElement);
+
+                const secondElement = document.createElement("span");
+                secondElement.classList.add("calender-tasks-item-taskDuration");
+                secondElement.textContent = `${task.taskDuration.split(":")[0] > 0 ? task.taskDuration.split(":")[0] + ' h ' : ''}${task.taskDuration.split(":")[1]} m`;
+                thisTask.appendChild(secondElement);
+
+                const thirdElement = document.createElement("span");
+                thirdElement.classList.add("calender-tasks-item-taskPeriod");
+                thirdElement.textContent = `${task.startTime} - ${task.endTime}`;
+                thisTask.appendChild(thirdElement);
+
+                if (task.type !== "school") {
+                    const fourthElement = document.createElement("button");
+                    fourthElement.classList.add("calender-tasks-item-button");
+                    fourthElement.addEventListener("click", () => { deleteTask(task.ID) });
+                    fourthElement.textContent = task.taskDone ? "J" : "X";
+                    thisTask.appendChild(fourthElement);
+                }
+            }
+        }
+    }
+}
 
 function calculateDurationIntoProcentage(duration){ //input: string "1:30" output: float 5
     let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
@@ -124,12 +209,22 @@ function subtractTwoHours(one,two) //input ("7:30", "2:30") -> ouput ("5:00")
     let totalNum = converTimeIntoHours(one) - converTimeIntoHours(two)
     return convertDecimalIntoHours(totalNum)
 }
+function returnArrayWithIDStartAndEndTime(arr = allClassTasks) //some arr with object that has ID, startTime -> "10:00" and endTime -> "11:30"
+{
+    //returns = [["id", float startTime1, float endTime1],["id", float startTime2,  float endTime2]...]
+    //Can be used as input to: findOverlappingTasks(tasks) && calculateLeft(arr)
+    let returnValues = []
+    for (let key in arr)
+    {
+        const task = arr[key];
 
+        let numStartTime = converTimeIntoHours(task.startTime);
+        let numEndTime = converTimeIntoHours(task.endTime);
 
-
-
-// console.log(alredyMadeTasks)
-console.log(containsAllTasks)
+        returnValues.push([task.ID, numStartTime, numEndTime]);
+    }
+    return returnValues;
+}
 
 // let containsAllTasks = []
 //Contains: [[]]
@@ -140,7 +235,7 @@ console.log(containsAllTasks)
 
 let mouseOver = null;
 
-showCalendarTasks();
+// showCalendarTasks();
 
 
 // Attach drag events to each todo-item
@@ -161,7 +256,7 @@ function checkElementId(event) {
     var elementId = event.target.id;
     mouseOver = elementId ? elementId : mouseOver;
     // Log the id to the console or do something else with it
-    console.log("Mouse is over element with id:", elementId, mouseOver);
+    // console.log("Mouse is over element with id:", elementId, mouseOver);
   }
 
 function dragStart(event) {
@@ -203,9 +298,9 @@ function dragDrop(event) {
     const letID = theDraggedID;
 
 
-    console.log("In drop -> ID: " + draggedItemId + " | Item: " + draggedItem + " | IDV2: " + letID)
+    // console.log("In drop -> ID: " + draggedItemId + " | Item: " + draggedItem + " | IDV2: " + letID)
     if (draggedItem) {
-        console.log("Has been dropped and found. ID: " + draggedItemId + " | Item: " + draggedItem)
+        // console.log("Has been dropped and found. ID: " + draggedItemId + " | Item: " + draggedItem)
         // Place item based on y-axis
         const rect = this.getBoundingClientRect();
         const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
@@ -234,21 +329,28 @@ function dragDrop(event) {
             if(thing[thing.length-1] === draggedItemId){
                 isThere = true;
             }
-            console.log("HeRe: " + thing)
+            // console.log("HeRe: " + thing)
         }
         console.log("IS there is " + isThere)
         if(!isThere){
-            appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, draggedItemId)
-            console.log(`Task Appended: -> "Task", "SubTask", ${calculateHeight(secondSpanValue)}, ${secondSpanValue}, ${relativePercentage}, ${timePeriod}, false, ${draggedItemId}`)
+            // appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, draggedItemId)
+            // console.log(`Task Appended: -> "Task", "SubTask", ${calculateHeight(secondSpanValue)}, ${secondSpanValue}, ${relativePercentage}, ${timePeriod}, false, ${draggedItemId}`)
         }
-        
-        showCalendarTasks(containsAllTasks);
-        isPlacedAtSameTime()
-        
         draggedItem.parentNode.removeChild(draggedItem);
-    }else { // ___ remake this whole else statement, using checkElementId() isnt reliable in the long run.
+        
+        //___
+        // showCalendarTasks(containsAllTasks);
+        // isPlacedAtSameTime()
+        
+        console.log("New task should be added")
+        new newTaskClass("TaskName", "Subtask", "1:00", relativePercentage)
+       
+        
+        // updateLocalStorage();
+
+        
+    }else { // ___ remake this whole else statement, using checkElementId() and mouseOver isnt reliable in the long run.
         // ID = mouseOver:
-        console.log("Hello - here's the ID: " + mouseOver);
         if (mouseOver) { // Check if mouseOver has a valid value
             
             const rect = this.getBoundingClientRect();
@@ -261,7 +363,8 @@ function dragDrop(event) {
     
             const draggedItem = document.getElementById(mouseOver);
     
-            if (draggedItem) { // Check if the element with mouseOver ID exists
+            if (draggedItem) // Check if the element with mouseOver ID exists
+            { 
     
                 const clone = draggedItem.cloneNode(true);
                 clone.classList.remove("invisible", "hold");
@@ -284,13 +387,24 @@ function dragDrop(event) {
                 clone.addEventListener("dragend", dragEnd);
     
                 //Add and remove from local-storage
-                appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, `${mouseOver}1`);
-                removeTask(mouseOver)
+                // appendTasks("Task", "SubTask", calculateHeight(secondSpanValue), secondSpanValue, relativePercentage, timePeriod, false, `${mouseOver}1`);
+                // removeTask(mouseOver)
 
-                isPlacedAtSameTime();
-                showCalendarTasks(containsAllTasks);
+                // isPlacedAtSameTime();
+                // showCalendarTasks(containsAllTasks);
 
+                //Get values from dragged item, and add a new one (use relativePercentage as new input)
+                for (key in allClassTasks)
+                {
+                    const task = allClassTasks[key]
+                    if (task.ID == mouseOver)
+                    {
+                        new newTaskClass(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage)
+                    }
+                }
+                
                 //remove previous element/task that was being dragged
+                deleteTask(mouseOver)
                 var element = document.getElementById(mouseOver);
                 element.parentNode.removeChild(element);
 
@@ -372,7 +486,7 @@ function removeTask(ID, arr = containsAllTasks)
             break; // exit the loop once the element is removed
         } 
     }
-    console.log(containsAllTasks)
+    // console.log(containsAllTasks)
     showCalendarTasks();
     isPlacedAtSameTime()
 }
@@ -388,7 +502,7 @@ function showCalendarTasks(arr = containsAllTasks){
         let isElementThere = false
         let existingElement = calendarTasksPlace.querySelector(`#${element[element.length-1]}`); //Gets the ID
         if (existingElement) {
-            console.log("Don't add the task: " + element[element.length-1]);
+            // console.log("Don't add the task: " + element[element.length-1]);
             isElementThere = true
         } else {
             console.log("Add task: " + element[element.length-1]);
@@ -480,16 +594,18 @@ function isPlacedAtSameTime(arr = containsAllTasks){
     for (let element of arrWithHorizontalOffset){
         let changeTask = document.getElementById(element[0])
         changeTask.style.left = `${element[1]}%`
+        // console.log(element[1])
     }
 }
 
-function findNeighboursOtOnce(arr) {
+function findNeighboursOtOnce(arr)
+{
     let ans = [];
   
     const overlappingRoundOne = findOverlappingTasks(arr);
-    console.log("overlappingRoundOne")
-    console.log(overlappingRoundOne)
-    console.log("Other")
+    // console.log("overlappingRoundOne")
+    // console.log(overlappingRoundOne)
+    // console.log("Other")
   
     for (let element of arr) {
         let theID = element[0];
@@ -504,16 +620,16 @@ function findNeighboursOtOnce(arr) {
                 }
             }
             });
-            console.log("overlappingTimesTwo", theID)
-            console.log(overlappingTimesTwo)
+            // console.log("overlappingTimesTwo", theID)
+            // console.log(overlappingTimesTwo)
     
             let overlapOfOverlap = findOverlappingTasks(overlappingTimesTwo);
-            console.log(overlapOfOverlap)
+            // console.log(overlapOfOverlap)
             let maxLength = 0;
     
             for (let key of Object.keys(overlapOfOverlap)) {
                 if (overlapOfOverlap[key].length > maxLength) {
-                    console.log(theID + " | " + overlapOfOverlap[key].length)
+                    // console.log(theID + " | " + overlapOfOverlap[key].length)
                     maxLength = overlapOfOverlap[key].length;
                 }
             }
@@ -529,34 +645,6 @@ function findNeighboursOtOnce(arr) {
     return ans;
   }
 
-
-function findOverlappingTasks(tasks) {
-    const tasksOverlap = {};
-
-    for (let i = 0; i < tasks.length; i++) {
-        for (let j = 0; j < tasks.length; j++) {
-        if (i !== j) {
-            const [idI, startI, endI] = tasks[i];
-            const [idJ, startJ, endJ] = tasks[j];
-
-            // Check for overlap
-            if (startI < endJ && endI > startJ) {
-            if (!tasksOverlap[idI]) {
-                tasksOverlap[idI] = [idJ];
-            } else {
-                tasksOverlap[idI].push(idJ);
-            }
-            }
-        }
-        }
-    }
-    console.log("overlap")
-    for (let key in tasksOverlap){
-        console.log(tasksOverlap[key])
-    }
-    return tasksOverlap;
-}
-
 function calculateLeft(arr) // [["id", startTime, endTime ]]
 {
     let arrWithLeftOffset = []
@@ -568,7 +656,7 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
         let widthOfTaskString = taskWithID.style.width;
         let taskWidth = parseInt(widthOfTaskString.split("%"));
 
-        console.log("LEFT: "+ theID + " | " + widthOfTaskString)
+        console.log("LEFT/THE WIDTH?: "+ theID + " | " + widthOfTaskString)
 
         if (taskWidth == 100){ //If not overlapping with anyone
             arrWithLeftOffset.push([theID, 0])
@@ -587,16 +675,16 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
             overlapsWithID.push(theID)
 
             let extraPush = 0
-            console.log("overlapsWithID")
-            console.log(overlapsWithID)
+            // console.log("overlapsWithID")
+            // console.log(overlapsWithID)
             for (let things of overlapsWithID){
                 let thingsElement = document.getElementById(things)
                 let thingsWidthString = thingsElement.style.width
                 let thingsWidth = parseInt(thingsWidthString.split("%"))
 
-                let overlappingLeft = 100 - (extraPush+thingsWidth+0.7)
+                let overlappingLeft = 100 - (extraPush +thingsWidth/*+0.7*/)
                
-                console.log(`if (${overlappingLeft} < ${taskWidth})`)
+                // console.log(`if (${overlappingLeft} < ${taskWidth})`)
                 if (overlappingLeft < taskWidth) {
                     //extraPush = 0;
                     //overlappingLeft = 100 - (extraPush + thingsWidth + 0.7);
@@ -607,10 +695,9 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
 
                 extraPush += thingsWidth;
 
-                console.log("Added: " + things + " | " + overlappingLeft)
+                // console.log("Added: " + things + " | " + overlappingLeft)
                 thingsToAdd.push([things, overlappingLeft])
             }
-            
 
             //Add to final arr
             for (let l of thingsToAdd)
@@ -629,6 +716,69 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
             }
         }
     }
-
+    console.log(arrWithLeftOffset)
     return arrWithLeftOffset;
 }
+
+function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
+    console.log("Calculating WIDTH and LEFT")
+    let taskTimes = []
+
+    // Find tasks that occur at the same time
+    for (let i = 0; i < arr.length; i++) 
+    {
+        const taskObj = arr[i]
+        let beginningOfTask = parseInt(taskObj.startTime.split(":")[0] + taskObj.startTime.split(":")[1])
+        let endingOfTask = parseInt(taskObj.endTime.split(":")[0] + taskObj.endTime.split(":")[1])
+        taskTimes.push([taskObj.ID, beginningOfTask, endingOfTask]);
+    }
+
+    //Changes the width of the tasks
+    const arrWithNeighbours = findNeighboursOtOnce(taskTimes)
+
+    for (let key of Object.keys(arrWithNeighbours)){
+        let theObject = arrWithNeighbours[key];
+        let changeTask = document.getElementById(theObject[0])
+        let theWidth = 100 / (theObject[1] + 1)
+        changeTask.style.width = `${theWidth}%`
+    }
+    
+    //Changes the leftOffset of the tasks
+    const arrWithHorizontalOffset = calculateLeft(taskTimes)
+
+    for (let element of arrWithHorizontalOffset){
+        let changeTask = document.getElementById(element[0])
+        changeTask.style.left = `${element[1]}%`
+    }
+}
+
+function findOverlappingTasks(tasks) //input const tasks = [["id", float startTime1, float endTime1],["id", startTime2, endTime2]...]
+{
+    const tasksOverlap = {};
+  
+    for (let i = 0; i < tasks.length; i++) 
+    {
+        for (let j = 0; j < tasks.length; j++) 
+        {
+            if (i !== j) 
+            {
+                const [idI, startI, endI] = tasks[i];
+                const [idJ, startJ, endJ] = tasks[j];
+
+                // Check for overlap
+                if (startI < endJ && endI > startJ) 
+                {
+                    if (!tasksOverlap[idI]) {
+                        tasksOverlap[idI] = [idJ];
+                    } else {
+                        tasksOverlap[idI].push(idJ);
+                    }
+                }   
+            }
+        } 
+    }
+      return tasksOverlap;
+}
+
+//   console.log(findOverlappingTasks(returnArrayWithIDStartAndEndTime()))  
+
