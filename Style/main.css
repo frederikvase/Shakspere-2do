@@ -383,6 +383,7 @@ table.fixed td:nth-of-type(3) {
   height: 50px;
   width: 98%;
   background-color: #19456C;
+  border: 2px solid black;
   position: relative; /* Add this line */
 
   /* display: grid;
@@ -402,8 +403,9 @@ table.fixed td:nth-of-type(3) {
   height: 50px;
   width: 98%;
   background-color: #19456C;
+  border: 2px solid black;
   position: relative; /* Add this line */
-
+  
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -412,11 +414,14 @@ table.fixed td:nth-of-type(3) {
   padding-top: 6px; /*___Create other solution: Center verical*/
 }
 
+
+
 .calender-tasks-school{
   border-radius: 20px;
   height: 50px;
   width: 98%;
   background-color: #4a4a4a;
+  border: 2px solid black;
   position: relative; /* Add this line */
 
 
@@ -425,6 +430,10 @@ table.fixed td:nth-of-type(3) {
   justify-content: space-around;
 
   padding-top: 6px; /*___Create other solution: Center verical*/
+}
+
+.calendar-clicked-element{
+  border: 2px solid red;
 }
 
 .calender-tasks-item-button{
@@ -521,6 +530,7 @@ table.fixed td:nth-of-type(3) {
   overflow: auto;
   
 }
+
 .ToDo-dragable{
   display: grid;
   grid-template-columns: 100%;
@@ -530,10 +540,7 @@ table.fixed td:nth-of-type(3) {
   height: 75%;
   overflow: auto;
 }
-.change-page-button{
-  padding-top: 20px;
 
-}
 .change-page-button button{
   border-radius: 30px;
   background-color: var(--banner);
@@ -542,6 +549,12 @@ table.fixed td:nth-of-type(3) {
   height: 50px;
   width: 100%;
   cursor: pointer;
+}
+
+
+.change-page-button{
+  padding-top: 20px;
+
 }
 .ToDo-dragable div{
   background-color: #19456C;
@@ -597,4 +610,61 @@ table.fixed td:nth-of-type(3) {
 }
 .hold{
   border: #f44336 solid 4px;
+}
+
+
+
+/* View more info text */
+
+.calendar-task-more-info{
+  /* background-color: #19456C; */
+  padding: 10px;
+  border-radius: 30px;
+  width: 100%;
+}
+.calendar-groupTaskName-school{
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.calendar-groupTaskName-project{
+  font-size: 30px;
+  font-weight: 600;
+  font-style: italic;
+}
+.calendar-groupSubtaskName{
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.calendar-groupTaskDuration,
+.calendar-groupTaskPeriod{
+  font-size: 20px;
+}
+
+.view-task{
+  background-color: #19456C;
+  /* padding: 20px; */
+  border-radius: 30px;
+  height: 75%;
+  width: 100%;
+
+  /* font-size: 20px; */
+}
+
+.calendar-task-more-info div{
+  margin: 10px 0;
+}
+.task-view-more-info-button{
+  padding-top: 20px;
+
+}
+.task-view-more-info-button button{
+  background-color: #04c44e;
+  border-radius: 30px;
+  font-size: 20px;
+  color: white;
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
 }

@@ -114,7 +114,7 @@ function showAllTasks(arr = allClassTasks)
         }
     }
 
-    console.log("Tasks BEING shown");
+    // console.log("Tasks BEING shown");
 
     for (const key in arr) {
         if (arr.hasOwnProperty(key)) 
@@ -127,6 +127,8 @@ function showAllTasks(arr = allClassTasks)
                 const className = task.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
                 const thisTask = document.createElement("div");
                 thisTask.setAttribute("id", `${task.ID}`);
+
+                thisTask.addEventListener("click", () => onPress(true, thisTask));
                 
                 if(className == "calender-tasks-project"){
                     thisTask.setAttribute("onmouseover", "checkElementId(event)");
@@ -137,7 +139,7 @@ function showAllTasks(arr = allClassTasks)
 
                 thisTask.style.top = `${task.top}%`;
                 thisTask.style.height = `${task.height}%`;
-                thisTask.style.border = `2px solid black`;
+                // thisTask.style.border = `2px solid black`;
                 thisTask.style.zIndex = `2`;
                 calendarTasksPlace.appendChild(thisTask);
 
@@ -160,8 +162,11 @@ function showAllTasks(arr = allClassTasks)
                 if (task.type !== "school") {
                     const fourthElement = document.createElement("button");
                     fourthElement.classList.add("calender-tasks-item-button");
-                    fourthElement.addEventListener("click", () => { deleteTask(task.ID) });
-                    fourthElement.textContent = task.taskDone ? "J" : "X";
+                    fourthElement.addEventListener("click", (event) => {
+                        deleteTask(task.ID);
+                        event.stopPropagation();
+                        onPress(false);
+                    });                    fourthElement.textContent = task.taskDone ? "J" : "X";
                     thisTask.appendChild(fourthElement);
                 }
             }
@@ -378,8 +383,8 @@ function findNeighboursOtOnce(arr)
         }
     }
   
-    console.log("ans")
-    console.log(ans)
+    // console.log("ans")
+    // console.log(ans)
     return ans;
   }
 
@@ -394,7 +399,7 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
         let widthOfTaskString = taskWithID.style.width;
         let taskWidth = parseInt(widthOfTaskString.split("%"));
 
-        console.log("LEFT/THE WIDTH?: "+ theID + " | " + widthOfTaskString)
+        // console.log("LEFT/THE WIDTH?: "+ theID + " | " + widthOfTaskString)
 
         if (taskWidth == 100){ //If not overlapping with anyone
             arrWithLeftOffset.push([theID, 0])
@@ -454,12 +459,11 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
             }
         }
     }
-    console.log(arrWithLeftOffset)
+    // console.log(arrWithLeftOffset)
     return arrWithLeftOffset;
 }
 
 function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
-    console.log("Calculating WIDTH and LEFT")
     let taskTimes = []
 
     // Find tasks that occur at the same time

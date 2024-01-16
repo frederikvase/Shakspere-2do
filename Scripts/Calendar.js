@@ -6,7 +6,7 @@ const min = date.getMinutes();
 
 //Each timestamp:
 const bedtime = "21:40";
-const wakeUp = "5:45";
+const wakeUp = "6:45";
 const interval = "0:10" //Interval which you can place a task
 const timeLine = "1:00" //To indicate the time
 
@@ -202,8 +202,6 @@ function calculateLinePlacement(timePlacement) //Input "0:30" Returns: arr[0, 10
     let endTime = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]);
 
     let increasingDistance = parseFloat(calculatePlacement3(timePlacement).split("%")[0])
-    console.log(increasingDistance)
-
     let startPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][0]).split("%")[0])
     let endPlacement = parseFloat(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
     
