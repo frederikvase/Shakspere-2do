@@ -4,11 +4,18 @@ const date = new Date();
 const hour = date.getHours();
 const min = date.getMinutes();
 
-//Each timestamp:
-const bedtime = "21:40";
-const wakeUp = "6:45";
-const interval = "0:10" //Interval which you can place a task
-const timeLine = "1:00" //To indicate the time
+const year = date.getUTCFullYear();
+const month = date.getUTCMonth() + 1;
+const dayNumber = date.getUTCDate();
+const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+let day = weekday[date.getDay()];
+
+//Set initial values from settings.js:
+let valuesFromSettings = JSON.parse(localStorage.getItem("settingsInformation")) || initialInformation;
+let bedtime = valuesFromSettings.bedtime              || initialInformation.bedtime;
+let wakeUp = valuesFromSettings.wakeUpTime            || initialInformation.wakeUpTime;
+let interval = valuesFromSettings.placementInterval   || initialInformation.placementInterval; 
+let timeLine = valuesFromSettings.timeLines           || initialInformation.timeLines;
 
 /* html layout but in js */
 allCalendarTasks = []
@@ -22,7 +29,7 @@ body.append(calendarSection);
 //Calender-title
 const calendarTitle = document.createElement("h1");
 calendarTitle.classList.add("calender-title");
-calendarTitle.innerText = "Tuesday";
+calendarTitle.innerText = `${day}: ${dayNumber}/${month} - ${year}`;
 calendarSection.appendChild(calendarTitle);
 
 //Calender-time stamps
@@ -208,7 +215,7 @@ function calculateLinePlacement(timePlacement) //Input "0:30" Returns: arr[0, 10
     // console.log(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
     // console.log(calculatePlacement2((timePlacement).split("%")[0]))
 
-    for(let i = startPlacement; i<100+startPlacement; i+=increasingDistance){ //___ i <= endPlacement
+    for(let i = startPlacement; i<100; i+=increasingDistance){ //___ i <= endPlacement
         allPlacements.push(i - startPlacement)
     }
     // console.log(allPlacements)

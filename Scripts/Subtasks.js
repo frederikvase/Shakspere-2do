@@ -76,6 +76,9 @@ let draggableItems = [
     {taskName : "Danish Assignment",    subtaskName : "Introduction",   duration : "1:00"},
     {taskName : "Danish Assignment",    subtaskName : "Discussion",     duration : "2:30"},
     {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
+    {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
+    {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
+   
 ];
 
 for (let i = 0; i < draggableItems.length; i++) {

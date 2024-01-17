@@ -16,9 +16,14 @@ class newTaskClass{
         //ID = task-project-3 OR task-school-2
         //type = "school" OR "project"
         
-        if (typeof this.taskPlacement == 'string'){
+        if (typeof this.taskPlacement == 'string') {
             this.type = "school";
             this.startTime = this.taskPlacement;
+
+            // Remove old school tasks with the same taskName
+            allClassTasks = allClassTasks.filter(task =>
+                !(task.type === "school" && task.taskName === this.taskName)
+            );
 
             this.ID = `task-${this.type}-${giveSchoolID}`;
             giveSchoolID++;
@@ -48,7 +53,7 @@ class newTaskClass{
         let doesItCurrentlyHaveThisTask = false;
         for (let key in allClassTasks){
             if (allClassTasks[key].ID === this.ID){
-                doesItCurrentlyHaveThisTask = true
+                // doesItCurrentlyHaveThisTask = true
             }
         }
         if (!doesItCurrentlyHaveThisTask )
@@ -69,8 +74,8 @@ new newTaskClass("Physics", "", "2:30", "10:30")
 new newTaskClass("Danish", "", "1:00", "10:45")
 new newTaskClass("English", "", "1:00", "12:15")
 new newTaskClass("Chemistry", "", "1:00", "13:25")
-new newTaskClass("Tech", "", "4:30", "14:00")
 new newTaskClass("Chemistry", "", "1:00", "14:30")
+new newTaskClass("SomeThing", "", "3:30", "15:00")
 // let thisEntity = new newTaskClass("Kav a Essay", "Introduction", "1:30", 75)
 
 showAllTasks();
@@ -207,6 +212,7 @@ function addTwoHours(one, two) //Input ("7:30", "2:30") -> ouput ("10:00")
     let totalNum = converTimeIntoHours(one) + converTimeIntoHours(two)
     return convertDecimalIntoHours(totalNum)
 }
+
 function subtractTwoHours(one,two) //input ("7:30", "2:30") -> ouput ("5:00")
 {
     let totalNum = converTimeIntoHours(one) - converTimeIntoHours(two)
@@ -491,6 +497,23 @@ function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
     for (let element of arrWithHorizontalOffset){
         let changeTask = document.getElementById(element[0])
         changeTask.style.left = `${element[1]}%`
+    }
+
+    updateProjectVerticalPosition();
+}
+
+function updateProjectVerticalPosition(arr = allClassTasks) {
+    for (let key in arr) {
+        const task = arr[key];
+        if (task.type === "project") {
+            const changeTask = document.getElementById(task.ID);
+
+            const newTop = calculateDurationIntoProcentage(subtractTwoHours(task.startTime, allTimeStamps[allTimeStamps.length - 1][0]));
+            changeTask.style.top = `${newTop}%`;
+
+            const newHeight = calculateDurationIntoProcentage(task.taskDuration);
+            changeTask.style.height = `${newHeight}%`;
+        }
     }
 }
 
