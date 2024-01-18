@@ -107,7 +107,7 @@ function onPress(valueShowViewMore, element = null)
 
         if(element)
         {
-            // console.log("Element ID:", element.id);
+            // console.log(element);
             const clickedELement = document.getElementById(element.id);
             clickedELement.classList.add("calendar-clicked-element");
 
@@ -156,6 +156,17 @@ function onPress(valueShowViewMore, element = null)
             groupTaskPeriod.classList.add("calendar-groupTaskPeriod");
             groupTaskPeriod.innerHTML = `Period: ${shownTaskPeriod}`;
             info.appendChild(groupTaskPeriod);
+
+            if(containsAllItsClasses.contains("calender-tasks-project")){
+                const groupButton = document.createElement("button")
+                groupButton.classList.add("calender-tasks-item-button-subtask-view");
+                groupButton.innerText = "Delete task"
+                groupButton.addEventListener("click", () => {
+                    deleteTask(element.id);
+                    onPress(false);
+                })
+                info.appendChild(groupButton);
+            }
 
             viewMoreTask.appendChild(info);    
         }

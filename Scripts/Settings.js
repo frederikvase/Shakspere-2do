@@ -9,6 +9,8 @@ const initialInformation = {
     bedtime: "21:00",
     placementInterval: "0:10",
     timeLines: "1:00",
+    schoolUsername : "",
+    schoolPassword : "",
 };
 
 // Get and set localStorage
@@ -55,8 +57,14 @@ function clickOnKeepChanges(){
     
     const timeLineElement = document.querySelector(".settings-inputfield-timeLine");
     settingsInformation.timeLines = timeLineElement.value || settingsInformation.timeLines;
-
+    
+    const usernameElement = document.querySelector(".settings-inputfield-username");
+    settingsInformation.schoolUsername = usernameElement.value || settingsInformation.schoolUsername;
+    
+    const passwordElement = document.querySelector(".settings-inputfield-password");
+    settingsInformation.schoolPassword = passwordElement.value || settingsInformation.schoolPassword;
     localStorage.setItem("settingsInformation", JSON.stringify(settingsInformation));
+    
     //___Find better option than just reloading the page!
     location.reload();
 }
@@ -65,16 +73,20 @@ function openSettingsOverlay()
 {
     const settingsElement = document.getElementsByClassName("settings")[0];
 
+    //Title
+        const settingsTitle = document.createElement("span");
+        settingsTitle.classList.add("settings-title");
+        settingsTitle.innerHTML = "Ajust Your Settings";
     //Confirm changes
-        const confirmChoices = document.createElement("button")
-        confirmChoices.innerText = "Keep changes"
-        confirmChoices.classList.add("settings-confirm-button")
+        const confirmChoices = document.createElement("button");
+        confirmChoices.innerText = "Keep changes";
+        confirmChoices.classList.add("settings-confirm-button");
         confirmChoices.addEventListener("click", () => {clickOnKeepChanges(); openOrCloseOverlay();})
     //Deny changes
-        const denyChoices = document.createElement("button")
-        denyChoices.innerText = "Discard changes"
-        denyChoices.classList.add("settings-deny-button")
-        denyChoices.addEventListener("click", () => {openOrCloseOverlay();})
+        const denyChoices = document.createElement("button");
+        denyChoices.innerText = "Discard changes";
+        denyChoices.classList.add("settings-deny-button");
+        denyChoices.addEventListener("click", () => {openOrCloseOverlay();});
         
     //The overlay
         const settingsOverlay = document.createElement("div");
@@ -90,10 +102,10 @@ function openSettingsOverlay()
         inputWakeUpTime.placeholder = "Input your wake up time";
 
         const textWakeUpTime = document.createElement("span");
-        textWakeUpTime.innerText = `Choose wake up time - Current: ${settingsInformation.wakeUpTime}`;
+        textWakeUpTime.innerText = `Wake up time - Current: ${settingsInformation.wakeUpTime}`;
 
-        settingsInputWakeUpTime.appendChild(textWakeUpTime)
-        settingsInputWakeUpTime.appendChild(inputWakeUpTime)
+        settingsInputWakeUpTime.appendChild(textWakeUpTime);
+        settingsInputWakeUpTime.appendChild(inputWakeUpTime);
     
     //Bedtime
         const settingsInputBedtime = document.createElement("div")
@@ -104,10 +116,10 @@ function openSettingsOverlay()
         inputBedtime.placeholder = "Input your bedtime";
 
         const textBedtime = document.createElement("span");
-        textBedtime.innerText = `Choose bedtime time - Current: ${settingsInformation.bedtime}`;
+        textBedtime.innerText = `Bedtime - Current: ${settingsInformation.bedtime}`;
 
-        settingsInputBedtime.appendChild(textBedtime)
-        settingsInputBedtime.appendChild(inputBedtime)
+        settingsInputBedtime.appendChild(textBedtime);
+        settingsInputBedtime.appendChild(inputBedtime);
         
     // placementInterval
         const settingsInputInterval = document.createElement("div")
@@ -118,10 +130,10 @@ function openSettingsOverlay()
         inputInterval.placeholder = "Input placement interval";
         
         const textInterval = document.createElement("span");
-        textInterval.innerText = `Choose placement interval - Current: ${settingsInformation.placementInterval}`;
+        textInterval.innerText = `Placement interval - Current: ${settingsInformation.placementInterval}`;
         
-        settingsInputInterval.appendChild(textInterval)
-        settingsInputInterval.appendChild(inputInterval)
+        settingsInputInterval.appendChild(textInterval);
+        settingsInputInterval.appendChild(inputInterval);
         
     //TimeLines
         const settingsInputTimeLine = document.createElement("div")
@@ -129,19 +141,51 @@ function openSettingsOverlay()
 
         const inputTimeLine = document.createElement("input");
         inputTimeLine.classList.add("settings-inputfield-timeLine");
-        inputTimeLine.placeholder = "Input your timeLine";
+        inputTimeLine.placeholder = "Input time between each line";
 
         const textTimeLine = document.createElement("span");
-        textTimeLine.innerText = `Choose timeLine time - Current: ${settingsInformation.timeLines}`;
+        textTimeLine.innerText = `Time indicator - Current: ${settingsInformation.timeLines}`;
 
-        settingsInputTimeLine.appendChild(textTimeLine)
-        settingsInputTimeLine.appendChild(inputTimeLine)
+        settingsInputTimeLine.appendChild(textTimeLine);
+        settingsInputTimeLine.appendChild(inputTimeLine);
         
-    settingsOverlay.appendChild(settingsInputWakeUpTime)
-    settingsOverlay.appendChild(settingsInputBedtime)
-    settingsOverlay.appendChild(settingsInputInterval)
-    settingsOverlay.appendChild(settingsInputTimeLine)
+    //School username
+        const settingsInputUsername = document.createElement("div")
+        settingsInputUsername.classList.add("settings-input-username");
+
+        const inputUsername = document.createElement("input");
+        inputUsername.classList.add("settings-inputfield-username");
+        inputUsername.placeholder = "Input school username";
+
+        const textUsername = document.createElement("span");
+        textUsername.innerText = `Username - Current: ${settingsInformation.schoolUsername}`;
+
+        settingsInputUsername.appendChild(textUsername);
+        settingsInputUsername.appendChild(inputUsername);
     
-    settingsOverlay.appendChild(denyChoices)
-    settingsOverlay.appendChild(confirmChoices)
+    //Password
+        const settingsInputPassword = document.createElement("div")
+        settingsInputPassword.classList.add("settings-input-password");
+
+        const inputPassword = document.createElement("input");
+        inputPassword.type = "password"
+        inputPassword.classList.add("settings-inputfield-password");
+        inputPassword.placeholder = "Input school password";
+
+        const textPassword = document.createElement("span");
+        textPassword.innerText = `Password`;
+
+        settingsInputPassword.appendChild(textPassword);
+        settingsInputPassword.appendChild(inputPassword);
+        
+    settingsOverlay.appendChild(settingsTitle);
+    settingsOverlay.appendChild(settingsInputWakeUpTime);
+    settingsOverlay.appendChild(settingsInputBedtime);
+    settingsOverlay.appendChild(settingsInputInterval);
+    settingsOverlay.appendChild(settingsInputTimeLine);
+    settingsOverlay.appendChild(settingsInputUsername);
+    settingsOverlay.appendChild(settingsInputPassword);
+    
+    settingsOverlay.appendChild(denyChoices);
+    settingsOverlay.appendChild(confirmChoices);
 }

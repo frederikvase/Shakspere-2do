@@ -64,6 +64,7 @@ class newTaskClass{
             updateLocalStorage();
             showAllTasks();
             isPlacedAtSameTimeButForClasses();
+            updateVisibleSpans();
         }
     }
 }
@@ -95,6 +96,7 @@ function deleteTask(ID, arr = allClassTasks) {
             
             // showAllTasks();
             isPlacedAtSameTimeButForClasses();
+            updateVisibleSpans();
             break; // Once the task is found and removed, exit the loop
         }
     }
@@ -153,16 +155,18 @@ function showAllTasks(arr = allClassTasks)
                 const textContent = task.type === "school" ? `${task.taskName}` : `${task.taskName} / ${task.taskSubtaskName}`;
                 firstElement.textContent = textContent;
                 thisTask.appendChild(firstElement);
-
+                
+                const thirdElement = document.createElement("span");
+                thirdElement.classList.add("calender-tasks-item-taskPeriod");
+                thirdElement.textContent = `${task.startTime} - ${task.endTime}`;
+                thisTask.appendChild(thirdElement);
+                
+                
                 const secondElement = document.createElement("span");
                 secondElement.classList.add("calender-tasks-item-taskDuration");
                 secondElement.textContent = `${task.taskDuration.split(":")[0] > 0 ? task.taskDuration.split(":")[0] + ' h ' : ''}${task.taskDuration.split(":")[1]} m`;
                 thisTask.appendChild(secondElement);
 
-                const thirdElement = document.createElement("span");
-                thirdElement.classList.add("calender-tasks-item-taskPeriod");
-                thirdElement.textContent = `${task.startTime} - ${task.endTime}`;
-                thisTask.appendChild(thirdElement);
 
                 if (task.type !== "school") {
                     const fourthElement = document.createElement("button");
@@ -336,7 +340,9 @@ function dragDrop(event) {
                 }
                 
                 //remove previous element/task that was being dragged
+                updateVisibleSpans();
                 deleteTask(mouseOver)
+                updateVisibleSpans();
 
             } else {
                 alert("Element not found with ID: " + mouseOver);
@@ -496,7 +502,7 @@ function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
 
     for (let element of arrWithHorizontalOffset){
         let changeTask = document.getElementById(element[0])
-        changeTask.style.left = `${element[1]}%`
+        changeTask.style.left = `${element[1]-1}%`
     }
 
     updateProjectVerticalPosition();
@@ -544,3 +550,67 @@ function findOverlappingTasks(tasks) //input const tasks = [["id", float startTi
     }
       return tasksOverlap;
 }
+
+function updateVisibleSpans() {
+    var containers = document.querySelectorAll('.calender-tasks-project');
+
+    containers.forEach(function (container) {
+        var spans = container.querySelectorAll('span');
+        var containerWidth = container.clientWidth;
+
+        container.style.display = 'flex';
+        container.style.justifyContent = 'center';
+        container.style.alignItems = 'center';
+
+        var totalSpanWidth = 0;
+
+        spans.forEach(function (span, i) {
+            // Calculate total width of already visible spans
+            totalSpanWidth += span.clientWidth;
+
+            // Always make the taskName visible
+            if (i === 0) {
+                span.style.visibility = 'visible';
+                span.style.position = 'static';
+
+                // Adjust font size to fit the span if it's wider than the container
+                while (span.clientWidth > containerWidth - 2) {
+                    var fontSize = parseFloat(window.getComputedStyle(span).fontSize);
+                    span.style.fontSize = (fontSize - 1) + 'px';
+                }
+            } else {
+                // Show taskPeriod if there's more space
+                if (i === 2 && containerWidth >= totalSpanWidth) {
+                    span.style.visibility = 'visible';
+                    span.style.position = 'static';
+                } else if (i === 3 && containerWidth >= totalSpanWidth) {
+                    // Show the remove button if there's even more space
+                    span.style.visibility = 'visible';
+                    span.style.position = 'static';
+                } else if (i === 1 && containerWidth >= totalSpanWidth) {
+                    // Show taskDuration if there's even more more space
+                    span.style.visibility = 'visible';
+                    span.style.position = 'static';
+                } else {
+                    // Hide the span and position it absolutely if space is limited
+                    span.style.visibility = 'hidden';
+                    span.style.position = 'absolute';
+                }
+            }
+        });
+
+        // Set the visibility and position of the remove button (4th span) like the others
+        var removeButton = container.querySelector('button');
+        if (removeButton) {
+            if (spans.length >= 2 && containerWidth >= totalSpanWidth) {
+                removeButton.style.visibility = 'visible';
+                removeButton.style.position = 'static';
+            } else {
+                removeButton.style.visibility = 'hidden';
+                removeButton.style.position = 'absolute';
+            }
+        }
+    });
+}
+
+updateVisibleSpans();
