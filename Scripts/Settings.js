@@ -5,7 +5,7 @@ const settingsImage = document.getElementById("settings-image");
 settingsImage.addEventListener("click", () => openOrCloseOverlay());
 
 const initialInformation = {
-    wakeUpTime: "8:00",
+    wakeUpTime: "6:50",
     bedtime: "21:00",
     placementInterval: "0:10",
     timeLines: "1:00",

@@ -38,6 +38,7 @@ calendarTimeStamps.classList.add("calender-time");
 calendarSection.appendChild(calendarTimeStamps);
 
 addTimeStamps(wakeUp, bedtime);
+addTimeStampsV2(wakeUp, bedtime);
 
 
 //CalederTasks
@@ -113,7 +114,34 @@ function addTimeStamps(wakeUp, bedtime)
         calendarTimeStamps.appendChild(calendarTimeSpan);
     })
 }
+function addTimeStampsV2(wakeUp, bedtime) //adds to view-more-days calendar
+{
+    const toElement = document.getElementById("calendar-view-left-timelines");
 
+    if (toElement) {
+        toElement.classList.add("calender-time");
+
+        var theWakeUp = wakeUp.split(":");
+        var theBedtime = bedtime.split(":");
+
+        let arr = [];
+
+        for (let i = parseInt(theWakeUp[0]); i-2 <= parseInt(theBedtime[0]); i += 2) {
+            if (i % 2 === 0) {
+                arr.push(i + ":00");
+            } else {
+                arr.push((i - 1) + ":00");
+            }
+        }
+
+        console.log(arr)
+        arr.forEach(timeStamp => {
+            let calendarTimeSpan = document.createElement("span");
+            calendarTimeSpan.innerText = timeStamp;
+            toElement.appendChild(calendarTimeSpan);
+        });
+    }
+}
 
 function addTaskToCalendar(taskName, taskDuration, taskPlacement, taskDone = false, taskSubtask = "")
 {

@@ -6,13 +6,14 @@ let allClassTasks = JSON.parse(localStorage.getItem("shown-tasks")) || [];
 let giveSchoolID = 1 
 
 class newTaskClass{
-    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, taskDone = false, )
+    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${year}`, taskDone = false, )
     {
         this.taskName           = taskName;         //String -> "English Essay"
         this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
         this.taskDuration       = taskDuration;     //String -> "1:30"
-        this.taskPlacement      = taskPlacement     //Float -> 10  OR   -> string "11:30"
-        this.taskDone           = taskDone          //true/false   
+        this.taskPlacement      = taskPlacement;    //Float -> 10  OR   -> string "11:30"
+        this.taskDone           = taskDone;         //true/false   
+        this.date               = date;             //String "dd-mm-yy" -> "31-12-2024"
         //ID = task-project-3 OR task-school-2
         //type = "school" OR "project"
         
@@ -60,7 +61,7 @@ class newTaskClass{
         {
             allClassTasks.push({ID : this.ID,                           taskName: this.taskName,                taskSubtaskName: this.taskSubtaskName,          taskDuration : this.taskDuration,
                                 taskPlacement : this.taskPlacement,     taskDone : this.taskDone,               type : this.type,                               height : this.height,
-                                startTime : this.startTime,             endTime : this.endTime,                 top : this.top})
+                                startTime : this.startTime,             endTime : this.endTime,                 top : this.top,                                 date : this.date})
             updateLocalStorage();
             showAllTasks();
             isPlacedAtSameTimeButForClasses();
@@ -71,12 +72,11 @@ class newTaskClass{
 
 new newTaskClass("Math", "", "1:00", "8:15")
 new newTaskClass("Math", "", "1:00", "9:35")
-new newTaskClass("Physics", "", "2:30", "10:30")
+// new newTaskClass("Physics", "", "2:30", "10:30")
 new newTaskClass("Danish", "", "1:00", "10:45")
 new newTaskClass("English", "", "1:00", "12:15")
 new newTaskClass("Chemistry", "", "1:00", "13:25")
 new newTaskClass("Chemistry", "", "1:00", "14:30")
-new newTaskClass("SomeThing", "", "3:30", "15:00")
 // let thisEntity = new newTaskClass("Kav a Essay", "Introduction", "1:30", 75)
 
 showAllTasks();
@@ -149,6 +149,15 @@ function showAllTasks(arr = allClassTasks)
                 // thisTask.style.border = `2px solid black`;
                 thisTask.style.zIndex = `2`;
                 calendarTasksPlace.appendChild(thisTask);
+
+                
+                const thisDropLocation = document.getElementById(task.date);
+                if (thisDropLocation) {
+                    // thisTask.setAttribute('task-date', '18-1-2024');
+                    thisDropLocation.appendChild(thisTask);
+                } else {
+                    console.error("Element with class 'calendar-view-day-droplocation' not found");
+                }
 
                 const firstElement = document.createElement("span");
                 firstElement.classList.add("calender-tasks-item-taskName");
@@ -266,8 +275,10 @@ function dragEnd() {
     this.classList.remove("invisible", "hold");
 }
 
+let droppedInsideID;
 function dragOver(event) {
-    console.log("OVER");
+    console.log("OVER" + event);
+    droppedInsideID = (event.toElement.id) || `${dayNumber}-${month}-${year}`; //___Secound part might need to be deleted
     event.preventDefault();
 }
 
@@ -308,8 +319,10 @@ function dragDrop(event) {
         const originalTaskName = draggedItem.querySelector('.subtask-taskName').textContent.replace(originalSubtaskName, '').trim()
         const spanTaskDuration = clone.querySelector('.subtask-taskDuration').textContent;
         
+
+        droppedInsideID
         draggedItem.parentNode.removeChild(draggedItem);
-        new newTaskClass(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage)
+        new newTaskClass(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage,droppedInsideID)
         
     }else { // ___ remake this whole else statement, using checkElementId() and mouseOver isnt reliable in the long run.
         if (mouseOver)  // ID = mouseOver:
@@ -335,7 +348,8 @@ function dragDrop(event) {
                     const task = allClassTasks[key]
                     if (task.ID == mouseOver)
                     {
-                        new newTaskClass(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage)
+                        new newTaskClass(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, droppedInsideID)
+                        console.log(`${task.taskName}, ${task.taskSubtaskName}, ${task.taskDuration}, ${relativePercentage}, ${droppedInsideID}`)
                     }
                 }
                 

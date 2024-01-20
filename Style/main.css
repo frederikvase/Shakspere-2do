@@ -9,7 +9,7 @@
 body {
   margin: 0;
   min-width: 250px;
-  background-color: #385066; /*__Change to new color*/
+  background-color: #293947; /*__Change to new color*/
   color: var(--bg2);
 
   background-size: cover;
@@ -535,7 +535,7 @@ table.fixed td:nth-of-type(3) {
 
  /* TOP LAYOUT*/
  .page-2{
-  margin: 40px;
+  margin: 40px 40px 0 40px;
   display: grid;
   grid-template-columns: 60% 35%;
   grid-gap: 5%;
@@ -776,4 +776,96 @@ table.fixed td:nth-of-type(3) {
   height: 60px;
   border-radius: 10px;
   cursor: pointer;
+}
+
+
+
+/* calendar-view */
+#calendar-main{
+  margin: 40px 40px 40px 40px; /*change to _______  margin: 40px 40px 0 40px;  */
+  display: grid;
+  grid-template-columns: 60% 35%;
+  grid-gap: 5%;
+  grid-template-rows: 90vh;
+  overflow: auto;
+}
+#calendar-change-later-to-subtasks{
+  background-color: #4a4a4a;
+  border-radius: 30px;
+}
+#calendar-view{
+  background-color: #1d6539;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+}
+
+#calendar-view-all-days {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  overflow: auto;
+  width: 100%;
+}
+
+.calendar-view-left{
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.calendar-view-left-image{
+  display: flex;
+  flex: row;
+  width: 60px;
+  height: 28px;
+}
+#calendar-view-left-next{
+  width: 28px;
+  height: 28px;
+  align-self: center;
+}
+#calendar-view-left-previous{
+  transform: rotate(180deg);
+  width: 28px;
+  height: 28px;
+  align-self: center;
+}
+.calendar-view-day {
+  background-color: #2a2d2b;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 3px;
+}
+.calendar-view-day{
+  background-color: #2a2d2b;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#calendar-view-left-timelines{
+  width: 60px;
+  height: 100%;
+  margin-bottom: 10px;
+  background-color: #c46e04;
+}
+
+.calendar-view-day-text{
+    font-size: 1.5em;
+    font-weight: 600;
+    background-color: var(--banner);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.calendar-view-day-droplocation{
+  position: relative;
+  background-color: var(--bg1);
+  display: flex;
+  flex: 1;
 }

@@ -73,11 +73,8 @@ let draggableItems = [
     {taskName : "English Essay",        subtaskName : "Introduction",   duration : "0:45"},
     {taskName : "Math - Functions",     subtaskName : "KAP 9",          duration : "1:30"},
     {taskName : "Math - Functions",     subtaskName : "KAP 10",         duration : "2:00"},
-    {taskName : "Danish Assignment",    subtaskName : "Introduction",   duration : "1:00"},
+    {taskName : "Programming",          subtaskName : "View multiple days",   duration : "4:00"},
     {taskName : "Danish Assignment",    subtaskName : "Discussion",     duration : "2:30"},
-    {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
-    {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
-    {taskName : "Danish Assignment",    subtaskName : "Conclusion",     duration : "1:15"},
    
 ];
 
