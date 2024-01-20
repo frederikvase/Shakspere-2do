@@ -40,11 +40,30 @@ calendarSection.appendChild(calendarTimeStamps);
 addTimeStamps(wakeUp, bedtime);
 addTimeStampsV2(wakeUp, bedtime);
 
+//Lines for view-days
+let values = calculateLinePlacement(timeLine);
+const timeLinesSection = document.getElementById("calendar-view-left-timelines");
+for (let element of values){
+    const divElement = document.createElement("section")
+    divElement.style.position = "absolute";
+    divElement.style.top = `${element}%`;
+
+    const viewSize = document.getElementById("calendar-view");
+    const computedWidth = getComputedStyle(viewSize).width;
+    divElement.style.width = computedWidth;
+
+    divElement.classList.add("calender-timeline");
+    timeLinesSection.appendChild(divElement); //or append it to calendarTasks or calendarTimeStamps
+}
+
+
+
+
 
 //CalederTasks
 const calendarTasks = document.createElement("div");
 calendarTasks.classList.add("calender-tasks");
-calendarTasks.setAttribute("id", "calendarTaskID")
+calendarTasks.setAttribute("id", `calendarTaskID`) //____ maybe need to change back to 'id, "${dayNumber}-${month}-${year}"
 calendarSection.appendChild(calendarTasks);
 
 //Line that shows current time:
@@ -243,12 +262,31 @@ function calculateLinePlacement(timePlacement) //Input "0:30" Returns: arr[0, 10
     // console.log(calculatePlacement2(allTimeStamps[allTimeStamps.length - 1][allTimeStamps[0].length - 1]).split("%")[0])
     // console.log(calculatePlacement2((timePlacement).split("%")[0]))
 
-    for(let i = startPlacement; i<100; i+=increasingDistance){ //___ i <= endPlacement
+    for(let i = startPlacement; i<=100; i+=increasingDistance){ //___ i <= endPlacement
         allPlacements.push(i - startPlacement)
     }
     // console.log(allPlacements)
     return allPlacements
 }
+
+
+document.addEventListener("DOMContentLoaded", function() 
+{ //___ apparently doesnt work properly!
+    const imageBox = document.querySelector(".calendar-view-left-image");
+    const dayBoxes = document.getElementsByClassName("calendar-view-day-text");
+  
+    if (dayBoxes.length > 0) {
+      const dayBox = dayBoxes[0];
+      const computedHeight = getComputedStyle(dayBox).height;
+      imageBox.style.height = computedHeight;
+
+      console.log(getComputedStyle(imageBox).height + " | " + getComputedStyle(dayBox).height) //___ how are they not equal?!?!?
+    } else {
+        console.error("Not foun: 'calendar-view-day-text'");
+    }
+
+});
+
 
 
 

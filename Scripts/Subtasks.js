@@ -161,6 +161,10 @@ function onPress(valueShowViewMore, element = null)
                 groupButton.addEventListener("click", () => {
                     deleteTask(element.id);
                     onPress(false);
+
+                    //View-days
+                    deleteTask(element.id, allItems);
+                    localStorage.setItem("all-tasks", JSON.stringify(allItems))
                 })
                 info.appendChild(groupButton);
             }

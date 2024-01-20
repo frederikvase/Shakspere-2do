@@ -150,14 +150,14 @@ function showAllTasks(arr = allClassTasks)
                 thisTask.style.zIndex = `2`;
                 calendarTasksPlace.appendChild(thisTask);
 
-                
-                const thisDropLocation = document.getElementById(task.date);
-                if (thisDropLocation) {
-                    // thisTask.setAttribute('task-date', '18-1-2024');
-                    thisDropLocation.appendChild(thisTask);
-                } else {
-                    console.error("Element with class 'calendar-view-day-droplocation' not found");
-                }
+                //______ drops element in more-days
+                // const thisDropLocation = document.getElementById(task.date);
+                // if (thisDropLocation) {
+                //     // thisTask.setAttribute('task-date', '18-1-2024');
+                //     thisDropLocation.appendChild(thisTask);
+                // } else {
+                //     console.log("Element with class 'calendar-view-day-droplocation' not found");
+                // }
 
                 const firstElement = document.createElement("span");
                 firstElement.classList.add("calender-tasks-item-taskName");
@@ -357,6 +357,7 @@ function dragDrop(event) {
                 updateVisibleSpans();
                 deleteTask(mouseOver)
                 updateVisibleSpans();
+                displayAllTasks();
 
             } else {
                 alert("Element not found with ID: " + mouseOver);
@@ -422,65 +423,69 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
         let theID = element[0]
 
         let taskWithID = document.getElementById(theID)
-        let widthOfTaskString = taskWithID.style.width;
-        let taskWidth = parseInt(widthOfTaskString.split("%"));
+        
+        if (taskWithID) 
+        {
+            let widthOfTaskString = taskWithID.style.width;
+            let taskWidth = parseInt(widthOfTaskString.split("%"));
 
-        // console.log("LEFT/THE WIDTH?: "+ theID + " | " + widthOfTaskString)
+            // console.log("LEFT/THE WIDTH?: "+ theID + " | " + widthOfTaskString)
 
-        if (taskWidth == 100){ //If not overlapping with anyone
-            arrWithLeftOffset.push([theID, 0])
-        } else { //Overlaps:
-            let thingsToAdd = [] // 2d array -> [["id1", left], ["id2", left]...]
-            //thingsToAdd.push(taskWithID, 0);
-            
-            let allOverlaps = findOverlappingTasks(arr)
-            let overlapsWithID; // contains overlap with id, e.g. ["id1", "id3", "id8"]
-            
-            for (let key in allOverlaps){
-                if(key === theID){
-                    overlapsWithID = allOverlaps[key];
-                }
-            }
-            overlapsWithID.push(theID)
-
-            let extraPush = 0
-            // console.log("overlapsWithID")
-            // console.log(overlapsWithID)
-            for (let things of overlapsWithID){
-                let thingsElement = document.getElementById(things)
-                let thingsWidthString = thingsElement.style.width
-                let thingsWidth = parseInt(thingsWidthString.split("%"))
-
-                let overlappingLeft = 100 - (extraPush +thingsWidth/*+0.7*/)
-               
-                // console.log(`if (${overlappingLeft} < ${taskWidth})`)
-                if (overlappingLeft < taskWidth) {
-                    //extraPush = 0;
-                    //overlappingLeft = 100 - (extraPush + thingsWidth + 0.7);
-                }
-                if (overlappingLeft < 0){ 
-                    overlappingLeft = 0;
-                }
-
-                extraPush += thingsWidth;
-
-                // console.log("Added: " + things + " | " + overlappingLeft)
-                thingsToAdd.push([things, overlappingLeft])
-            }
-
-            //Add to final arr
-            for (let l of thingsToAdd)
-            {
-                let inFinalArray = false
-                for (let m of arrWithLeftOffset)
-                {
-                    if(l[0] == m[0])
-                    {
-                        inFinalArray = true;
+            if (taskWidth == 100){ //If not overlapping with anyone
+                arrWithLeftOffset.push([theID, 0])
+            } else { //Overlaps:
+                let thingsToAdd = [] // 2d array -> [["id1", left], ["id2", left]...]
+                //thingsToAdd.push(taskWithID, 0);
+                
+                let allOverlaps = findOverlappingTasks(arr)
+                let overlapsWithID; // contains overlap with id, e.g. ["id1", "id3", "id8"]
+                
+                for (let key in allOverlaps){
+                    if(key === theID){
+                        overlapsWithID = allOverlaps[key];
                     }
                 }
-                if (!inFinalArray){
-                    arrWithLeftOffset.push([l[0], l[1]]);
+                overlapsWithID.push(theID)
+
+                let extraPush = 0
+                // console.log("overlapsWithID")
+                // console.log(overlapsWithID)
+                for (let things of overlapsWithID){
+                    let thingsElement = document.getElementById(things)
+                    let thingsWidthString = thingsElement.style.width
+                    let thingsWidth = parseInt(thingsWidthString.split("%"))
+
+                    let overlappingLeft = 100 - (extraPush +thingsWidth/*+0.7*/)
+                
+                    // console.log(`if (${overlappingLeft} < ${taskWidth})`)
+                    if (overlappingLeft < taskWidth) {
+                        //extraPush = 0;
+                        //overlappingLeft = 100 - (extraPush + thingsWidth + 0.7);
+                    }
+                    if (overlappingLeft < 0){ 
+                        overlappingLeft = 0;
+                    }
+
+                    extraPush += thingsWidth;
+
+                    // console.log("Added: " + things + " | " + overlappingLeft)
+                    thingsToAdd.push([things, overlappingLeft])
+                }
+
+                //Add to final arr
+                for (let l of thingsToAdd)
+                {
+                    let inFinalArray = false
+                    for (let m of arrWithLeftOffset)
+                    {
+                        if(l[0] == m[0])
+                        {
+                            inFinalArray = true;
+                        }
+                    }
+                    if (!inFinalArray){
+                        arrWithLeftOffset.push([l[0], l[1]]);
+                    }
                 }
             }
         }
@@ -489,36 +494,90 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
     return arrWithLeftOffset;
 }
 
-function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
-    let taskTimes = []
+// let viewDaysAmount = 3;
 
-    // Find tasks that occur at the same time
-    for (let i = 0; i < arr.length; i++) 
-    {
-        const taskObj = arr[i]
-        let beginningOfTask = parseInt(taskObj.startTime.split(":")[0] + taskObj.startTime.split(":")[1])
-        let endingOfTask = parseInt(taskObj.endTime.split(":")[0] + taskObj.endTime.split(":")[1])
-        taskTimes.push([taskObj.ID, beginningOfTask, endingOfTask]);
-    }
-
-    //Changes the width of the tasks
-    const arrWithNeighbours = findNeighboursOtOnce(taskTimes)
-
-    for (let key of Object.keys(arrWithNeighbours)){
-        let theObject = arrWithNeighbours[key];
-        let changeTask = document.getElementById(theObject[0])
-        let theWidth = 100 / (theObject[1] + 1)
-        changeTask.style.width = `${theWidth}%`
-    }
+function ouputNumberOfDays(startingDate, viewAmountOfDays = viewDaysAmount) //input arr(int*3) [day, month, year] -> [30, 12, 2024] , viewAmountOfDays: int -> 3
+{
+    viewAmountOfDays -= 1;
+    let startDay = startingDate[0];
+    let startMonth = startingDate[1];
+    let startYear = startingDate[2];
     
-    //Changes the leftOffset of the tasks
-    const arrWithHorizontalOffset = calculateLeft(taskTimes)
+    let shownDays = []
+    shownDays.push(`${startDay}-${startMonth}-${startYear}`)
+    for (let i = 0; i<viewAmountOfDays; i++){
+        startDay += 1;
 
-    for (let element of arrWithHorizontalOffset){
-        let changeTask = document.getElementById(element[0])
-        changeTask.style.left = `${element[1]-1}%`
+        if(startDay > getMonthsLength(startMonth, startYear)){
+            startDay = 1;
+            startMonth += 1;
+        } 
+        if (startMonth > 12){
+            startYear += 1;
+            startMonth = 1;
+        }
+        shownDays.push(`${startDay}-${startMonth}-${startYear}`);
     }
+    return shownDays;
+} //ouput arr -> ['30-12-2024', '31-12-2024', '1-1-2025']       (length = viewAmountOfDays || 1)
 
+function getMonthsLength(thisMonth, thisYear = year) //input int -> 12, int -> 2024
+{
+    const monthsLength = {
+        1 : 31,
+        2: thisYear % 4 == 0 && thisYear % 100 != 0 ? 29 : 28,
+        3: 31,
+        4: 30,
+        5: 31,
+        6: 30,
+        7: 31,
+        8: 31,
+        9: 30,
+        10: 31,
+        11: 30,
+        12: 31,
+    }
+    return monthsLength[thisMonth];
+} // Ouput int -> 31 
+
+function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
+    let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
+    let viewDaysAmount = 3;    
+
+    for (let elements of ouputNumberOfDays(initialDate, viewDaysAmount)){
+        for (let m = 0; m < arr.length; m++){
+            let taskTimes = []
+            if(arr[m] && elements && arr[m].date === elements){
+
+                // Find tasks that occur at the same time
+                for (let i = 0; i < arr.length; i++) 
+                {
+                    const taskObj = arr[i]
+                    let beginningOfTask = parseInt(taskObj.startTime.split(":")[0] + taskObj.startTime.split(":")[1])
+                    let endingOfTask = parseInt(taskObj.endTime.split(":")[0] + taskObj.endTime.split(":")[1])
+                    taskTimes.push([taskObj.ID, beginningOfTask, endingOfTask]);
+                }
+            
+                //Changes the width of the tasks
+                const arrWithNeighbours = findNeighboursOtOnce(taskTimes)
+            
+                for (let key of Object.keys(arrWithNeighbours)){
+                    let theObject = arrWithNeighbours[key];
+                    let changeTask = document.getElementById(theObject[0])
+                    let theWidth = 100 / (theObject[1] + 1)
+                    changeTask.style.width = `${theWidth}%`
+                }
+                
+                //Changes the leftOffset of the tasks
+                const arrWithHorizontalOffset = calculateLeft(taskTimes)
+            
+                for (let element of arrWithHorizontalOffset){
+                    let changeTask = document.getElementById(element[0])
+                    changeTask.style.left = `${element[1]-1}%`
+                }
+            }
+        }
+    }
     updateProjectVerticalPosition();
 }
 

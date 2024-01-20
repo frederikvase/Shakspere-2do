@@ -812,24 +812,24 @@ table.fixed td:nth-of-type(3) {
 .calendar-view-left{
   display: flex;
   flex-direction: column;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 
 .calendar-view-left-image{
   display: flex;
   flex: row;
   width: 60px;
-  height: 28px;
+  /* height: 28px; */
 }
 #calendar-view-left-next{
-  width: 28px;
-  height: 28px;
+  width: 50%;
+  height: auto;
   align-self: center;
 }
 #calendar-view-left-previous{
   transform: rotate(180deg);
-  width: 28px;
-  height: 28px;
+  width: 50%;
+  height: auto;
   align-self: center;
 }
 .calendar-view-day {
@@ -837,19 +837,14 @@ table.fixed td:nth-of-type(3) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin: 3px;
-}
-.calendar-view-day{
-  background-color: #2a2d2b;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  margin: 0 3px;
 }
 
+
 #calendar-view-left-timelines{
+  position: relative;
   width: 60px;
   height: 100%;
-  margin-bottom: 10px;
   background-color: #c46e04;
 }
 
