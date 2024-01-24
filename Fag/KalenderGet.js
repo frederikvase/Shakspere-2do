@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 
 function CountToKomma(input,StartPos = 0) {
@@ -7,16 +7,24 @@ function CountToKomma(input,StartPos = 0) {
             return i;
         } else if (input[i] == "é" && input[i - 1] == 'f') {
             return input.length;
+        } else if (input[i] == "K" && input[i + 1] == "l") {
+            return 17;
         }
     }
     throw new Error('No komma in string: ' + input);
 }
 
-const url = "https://selvbetjening.aarhustech.dk/WebTimeTable/default.aspx";
 
-async function Kalender (userMail, userPassword) 
+async function Kalender (userMail, userPassword, dag, maaned, aar) 
 {
-    const browser = await puppeteer.launch();
+    if (dag < 10) dag = '0' + dag;
+    if (maaned < 10) maaned = '0' + maaned;
+
+    let url = "https://selvbetjening.aarhustech.dk/WebTimeTable/default.aspx?viewdate=" + dag + "-" + maaned + "-" + aar
+
+
+
+    const browser = await puppeteer.launch({executablePath: "chrome\\chrome-win\\chrome.exe"});
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -26,10 +34,11 @@ async function Kalender (userMail, userPassword)
     await page.waitForNavigation();
 
     const alt = await page.evaluate(() => {
-        return Array.from(document.querySelectorAll(".schemaDayHolderCell_Current")).map(x => x.textContent)
+        return Array.from(document.querySelectorAll("#day0Col")).map(x => x.textContent)
     });
 
     const altRem = alt.join(",").split('\n').filter(y => y != '');
+
 
     let skoleFag = new Map();
 
@@ -41,18 +50,20 @@ async function Kalender (userMail, userPassword)
     }
     await browser.close();
 
+    console.log(skoleFag);
 
-    return skoleFag;
+    // return skoleFag;
 }
 
-let hej;
+// let hej;
 
-async function GetAsyncValueToVar(inputFunction, outputVar) {
-    outputVar = await inputFunction;
-    console.log(outputVar.get(0).fag);
-}
+// async function GetAsyncValueToVar(inputFunction, outputVar) {
+//     outputVar = await inputFunction;
+//     console.log(outputVar);
+// }
 
-GetAsyncValueToVar(Kalender("at114098@edu.aarhustech.dk", "hej"), hej);
+// GetAsyncValueToVar(, hej);
 
+Kalender("at114098@edu.aarhustech.dk", kode, 18, 1, 2024);
 
   
