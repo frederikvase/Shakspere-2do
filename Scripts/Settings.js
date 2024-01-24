@@ -20,7 +20,7 @@ localStorage.setItem("settingsInformation", JSON.stringify(settingsInformation))
 function openOrCloseOverlay(currentState = isSettingsOpen) //Handles clicking on settings
 {
     //True -> overlay opened, false -> overlay closed 
-    nextState = !currentState;
+    let nextState = !currentState;
     isSettingsOpen = nextState;
 
     if(nextState) //If settings should be open
@@ -30,7 +30,7 @@ function openOrCloseOverlay(currentState = isSettingsOpen) //Handles clicking on
         //Create a black overlay begind the settingsOverlay
         const backgroundOverlay = document.createElement("div");
         backgroundOverlay.classList.add("calendar-background-overlay");
-        const thisPage = document.getElementsByClassName("Page-2")[0];
+        const thisPage = document.getElementById("calendar-main");
         thisPage.appendChild(backgroundOverlay);
 
     } else { //This statement closes all overlay elements
@@ -99,7 +99,7 @@ function openSettingsOverlay()
 
         const inputWakeUpTime = document.createElement("input");
         inputWakeUpTime.classList.add("settings-inputfield-wakeup");
-        inputWakeUpTime.placeholder = "Input your wake up time";
+        inputWakeUpTime.placeholder = "Enter your wake up time";
 
         const textWakeUpTime = document.createElement("span");
         textWakeUpTime.innerText = `Wake up time - Current: ${settingsInformation.wakeUpTime}`;
@@ -113,7 +113,7 @@ function openSettingsOverlay()
 
         const inputBedtime = document.createElement("input");
         inputBedtime.classList.add("settings-inputfield-bedtime");
-        inputBedtime.placeholder = "Input your bedtime";
+        inputBedtime.placeholder = "Enter your bedtime";
 
         const textBedtime = document.createElement("span");
         textBedtime.innerText = `Bedtime - Current: ${settingsInformation.bedtime}`;
@@ -127,7 +127,7 @@ function openSettingsOverlay()
         
         const inputInterval = document.createElement("input");
         inputInterval.classList.add("settings-inputfield-interval");
-        inputInterval.placeholder = "Input placement interval";
+        inputInterval.placeholder = "Enter placement interval";
         
         const textInterval = document.createElement("span");
         textInterval.innerText = `Placement interval - Current: ${settingsInformation.placementInterval}`;
@@ -141,7 +141,7 @@ function openSettingsOverlay()
 
         const inputTimeLine = document.createElement("input");
         inputTimeLine.classList.add("settings-inputfield-timeLine");
-        inputTimeLine.placeholder = "Input time between each line";
+        inputTimeLine.placeholder = "Enter time between each line";
 
         const textTimeLine = document.createElement("span");
         textTimeLine.innerText = `Time indicator - Current: ${settingsInformation.timeLines}`;
@@ -155,7 +155,7 @@ function openSettingsOverlay()
 
         const inputUsername = document.createElement("input");
         inputUsername.classList.add("settings-inputfield-username");
-        inputUsername.placeholder = "Input school username";
+        inputUsername.placeholder = "Enter school username";
 
         const textUsername = document.createElement("span");
         textUsername.innerText = `Username - Current: ${settingsInformation.schoolUsername}`;
@@ -170,7 +170,7 @@ function openSettingsOverlay()
         const inputPassword = document.createElement("input");
         inputPassword.type = "password"
         inputPassword.classList.add("settings-inputfield-password");
-        inputPassword.placeholder = "Input school password";
+        inputPassword.placeholder = "Enter school password";
 
         const textPassword = document.createElement("span");
         textPassword.innerText = `Password`;

@@ -1,196 +1,196 @@
-let containsAllTasks = []
-const todoDraggablePlace = document.getElementById('todo-draggable');
-const calendarTasksPlace = document.querySelector('.calender-tasks');
+// let containsAllTasks = []
+// const todoDraggablePlace = document.getElementById('todo-draggable');
+// const calendarTasksPlace = document.querySelector('.calender-tasks');
 
-let allClassTasks = JSON.parse(localStorage.getItem("shown-tasks")) || [];
-let giveSchoolID = 1 
+// let allClassTasks = JSON.parse(localStorage.getItem("shown-tasks")) || [];
+// let giveSchoolID = 1 
 
-class newTaskClass{
-    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${year}`, taskDone = false, )
-    {
-        this.taskName           = taskName;         //String -> "English Essay"
-        this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
-        this.taskDuration       = taskDuration;     //String -> "1:30"
-        this.taskPlacement      = taskPlacement;    //Float -> 10  OR   -> string "11:30"
-        this.taskDone           = taskDone;         //true/false   
-        this.date               = date;             //String "dd-mm-yy" -> "31-12-2024"
-        //ID = task-project-3 OR task-school-2
-        //type = "school" OR "project"
+// class newTaskClass{
+//     constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${year}`, taskDone = false, )
+//     {
+//         this.taskName           = taskName;         //String -> "English Essay"
+//         this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
+//         this.taskDuration       = taskDuration;     //String -> "1:30"
+//         this.taskPlacement      = taskPlacement;    //Float -> 10  OR   -> string "11:30"
+//         this.taskDone           = taskDone;         //true/false   
+//         this.date               = date;             //String "dd-mm-yy" -> "31-12-2024"
+//         //ID = task-project-3 OR task-school-2
+//         //type = "school" OR "project"
         
-        if (typeof this.taskPlacement == 'string') {
-            this.type = "school";
-            this.startTime = this.taskPlacement;
+//         if (typeof this.taskPlacement == 'string') {
+//             this.type = "school";
+//             this.startTime = this.taskPlacement;
 
-            // Remove old school tasks with the same taskName
-            allClassTasks = allClassTasks.filter(task =>
-                !(task.type === "school" && task.taskName === this.taskName)
-            );
+//             // Remove old school tasks with the same taskName
+//             allClassTasks = allClassTasks.filter(task =>
+//                 !(task.type === "school" && task.taskName === this.taskName)
+//             );
 
-            this.ID = `task-${this.type}-${giveSchoolID}`;
-            giveSchoolID++;
-        } else {
-            this.type = "project";
-            this.startTime = addTwoHours(calculateProcentageIntoDuration(this.taskPlacement), allTimeStamps[allTimeStamps.length - 1][0]);
+//             this.ID = `task-${this.type}-${giveSchoolID}`;
+//             giveSchoolID++;
+//         } else {
+//             this.type = "project";
+//             this.startTime = addTwoHours(calculateProcentageIntoDuration(this.taskPlacement), allTimeStamps[allTimeStamps.length - 1][0]);
             
-            //ID should be one higher than the current largest.
-            let currentNum = 0;
-            for (const key in allClassTasks){
-                const theTask = allClassTasks[key]
-                if(parseInt(theTask.ID.split("-")[2]) > currentNum && theTask.type == "project"){
-                    currentNum = parseInt(theTask.ID.split("-")[2])
-                }
-            }
-            let theProjectNumID = currentNum || 0
-            theProjectNumID ++;
+//             //ID should be one higher than the current largest.
+//             let currentNum = 0;
+//             for (const key in allClassTasks){
+//                 const theTask = allClassTasks[key]
+//                 if(parseInt(theTask.ID.split("-")[2]) > currentNum && theTask.type == "project"){
+//                     currentNum = parseInt(theTask.ID.split("-")[2])
+//                 }
+//             }
+//             let theProjectNumID = currentNum || 0
+//             theProjectNumID ++;
 
-            this.ID = `task-${this.type}-${theProjectNumID}`;
-        }
+//             this.ID = `task-${this.type}-${theProjectNumID}`;
+//         }
         
-        this.top = calculateDurationIntoProcentage(subtractTwoHours(this.startTime, allTimeStamps[allTimeStamps.length - 1][0]))
-        this.endTime =  addTwoHours(this.startTime, this.taskDuration) //String "10:30"
-        this.height = calculateDurationIntoProcentage(taskDuration)
+//         this.top = calculateDurationIntoProcentage(subtractTwoHours(this.startTime, allTimeStamps[allTimeStamps.length - 1][0]))
+//         this.endTime =  addTwoHours(this.startTime, this.taskDuration) //String "10:30"
+//         this.height = calculateDurationIntoProcentage(taskDuration)
 
-        //___ Maybe make sure the same id cant be there twice (Dosent work properly tho)
-        let doesItCurrentlyHaveThisTask = false;
-        for (let key in allClassTasks){
-            if (allClassTasks[key].ID === this.ID){
-                // doesItCurrentlyHaveThisTask = true
-            }
-        }
-        if (!doesItCurrentlyHaveThisTask )
-        {
-            allClassTasks.push({ID : this.ID,                           taskName: this.taskName,                taskSubtaskName: this.taskSubtaskName,          taskDuration : this.taskDuration,
-                                taskPlacement : this.taskPlacement,     taskDone : this.taskDone,               type : this.type,                               height : this.height,
-                                startTime : this.startTime,             endTime : this.endTime,                 top : this.top,                                 date : this.date})
-            updateLocalStorage();
-            showAllTasks();
-            isPlacedAtSameTimeButForClasses();
-            updateVisibleSpans();
-        }
-    }
-}
+//         //___ Maybe make sure the same id cant be there twice (Dosent work properly tho)
+//         let doesItCurrentlyHaveThisTask = false;
+//         for (let key in allClassTasks){
+//             if (allClassTasks[key].ID === this.ID){
+//                 // doesItCurrentlyHaveThisTask = true
+//             }
+//         }
+//         if (!doesItCurrentlyHaveThisTask )
+//         {
+//             allClassTasks.push({ID : this.ID,                           taskName: this.taskName,                taskSubtaskName: this.taskSubtaskName,          taskDuration : this.taskDuration,
+//                                 taskPlacement : this.taskPlacement,     taskDone : this.taskDone,               type : this.type,                               height : this.height,
+//                                 startTime : this.startTime,             endTime : this.endTime,                 top : this.top,                                 date : this.date})
+//             updateLocalStorage();
+//             showAllTasks();
+//             isPlacedAtSameTimeButForClasses();
+//             updateVisibleSpans();
+//         }
+//     }
+// }
 
-new newTaskClass("Math", "", "1:00", "8:15")
-new newTaskClass("Math", "", "1:00", "9:35")
-// new newTaskClass("Physics", "", "2:30", "10:30")
-new newTaskClass("Danish", "", "1:00", "10:45")
-new newTaskClass("English", "", "1:00", "12:15")
-new newTaskClass("Chemistry", "", "1:00", "13:25")
-new newTaskClass("Chemistry", "", "1:00", "14:30")
+// new newTaskClass("Math", "", "1:00", "8:15")
+// new newTaskClass("Math", "", "1:00", "9:35")
+// // new newTaskClass("Physics", "", "2:30", "10:30")
+// new newTaskClass("Danish", "", "1:00", "10:45")
+// new newTaskClass("English", "", "1:00", "12:15")
+// new newTaskClass("Chemistry", "", "1:00", "13:25")
+// new newTaskClass("Chemistry", "", "1:00", "14:30")
 // let thisEntity = new newTaskClass("Kav a Essay", "Introduction", "1:30", 75)
 
-showAllTasks();
-isPlacedAtSameTimeButForClasses();
-console.log(allClassTasks)
+// showAllTasks();
+// isPlacedAtSameTimeButForClasses();
+// console.log(allClassTasks)
 
-function deleteTask(ID, arr = allClassTasks) {
+function deleteTask(ID, arr) {
     for (let index = 0; index < arr.length; index++) 
     {
         const task = arr[index];
         if (task.ID == ID) {
             arr.splice(index, 1);
-            updateLocalStorage();
+            // updateLocalStorage();
 
             var element = document.getElementById(ID);
             element.parentNode.removeChild(element);   
             
             // showAllTasks();
-            isPlacedAtSameTimeButForClasses();
-            updateVisibleSpans();
+            // isPlacedAtSameTimeButForClasses();
+            // updateVisibleSpans();
             break; // Once the task is found and removed, exit the loop
         }
     }
-    console.log(allClassTasks)
+    // console.log(allClassTasks)
 }
 
-function updateLocalStorage(arr = allClassTasks){
-    localStorage.setItem("shown-tasks", JSON.stringify(arr))
-}
+// function updateLocalStorage(arr = allClassTasks){
+//     localStorage.setItem("shown-tasks", JSON.stringify(arr))
+// }
 
-function showAllTasks(arr = allClassTasks) 
-{
-    for (const key in arr) 
-    {
-        if (arr.hasOwnProperty(key)) 
-        {
-            const taskVal = arr[key];
-            const element = document.getElementById(taskVal.ID);
-            if (element && element.parentNode) {
-                element.parentNode.removeChild(element);
-            }
-        }
-    }
+// function showAllTasks(arr = allClassTasks) 
+// {
+//     for (const key in arr) 
+//     {
+//         if (arr.hasOwnProperty(key)) 
+//         {
+//             const taskVal = arr[key];
+//             const element = document.getElementById(taskVal.ID);
+//             if (element && element.parentNode) {
+//                 element.parentNode.removeChild(element);
+//             }
+//         }
+//     }
 
-    // console.log("Tasks BEING shown");
+//     // console.log("Tasks BEING shown");
 
-    for (const key in arr) {
-        if (arr.hasOwnProperty(key)) 
-        {
-            const task = arr[key];
-            const placedElement = document.getElementById("element-id");
+//     for (const key in arr) {
+//         if (arr.hasOwnProperty(key)) 
+//         {
+//             const task = arr[key];
+//             const placedElement = document.getElementById("element-id");
 
-            if (!placedElement) 
-            {
-                const className = task.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
-                const thisTask = document.createElement("div");
-                thisTask.setAttribute("id", `${task.ID}`);
+//             if (!placedElement) 
+//             {
+//                 const className = task.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
+//                 const thisTask = document.createElement("div");
+//                 thisTask.setAttribute("id", `${task.ID}`);
 
-                thisTask.addEventListener("click", () => onPress(true, thisTask));
+//                 thisTask.addEventListener("click", () => onPress(true, thisTask));
                 
-                if(className == "calender-tasks-project"){
-                    thisTask.setAttribute("onmouseover", "checkElementId(event)");
-                    thisTask.setAttribute("draggable","true");
-                }
-                thisTask.classList.add(className);
-                thisTask.style.position = 'absolute';
+//                 if(className == "calender-tasks-project"){
+//                     thisTask.setAttribute("onmouseover", "checkElementId(event)");
+//                     thisTask.setAttribute("draggable","true");
+//                 }
+//                 thisTask.classList.add(className);
+//                 thisTask.style.position = 'absolute';
 
-                thisTask.style.top = `${task.top}%`;
-                thisTask.style.height = `${task.height}%`;
-                // thisTask.style.border = `2px solid black`;
-                thisTask.style.zIndex = `2`;
-                calendarTasksPlace.appendChild(thisTask);
+//                 thisTask.style.top = `${task.top}%`;
+//                 thisTask.style.height = `${task.height}%`;
+//                 // thisTask.style.border = `2px solid black`;
+//                 thisTask.style.zIndex = `2`;
+//                 calendarTasksPlace.appendChild(thisTask);
 
-                //______ drops element in more-days
-                // const thisDropLocation = document.getElementById(task.date);
-                // if (thisDropLocation) {
-                //     // thisTask.setAttribute('task-date', '18-1-2024');
-                //     thisDropLocation.appendChild(thisTask);
-                // } else {
-                //     console.log("Element with class 'calendar-view-day-droplocation' not found");
-                // }
+//                 //______ drops element in more-days
+//                 // const thisDropLocation = document.getElementById(task.date);
+//                 // if (thisDropLocation) {
+//                 //     // thisTask.setAttribute('task-date', '18-1-2024');
+//                 //     thisDropLocation.appendChild(thisTask);
+//                 // } else {
+//                 //     console.log("Element with class 'calendar-view-day-droplocation' not found");
+//                 // }
 
-                const firstElement = document.createElement("span");
-                firstElement.classList.add("calender-tasks-item-taskName");
-                const textContent = task.type === "school" ? `${task.taskName}` : `${task.taskName} / ${task.taskSubtaskName}`;
-                firstElement.textContent = textContent;
-                thisTask.appendChild(firstElement);
+//                 const firstElement = document.createElement("span");
+//                 firstElement.classList.add("calender-tasks-item-taskName");
+//                 const textContent = task.type === "school" ? `${task.taskName}` : `${task.taskName} / ${task.taskSubtaskName}`;
+//                 firstElement.textContent = textContent;
+//                 thisTask.appendChild(firstElement);
                 
-                const thirdElement = document.createElement("span");
-                thirdElement.classList.add("calender-tasks-item-taskPeriod");
-                thirdElement.textContent = `${task.startTime} - ${task.endTime}`;
-                thisTask.appendChild(thirdElement);
+//                 const thirdElement = document.createElement("span");
+//                 thirdElement.classList.add("calender-tasks-item-taskPeriod");
+//                 thirdElement.textContent = `${task.startTime} - ${task.endTime}`;
+//                 thisTask.appendChild(thirdElement);
                 
                 
-                const secondElement = document.createElement("span");
-                secondElement.classList.add("calender-tasks-item-taskDuration");
-                secondElement.textContent = `${task.taskDuration.split(":")[0] > 0 ? task.taskDuration.split(":")[0] + ' h ' : ''}${task.taskDuration.split(":")[1]} m`;
-                thisTask.appendChild(secondElement);
+//                 const secondElement = document.createElement("span");
+//                 secondElement.classList.add("calender-tasks-item-taskDuration");
+//                 secondElement.textContent = `${task.taskDuration.split(":")[0] > 0 ? task.taskDuration.split(":")[0] + ' h ' : ''}${task.taskDuration.split(":")[1]} m`;
+//                 thisTask.appendChild(secondElement);
 
 
-                if (task.type !== "school") {
-                    const fourthElement = document.createElement("button");
-                    fourthElement.classList.add("calender-tasks-item-button");
-                    fourthElement.addEventListener("click", (event) => {
-                        deleteTask(task.ID);
-                        event.stopPropagation();
-                        onPress(false);
-                    });                    fourthElement.textContent = task.taskDone ? "J" : "X";
-                    thisTask.appendChild(fourthElement);
-                }
-            }
-        }
-    }
-}
+//                 if (task.type !== "school") {
+//                     const fourthElement = document.createElement("button");
+//                     fourthElement.classList.add("calender-tasks-item-button");
+//                     fourthElement.addEventListener("click", (event) => {
+//                         deleteTask(task.ID);
+//                         event.stopPropagation();
+//                         onPress(false);
+//                     });                    fourthElement.textContent = task.taskDone ? "J" : "X";
+//                     thisTask.appendChild(fourthElement);
+//                 }
+//             }
+//         }
+//     }
+// }
 
 function calculateDurationIntoProcentage(duration){ //input: string "1:30" output: float 5
     let startTimeStamp = converTimeIntoHours(allTimeStamps[allTimeStamps.length - 1][0]);
@@ -212,6 +212,16 @@ function calculateProcentageIntoDuration(procentage) //Input: float 5 (%) -> out
     return convertDecimalIntoHours(duration)
 }
 
+// function converTimeIntoHours(input) //input = "23:30" -> 23,5 timer
+// {
+//     let hours = parseInt(input.split(":")[0]);
+//     let min = parseInt(input.split(":")[1]);
+
+//     let minToHours = min/60
+//     return hours+minToHours;
+// }
+
+//Not being Used
 function convertDecimalIntoHours(decimal) //input float 22.5 ouput string "22:30"
 {
     let min = ((decimal % 1)*60).toFixed(0);
@@ -231,36 +241,37 @@ function subtractTwoHours(one,two) //input ("7:30", "2:30") -> ouput ("5:00")
     let totalNum = converTimeIntoHours(one) - converTimeIntoHours(two)
     return convertDecimalIntoHours(totalNum)
 }
-function returnArrayWithIDStartAndEndTime(arr = allClassTasks) //some arr with object that has ID, startTime -> "10:00" and endTime -> "11:30"
-{
-    //returns = [["id", float startTime1, float endTime1],["id", float startTime2,  float endTime2]...]
-    //Can be used as input to: findOverlappingTasks(tasks) && calculateLeft(arr)
-    let returnValues = []
-    for (let key in arr)
-    {
-        const task = arr[key];
+// function returnArrayWithIDStartAndEndTime(arr = allClassTasks) //some arr with object that has ID, startTime -> "10:00" and endTime -> "11:30"
+// {
+//     //returns = [["id", float startTime1, float endTime1],["id", float startTime2,  float endTime2]...]
+//     //Can be used as input to: findOverlappingTasks(tasks) && calculateLeft(arr)
+//     let returnValues = []
+//     for (let key in arr)
+//     {
+//         const task = arr[key];
 
-        let numStartTime = converTimeIntoHours(task.startTime);
-        let numEndTime = converTimeIntoHours(task.endTime);
+//         let numStartTime = converTimeIntoHours(task.startTime);
+//         let numEndTime = converTimeIntoHours(task.endTime);
 
-        returnValues.push([task.ID, numStartTime, numEndTime]);
-    }
-    return returnValues;
-}
+//         returnValues.push([task.ID, numStartTime, numEndTime]);
+//     }
+//     return returnValues;
+// }
 
-let mouseOver = null;
+// let mouseOver = null;
 
-calendarTasksPlace.addEventListener("dragover", dragOver);
-calendarTasksPlace.addEventListener("dragenter", dragEnter);
-calendarTasksPlace.addEventListener("dragleave", dragLeave);
-calendarTasksPlace.addEventListener("drop", dragDrop);
+// calendarTasksPlace.addEventListener("dragover", dragOver);
+// calendarTasksPlace.addEventListener("dragenter", dragEnter);
+// calendarTasksPlace.addEventListener("dragleave", dragLeave);
+// calendarTasksPlace.addEventListener("drop", dragDrop);
 
-function checkElementId(event) {
-    // Access the id of the event target
-    var elementId = event.target.id;
-    mouseOver = elementId ? elementId : mouseOver;
-    // console.log("Mouse is over element with id:", elementId, mouseOver);
-  }
+//Apparently getting used, though I thought not! ___
+// function checkElementId(event) {
+//     // Access the id of the event target
+//     var elementId = event.target.id;
+//     mouseOver = elementId ? elementId : mouseOver;
+//     // console.log("Mouse is over element with id:", elementId, mouseOver);
+//   }
 
 function dragStart(event) {
     console.log("Start DRAG");
@@ -275,98 +286,98 @@ function dragEnd() {
     this.classList.remove("invisible", "hold");
 }
 
-let droppedInsideID;
-function dragOver(event) {
-    console.log("OVER" + event);
-    droppedInsideID = (event.toElement.id) || `${dayNumber}-${month}-${year}`; //___Secound part might need to be deleted
-    event.preventDefault();
-}
+// let droppedInsideID;
+// function dragOver(event) {
+//     console.log("OVER" + event);
+//     droppedInsideID = (event.toElement.id) || `${dayNumber}-${month}-${year}`; //___Secound part might need to be deleted
+//     event.preventDefault();
+// }
 
-function dragEnter() {
-    console.log("Enter");
-    this.classList.add("over");
-    this.classList.remove("over");
-}
+// function dragEnter() {
+//     console.log("Enter");
+//     this.classList.add("over");
+//     this.classList.remove("over");
+// }
 
-function dragLeave() {
-    console.log("Leave");
-}
+// function dragLeave() {
+//     console.log("Leave");
+// }
 
-function dragDrop(event) {
-    console.log("Drop");
-    event.preventDefault();
+// function dragDrop(event) {
+//     console.log("Drop");
+//     event.preventDefault();
 
-    const draggedItemId = event.dataTransfer.getData('text/plain'); //Dragged ID
-    const draggedItem = document.getElementById(draggedItemId); //HTML elements
+//     const draggedItemId = event.dataTransfer.getData('text/plain'); //Dragged ID
+//     const draggedItem = document.getElementById(draggedItemId); //HTML elements
 
-    if (draggedItem) 
-    {
-        // Place item based on y-axis
-        const rect = this.getBoundingClientRect();
-        const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
-        let relativePercentage = (relativeY / rect.height) * 100;
+//     if (draggedItem) 
+//     {
+//         // Place item based on y-axis
+//         const rect = this.getBoundingClientRect();
+//         const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
+//         let relativePercentage = (relativeY / rect.height) * 100;
 
-        let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
-        const remainder = relativePercentage % val
-        relativePercentage -= remainder;
+//         let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
+//         const remainder = relativePercentage % val
+//         relativePercentage -= remainder;
         
-        //Add changes to clone
-        const clone = draggedItem.cloneNode(true);
-        clone.classList.remove("invisible", "hold");
+//         //Add changes to clone
+//         const clone = draggedItem.cloneNode(true);
+//         clone.classList.remove("invisible", "hold");
         
-        //get values from spans:
-        const originalSubtaskName = draggedItem.querySelector('.subtask-taskName li').textContent;
-        const originalTaskName = draggedItem.querySelector('.subtask-taskName').textContent.replace(originalSubtaskName, '').trim()
-        const spanTaskDuration = clone.querySelector('.subtask-taskDuration').textContent;
+//         //get values from spans:
+//         const originalSubtaskName = draggedItem.querySelector('.subtask-taskName li').textContent;
+//         const originalTaskName = draggedItem.querySelector('.subtask-taskName').textContent.replace(originalSubtaskName, '').trim()
+//         const spanTaskDuration = clone.querySelector('.subtask-taskDuration').textContent;
         
 
-        droppedInsideID
-        draggedItem.parentNode.removeChild(draggedItem);
-        new newTaskClass(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage,droppedInsideID)
+//         droppedInsideID
+//         draggedItem.parentNode.removeChild(draggedItem);
+//         new newTaskClass(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage,droppedInsideID)
         
-    }else { // ___ remake this whole else statement, using checkElementId() and mouseOver isnt reliable in the long run.
-        if (mouseOver)  // ID = mouseOver:
-        { // Check if mouseOver has a valid value
+//     }else { // ___ remake this whole else statement, using checkElementId() and mouseOver isnt reliable in the long run.
+//         if (mouseOver)  // ID = mouseOver:
+//         { // Check if mouseOver has a valid value
             
-            // Place item based on y-axis
-            const rect = this.getBoundingClientRect();
-            const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
+//             // Place item based on y-axis
+//             const rect = this.getBoundingClientRect();
+//             const relativeY = event.clientY - rect.top; //mouse y-pos (relative to the calendar)
 
-            let relativePercentage = (relativeY / rect.height) * 100;
-            let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
-            const remainder = relativePercentage % val
-            relativePercentage -= remainder;
+//             let relativePercentage = (relativeY / rect.height) * 100;
+//             let val = parseFloat(calculatePlacement3(interval).split("%")[0]) 
+//             const remainder = relativePercentage % val
+//             relativePercentage -= remainder;
     
-            const draggedItem = document.getElementById(mouseOver);
+//             const draggedItem = document.getElementById(mouseOver);
     
-            if (draggedItem) // Check if the element with mouseOver ID exists
-            { 
+//             if (draggedItem) // Check if the element with mouseOver ID exists
+//             { 
                
-                //Get values from dragged item, and add a new one (use relativePercentage as new input)
-                for (key in allClassTasks)
-                {
-                    const task = allClassTasks[key]
-                    if (task.ID == mouseOver)
-                    {
-                        new newTaskClass(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, droppedInsideID)
-                        console.log(`${task.taskName}, ${task.taskSubtaskName}, ${task.taskDuration}, ${relativePercentage}, ${droppedInsideID}`)
-                    }
-                }
+//                 //Get values from dragged item, and add a new one (use relativePercentage as new input)
+//                 for (key in allClassTasks)
+//                 {
+//                     const task = allClassTasks[key]
+//                     if (task.ID == mouseOver)
+//                     {
+//                         new newTaskClass(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, droppedInsideID)
+//                         console.log(`${task.taskName}, ${task.taskSubtaskName}, ${task.taskDuration}, ${relativePercentage}, ${droppedInsideID}`)
+//                     }
+//                 }
                 
-                //remove previous element/task that was being dragged
-                updateVisibleSpans();
-                deleteTask(mouseOver)
-                updateVisibleSpans();
-                displayAllTasks();
+//                 //remove previous element/task that was being dragged
+//                 updateVisibleSpans();
+//                 deleteTask(mouseOver)
+//                 updateVisibleSpans();
+//                 displayAllTasks();
 
-            } else {
-                alert("Element not found with ID: " + mouseOver);
-            }
-        } else {
-            alert("try again!");
-        }
-    }
-}
+//             } else {
+//                 alert("Element not found with ID: " + mouseOver);
+//             }
+//         } else {
+//             alert("try again!");
+//         }
+//     }
+// }
 
 function findNeighboursOtOnce(arr)
 {
@@ -455,7 +466,7 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
                     let thingsWidthString = thingsElement.style.width
                     let thingsWidth = parseInt(thingsWidthString.split("%"))
 
-                    let overlappingLeft = 100 - (extraPush +thingsWidth/*+0.7*/)
+                    let overlappingLeft = 100 - (extraPush +thingsWidth)
                 
                     // console.log(`if (${overlappingLeft} < ${taskWidth})`)
                     if (overlappingLeft < taskWidth) {
@@ -490,111 +501,110 @@ function calculateLeft(arr) // [["id", startTime, endTime ]]
             }
         }
     }
-    // console.log(arrWithLeftOffset)
     return arrWithLeftOffset;
 }
 
 // let viewDaysAmount = 3;
 
-function ouputNumberOfDays(startingDate, viewAmountOfDays = viewDaysAmount) //input arr(int*3) [day, month, year] -> [30, 12, 2024] , viewAmountOfDays: int -> 3
-{
-    viewAmountOfDays -= 1;
-    let startDay = startingDate[0];
-    let startMonth = startingDate[1];
-    let startYear = startingDate[2];
+// function ouputNumberOfDays(startingDate, viewAmountOfDays = viewDaysAmount) //input arr(int*3) [day, month, year] -> [30, 12, 2024] , viewAmountOfDays: int -> 3
+// {
+//     viewAmountOfDays -= 1;
+//     let startDay = startingDate[0];
+//     let startMonth = startingDate[1];
+//     let startYear = startingDate[2];
     
-    let shownDays = []
-    shownDays.push(`${startDay}-${startMonth}-${startYear}`)
-    for (let i = 0; i<viewAmountOfDays; i++){
-        startDay += 1;
+//     let shownDays = []
+//     shownDays.push(`${startDay}-${startMonth}-${startYear}`)
+//     for (let i = 0; i<viewAmountOfDays; i++){
+//         startDay += 1;
 
-        if(startDay > getMonthsLength(startMonth, startYear)){
-            startDay = 1;
-            startMonth += 1;
-        } 
-        if (startMonth > 12){
-            startYear += 1;
-            startMonth = 1;
-        }
-        shownDays.push(`${startDay}-${startMonth}-${startYear}`);
-    }
-    return shownDays;
-} //ouput arr -> ['30-12-2024', '31-12-2024', '1-1-2025']       (length = viewAmountOfDays || 1)
+//         if(startDay > getMonthsLength(startMonth, startYear)){
+//             startDay = 1;
+//             startMonth += 1;
+//         } 
+//         if (startMonth > 12){
+//             startYear += 1;
+//             startMonth = 1;
+//         }
+//         shownDays.push(`${startDay}-${startMonth}-${startYear}`);
+//     }
+//     return shownDays;
+// } //ouput arr -> ['30-12-2024', '31-12-2024', '1-1-2025']       (length = viewAmountOfDays || 1)
 
-function getMonthsLength(thisMonth, thisYear = year) //input int -> 12, int -> 2024
-{
-    const monthsLength = {
-        1 : 31,
-        2: thisYear % 4 == 0 && thisYear % 100 != 0 ? 29 : 28,
-        3: 31,
-        4: 30,
-        5: 31,
-        6: 30,
-        7: 31,
-        8: 31,
-        9: 30,
-        10: 31,
-        11: 30,
-        12: 31,
-    }
-    return monthsLength[thisMonth];
-} // Ouput int -> 31 
+// function getMonthsLength(thisMonth, thisYear = year) //input int -> 12, int -> 2024
+// {
+//     const monthsLength = {
+//         1 : 31,
+//         2: thisYear % 4 == 0 && thisYear % 100 != 0 ? 29 : 28,
+//         3: 31,
+//         4: 30,
+//         5: 31,
+//         6: 30,
+//         7: 31,
+//         8: 31,
+//         9: 30,
+//         10: 31,
+//         11: 30,
+//         12: 31,
+//     }
+//     return monthsLength[thisMonth];
+// } // Ouput int -> 31 
 
-function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
-    let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
-    let viewDaysAmount = 3;    
+// function isPlacedAtSameTimeButForClasses(arr = allClassTasks){
+//     let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
+//     let viewDaysAmount = 3;    
 
-    for (let elements of ouputNumberOfDays(initialDate, viewDaysAmount)){
-        for (let m = 0; m < arr.length; m++){
-            let taskTimes = []
-            if(arr[m] && elements && arr[m].date === elements){
+//     for (let elements of ouputNumberOfDays(initialDate, viewDaysAmount)){
+//         for (let m = 0; m < arr.length; m++){
+//             let taskTimes = []
+//             if(arr[m] && elements && arr[m].date === elements){
 
-                // Find tasks that occur at the same time
-                for (let i = 0; i < arr.length; i++) 
-                {
-                    const taskObj = arr[i]
-                    let beginningOfTask = parseInt(taskObj.startTime.split(":")[0] + taskObj.startTime.split(":")[1])
-                    let endingOfTask = parseInt(taskObj.endTime.split(":")[0] + taskObj.endTime.split(":")[1])
-                    taskTimes.push([taskObj.ID, beginningOfTask, endingOfTask]);
-                }
+//                 // Find tasks that occur at the same time
+//                 for (let i = 0; i < arr.length; i++) 
+//                 {
+//                     const taskObj = arr[i]
+//                     let beginningOfTask = parseInt(taskObj.startTime.split(":")[0] + taskObj.startTime.split(":")[1])
+//                     let endingOfTask = parseInt(taskObj.endTime.split(":")[0] + taskObj.endTime.split(":")[1])
+//                     taskTimes.push([taskObj.ID, beginningOfTask, endingOfTask]);
+//                 }
             
-                //Changes the width of the tasks
-                const arrWithNeighbours = findNeighboursOtOnce(taskTimes)
+//                 //Changes the width of the tasks
+//                 const arrWithNeighbours = findNeighboursOtOnce(taskTimes)
             
-                for (let key of Object.keys(arrWithNeighbours)){
-                    let theObject = arrWithNeighbours[key];
-                    let changeTask = document.getElementById(theObject[0])
-                    let theWidth = 100 / (theObject[1] + 1)
-                    changeTask.style.width = `${theWidth}%`
-                }
+//                 for (let key of Object.keys(arrWithNeighbours)){
+//                     let theObject = arrWithNeighbours[key];
+//                     let changeTask = document.getElementById(theObject[0])
+//                     let theWidth = 100 / (theObject[1] + 1)
+//                     changeTask.style.width = `${theWidth}%`
+//                 }
                 
-                //Changes the leftOffset of the tasks
-                const arrWithHorizontalOffset = calculateLeft(taskTimes)
+//                 //Changes the leftOffset of the tasks
+//                 const arrWithHorizontalOffset = calculateLeft(taskTimes)
             
-                for (let element of arrWithHorizontalOffset){
-                    let changeTask = document.getElementById(element[0])
-                    changeTask.style.left = `${element[1]-1}%`
-                }
-            }
-        }
-    }
-    updateProjectVerticalPosition();
-}
+//                 for (let element of arrWithHorizontalOffset){
+//                     let changeTask = document.getElementById(element[0])
+//                     changeTask.style.left = `${element[1]-1}%`
+//                 }
+//             }
+//         }
+//     }
+//     updateProjectVerticalPosition();
+// }
 
-function updateProjectVerticalPosition(arr = allClassTasks) {
-    for (let key in arr) {
-        const task = arr[key];
-        if (task.type === "project") {
-            const changeTask = document.getElementById(task.ID);
+// function updateProjectVerticalPosition(arr = allClassTasks) {
+//     for (let key in arr) {
+//         const task = arr[key];
+//         if (task.type === "project") {
+//             const changeTask = document.getElementById(task.ID);
 
-            const newTop = calculateDurationIntoProcentage(subtractTwoHours(task.startTime, allTimeStamps[allTimeStamps.length - 1][0]));
-            changeTask.style.top = `${newTop}%`;
+//             const newTop = calculateDurationIntoProcentage(subtractTwoHours(task.startTime, allTimeStamps[allTimeStamps.length - 1][0]));
+//             changeTask.style.top = `${newTop}%`;
 
-            const newHeight = calculateDurationIntoProcentage(task.taskDuration);
-            changeTask.style.height = `${newHeight}%`;
-        }
-    }
-}
+//             const newHeight = calculateDurationIntoProcentage(task.taskDuration);
+//             changeTask.style.height = `${newHeight}%`;
+//         }
+//     }
+// }
 
 function findOverlappingTasks(tasks) //input const tasks = [["id", float startTime1, float endTime1],["id", startTime2, endTime2]...]
 {
@@ -624,66 +634,66 @@ function findOverlappingTasks(tasks) //input const tasks = [["id", float startTi
       return tasksOverlap;
 }
 
-function updateVisibleSpans() {
-    var containers = document.querySelectorAll('.calender-tasks-project');
+// function updateVisibleSpans() {
+//     var containers = document.querySelectorAll('.calender-tasks-project');
 
-    containers.forEach(function (container) {
-        var spans = container.querySelectorAll('span');
-        var containerWidth = container.clientWidth;
+//     containers.forEach(function (container) {
+//         var spans = container.querySelectorAll('span');
+//         var containerWidth = container.clientWidth;
 
-        container.style.display = 'flex';
-        container.style.justifyContent = 'center';
-        container.style.alignItems = 'center';
+//         container.style.display = 'flex';
+//         container.style.justifyContent = 'center';
+//         container.style.alignItems = 'center';
 
-        var totalSpanWidth = 0;
+//         var totalSpanWidth = 0;
 
-        spans.forEach(function (span, i) {
-            // Calculate total width of already visible spans
-            totalSpanWidth += span.clientWidth;
+//         spans.forEach(function (span, i) {
+//             // Calculate total width of already visible spans
+//             totalSpanWidth += span.clientWidth;
 
-            // Always make the taskName visible
-            if (i === 0) {
-                span.style.visibility = 'visible';
-                span.style.position = 'static';
+//             // Always make the taskName visible
+//             if (i === 0) {
+//                 span.style.visibility = 'visible';
+//                 span.style.position = 'static';
 
-                // Adjust font size to fit the span if it's wider than the container
-                while (span.clientWidth > containerWidth - 2) {
-                    var fontSize = parseFloat(window.getComputedStyle(span).fontSize);
-                    span.style.fontSize = (fontSize - 1) + 'px';
-                }
-            } else {
-                // Show taskPeriod if there's more space
-                if (i === 2 && containerWidth >= totalSpanWidth) {
-                    span.style.visibility = 'visible';
-                    span.style.position = 'static';
-                } else if (i === 3 && containerWidth >= totalSpanWidth) {
-                    // Show the remove button if there's even more space
-                    span.style.visibility = 'visible';
-                    span.style.position = 'static';
-                } else if (i === 1 && containerWidth >= totalSpanWidth) {
-                    // Show taskDuration if there's even more more space
-                    span.style.visibility = 'visible';
-                    span.style.position = 'static';
-                } else {
-                    // Hide the span and position it absolutely if space is limited
-                    span.style.visibility = 'hidden';
-                    span.style.position = 'absolute';
-                }
-            }
-        });
+//                 // Adjust font size to fit the span if it's wider than the container
+//                 while (span.clientWidth > containerWidth - 2) {
+//                     var fontSize = parseFloat(window.getComputedStyle(span).fontSize);
+//                     span.style.fontSize = (fontSize - 1) + 'px';
+//                 }
+//             } else {
+//                 // Show taskPeriod if there's more space
+//                 if (i === 2 && containerWidth >= totalSpanWidth) {
+//                     span.style.visibility = 'visible';
+//                     span.style.position = 'static';
+//                 } else if (i === 3 && containerWidth >= totalSpanWidth) {
+//                     // Show the remove button if there's even more space
+//                     span.style.visibility = 'visible';
+//                     span.style.position = 'static';
+//                 } else if (i === 1 && containerWidth >= totalSpanWidth) {
+//                     // Show taskDuration if there's even more more space
+//                     span.style.visibility = 'visible';
+//                     span.style.position = 'static';
+//                 } else {
+//                     // Hide the span and position it absolutely if space is limited
+//                     span.style.visibility = 'hidden';
+//                     span.style.position = 'absolute';
+//                 }
+//             }
+//         });
 
-        // Set the visibility and position of the remove button (4th span) like the others
-        var removeButton = container.querySelector('button');
-        if (removeButton) {
-            if (spans.length >= 2 && containerWidth >= totalSpanWidth) {
-                removeButton.style.visibility = 'visible';
-                removeButton.style.position = 'static';
-            } else {
-                removeButton.style.visibility = 'hidden';
-                removeButton.style.position = 'absolute';
-            }
-        }
-    });
-}
+//         // Set the visibility and position of the remove button (4th span) like the others
+//         var removeButton = container.querySelector('button');
+//         if (removeButton) {
+//             if (spans.length >= 2 && containerWidth >= totalSpanWidth) {
+//                 removeButton.style.visibility = 'visible';
+//                 removeButton.style.position = 'static';
+//             } else {
+//                 removeButton.style.visibility = 'hidden';
+//                 removeButton.style.position = 'absolute';
+//             }
+//         }
+//     });
+// }
 
-updateVisibleSpans();
+// updateVisibleSpans();

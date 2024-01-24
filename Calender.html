@@ -11,12 +11,21 @@
     </head>
 
     <body style="text-align: center;">
-        <div class="Page-2">
+        <div id="calendar-main">
             <div class="settings">
                 <img id="settings-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Windows_Settings_icon.svg/2184px-Windows_Settings_icon.svg.png"/>
             </div>
-            <div class="ChangeToCalenderLater">
-                <!-- Calendar section | Added from Calendar.js -->
+            <div id="calendar-view">
+                <div class="calendar-view-left">
+                    <div class="calendar-view-left-image">
+                        <img id="calendar-view-left-previous" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
+                        <img id="calendar-view-left-next" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
+                    </div>
+                    <section id="calendar-view-left-timelines"></section>
+                </div>
+                <div id="calendar-view-all-days"> 
+
+                </div>
             </div>
             <div class="ToDo">
                 <h1> Subtasks </h1>
@@ -35,25 +44,10 @@
                     <div class="task-view-more-info-button">
                         <button>Ok! Go back</button>
                     </div>
-
                 </div>
-            </div>
+            </div>  
         </div>
-        <div id="calendar-main">
-            <div id="calendar-view">
-                <div class="calendar-view-left">
-                    <div class="calendar-view-left-image">
-                        <img id="calendar-view-left-previous" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
-                        <img id="calendar-view-left-next" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
-                    </div>
-                    <section id="calendar-view-left-timelines"></section>
-                </div>
-                <div id="calendar-view-all-days">
 
-                </div>
-            </div>
-            <div id="calendar-change-later-to-subtasks"></div>
-        </div>
     </body>
     <script src="Scripts/Calendar.js"></script>
     <script src="Scripts/DragAndDrop.js"></script>

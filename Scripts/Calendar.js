@@ -9,6 +9,8 @@ const month = date.getUTCMonth() + 1;
 const dayNumber = date.getUTCDate();
 const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 let day = weekday[date.getDay()];
+let currentTime = `${hour}:${min}`
+
 
 //Set initial values from settings.js:
 let valuesFromSettings = JSON.parse(localStorage.getItem("settingsInformation")) || initialInformation;
@@ -21,94 +23,133 @@ let timeLine = valuesFromSettings.timeLines           || initialInformation.time
 allCalendarTasks = []
 allTimeStamps = []
 
-//The calender
-const calendarSection = document.createElement("section");
-calendarSection.classList.add("calender");
-body.append(calendarSection);
+// The calender
+// const calendarSection = document.createElement("section");
+// calendarSection.classList.add("calender");
+// body.append(calendarSection);
 
-//Calender-title
-const calendarTitle = document.createElement("h1");
-calendarTitle.classList.add("calender-title");
-calendarTitle.innerText = `${day}: ${dayNumber}/${month} - ${year}`;
-calendarSection.appendChild(calendarTitle);
+// //Calender-title
+// const calendarTitle = document.createElement("h1");
+// calendarTitle.classList.add("calender-title");
+// calendarTitle.innerText = `${day}: ${dayNumber}/${month} - ${year}`;
+// calendarSection.appendChild(calendarTitle);
 
 //Calender-time stamps
 const calendarTimeStamps = document.createElement("div");
 calendarTimeStamps.classList.add("calender-time");
-calendarSection.appendChild(calendarTimeStamps);
+// calendarSection.appendChild(calendarTimeStamps);
 
-addTimeStamps(wakeUp, bedtime);
-addTimeStampsV2(wakeUp, bedtime);
+addTimeStamps(wakeUp, bedtime); //Lines
+addTimeStampsV2(wakeUp, bedtime); //Timesstamps
 
 //Lines for view-days
 let values = calculateLinePlacement(timeLine);
 const timeLinesSection = document.getElementById("calendar-view-left-timelines");
+const viewSize = document.getElementById("calendar-view");
+const computedWidth = getComputedStyle(viewSize).width;
 for (let element of values){
     const divElement = document.createElement("section")
     divElement.style.position = "absolute";
     divElement.style.top = `${element}%`;
-
-    const viewSize = document.getElementById("calendar-view");
-    const computedWidth = getComputedStyle(viewSize).width;
+    
     divElement.style.width = computedWidth;
 
     divElement.classList.add("calender-timeline");
-    timeLinesSection.appendChild(divElement); //or append it to calendarTasks or calendarTimeStamps
+    timeLinesSection.appendChild(divElement);
 }
 
+//Current-, wake up-, and bedtime - for view days:
+let currentTimePlacementForViewDays = calculatePlacement2(currentTime);
+
+const holder = document.createElement("div");
+
+holder.style.position = "absolute";
+holder.style.top = `calc(${currentTimePlacementForViewDays} - 10px`; //___Change later to - div(height)/2
+holder.style.width = computedWidth;
+timeLinesSection.appendChild(holder);
+
+const arrowImage = document.createElement("img");
+arrowImage.style.position = "absolute";
+arrowImage.style.height = "20px";
+arrowImage.style.width = "auto";
+arrowImage.style.zIndex = "1"
+arrowImage.style.transform =  "rotate(90deg)"
+arrowImage.style.left = "0";
+arrowImage.src = "https://cdn-icons-png.flaticon.com/512/16/16991.png";
+holder.appendChild(arrowImage);
+
+const calendarCurrentTimeLineForViewDays = document.createElement("hr")
+calendarCurrentTimeLineForViewDays.style.position = "absolute";
+calendarCurrentTimeLineForViewDays.style.width = computedWidth;
+// calendarCurrentTimeLineForViewDays.style.top = currentTimePlacementForViewDays;
+calendarCurrentTimeLineForViewDays.classList.add("calender-currentTime");
+holder.appendChild(calendarCurrentTimeLineForViewDays)
+// timeLinesSection.appendChild(calendarCurrentTimeLineForViewDays);
+
+const wakeUpLineForViewDays = document.createElement("section")
+wakeUpLineForViewDays.style.position = "absolute";
+wakeUpLineForViewDays.style.width = computedWidth;
+wakeUpLineForViewDays.style.top = calculatePlacement2(wakeUp);
+wakeUpLineForViewDays.classList.add("calender-startendtime");
+timeLinesSection.appendChild(wakeUpLineForViewDays);
+
+const bedtimeLineForViewDays = document.createElement("section")
+bedtimeLineForViewDays.style.width = computedWidth;
+bedtimeLineForViewDays.style.position = "absolute";
+bedtimeLineForViewDays.style.top = calculatePlacement2(bedtime);
+bedtimeLineForViewDays.classList.add("calender-startendtime");
+timeLinesSection.appendChild(bedtimeLineForViewDays); 
 
 
 
-
-//CalederTasks
-const calendarTasks = document.createElement("div");
-calendarTasks.classList.add("calender-tasks");
-calendarTasks.setAttribute("id", `calendarTaskID`) //____ maybe need to change back to 'id, "${dayNumber}-${month}-${year}"
-calendarSection.appendChild(calendarTasks);
+// //CalederTasks
+// const calendarTasks = document.createElement("div");
+// calendarTasks.classList.add("calender-tasks");
+// calendarTasks.setAttribute("id", `calendarTaskID`) //____ maybe need to change back to 'id, "${dayNumber}-${month}-${year}"
+// calendarSection.appendChild(calendarTasks);
 
 //Line that shows current time:
-let currentTime = `${hour}:${min}`
-console.log(currentTime)
-let currentTimePlacement = calculatePlacement2(currentTime)
+// console.log(currentTime)
+// let currentTimePlacement = calculatePlacement2(currentTime)
 
-const calendarCurrentTimeLine = document.createElement("section")
-calendarCurrentTimeLine.style.position = "absolute";
-calendarCurrentTimeLine.style.top = currentTimePlacement;
-calendarCurrentTimeLine.classList.add("calender-currentTime");
-calendarTasks.appendChild(calendarCurrentTimeLine);
+// const calendarCurrentTimeLine = document.createElement("section")
+// calendarCurrentTimeLine.style.position = "absolute";
+// calendarCurrentTimeLine.style.top = currentTimePlacement;
+// calendarCurrentTimeLine.classList.add("calender-currentTime");
+// calendarTasks.appendChild(calendarCurrentTimeLine);
 
-const wakeUpLine = document.createElement("section")
-wakeUpLine.style.position = "absolute";
-wakeUpLine.style.top = calculatePlacement2(wakeUp);
-wakeUpLine.classList.add("calender-startendtime");
-calendarTasks.appendChild(wakeUpLine);
+// const wakeUpLine = document.createElement("section")
+// wakeUpLine.style.position = "absolute";
+// wakeUpLine.style.top = calculatePlacement2(wakeUp);
+// wakeUpLine.classList.add("calender-startendtime");
+// calendarTasks.appendChild(wakeUpLine);
 
-const bedtimeLine = document.createElement("section")
-bedtimeLine.style.position = "absolute";
-bedtimeLine.style.top = calculatePlacement2(bedtime);
-bedtimeLine.classList.add("calender-startendtime");
-calendarTasks.appendChild(bedtimeLine);
+// const bedtimeLine = document.createElement("section")
+// bedtimeLine.style.position = "absolute";
+// bedtimeLine.style.top = calculatePlacement2(bedtime);
+// bedtimeLine.classList.add("calender-startendtime");
+// calendarTasks.appendChild(bedtimeLine);
 
-/* All lines that indicate the time */
-let val = calculateLinePlacement(timeLine);
-for (let element of val){
-    const divElement = document.createElement("section")
-    divElement.style.position = "absolute";
-    divElement.style.top = `${element}%`;
-    divElement.classList.add("calender-timeline");
-    calendarTasks.appendChild(divElement); //or append it to calendarTasks or calendarTimeStamps
+// /* All lines that indicate the time */
+// let val = calculateLinePlacement(timeLine);
+// for (let element of val){
+//     const divElement = document.createElement("section")
+//     divElement.style.position = "absolute";
+//     divElement.style.top = `${element}%`;
+//     divElement.classList.add("calender-timeline");
+//     calendarTasks.appendChild(divElement); //or append it to calendarTasks or calendarTimeStamps
 
-}
+// }
 
 /*addTaskToCalendar("Danish", 90, "10:00", false, "Conclusion");
 addTaskToCalendar("Danish", 90, "16:00", false, "Conclusion");
 addTaskToCalendar("Danish", 90, "12:00", false, "Conclusion");*/
 //addTaskToCalendar("Danish", 60, "12:00-13:00", false, "Conclusion");
 
-displayTasks();
+// displayTasks();
 
-let placeCalendar = document.getElementsByClassName("ChangeToCalenderLater")[0];
-placeCalendar.appendChild(calendarSection);
+// let placeCalendar = document.getElementsByClassName("ChangeToCalenderLater")[0];
+// placeCalendar.appendChild(calendarSection);
 
 
 function addTimeStamps(wakeUp, bedtime)
@@ -157,7 +198,9 @@ function addTimeStampsV2(wakeUp, bedtime) //adds to view-more-days calendar
         arr.forEach(timeStamp => {
             let calendarTimeSpan = document.createElement("span");
             calendarTimeSpan.innerText = timeStamp;
+            calendarTimeSpan.style.zIndex = "2";
             toElement.appendChild(calendarTimeSpan);
+
         });
     }
 }

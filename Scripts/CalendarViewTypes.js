@@ -1,17 +1,15 @@
-let viewDaysAmount = 3;
+let viewDaysAmount = 2;
 let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
 const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
 
-// let projectsID = 0;
 let schoolID = 100;
 
 
 let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
-console.log(allItems)
 
 class taskOnGivenDay{
-    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date)
+    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${1800}`)
     {
         this.taskName           = taskName;         //String -> "English Essay"
         this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
@@ -19,6 +17,7 @@ class taskOnGivenDay{
         this.taskPlacement      = taskPlacement     //Float -> 10  OR   -> string "11:30"
         //this.ID | this.date | this.type | this.startTime | this.endTime | this.top | this.height
 
+        // console.log(date + " | " + this.taskSubtaskName + this.taskName)
         if (getMonthsLength(parseInt(date.split("-")[1]), parseInt(date.split("-")[2])) && parseInt(date.split("-")[0]) <= getMonthsLength(parseInt(date.split("-")[1]), parseInt(date.split("-")[2]))){
             this.date           = date              //String: "dd-mm-yyyy" -> "31-1-2024" 
         } else {
@@ -94,7 +93,8 @@ class taskOnGivenDay{
             const fourthElement = document.createElement("button");
             fourthElement.classList.add("calender-tasks-item-button");
             fourthElement.addEventListener("click", (event) => {
-                deleteTask(this.ID);
+                deleteTask(this.ID, allItems);
+                displayAllTasks();
                 event.stopPropagation();
                 onPress(false);
             });                    
@@ -106,7 +106,7 @@ class taskOnGivenDay{
         createdTask.addEventListener("click", () => onPress(true, createdTask));
                 
         if(givenClassName == "calender-tasks-project"){
-            createdTask.setAttribute("onmouseover", "checkElementId(event)");
+            // createdTask.setAttribute("onmouseover", "checkElementId(event)");
             createdTask.setAttribute("draggable","true");
         }
     
@@ -120,47 +120,69 @@ showMultipleDays();
 displayAllTasks();
 
 // allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     65,         "20-1-2024"));
-allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "18:00",    "20-1-2024"));
-allItems.push(new taskOnGivenDay("BiOlOgIV2",   "POWER HOUSE",  "2:00",     "9:30",     "22-1-2024"));
-allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "17:00",    "21-1-2024"));
-allItems.push(new taskOnGivenDay("BiOlOgIV2",   "HOUSE",        "2:00",     "11:30",    "22-1-2024"));
-// allItems.push(new taskOnGivenDay("BiOlOgI",     "MiToCoNDrIa",  "2:00",     10,         "20-1-2024"));
+// allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "18:00",    "20-1-2024"));
+// allItems.push(new taskOnGivenDay("BiOlOgIV2",   "POWER HOUSE",  "2:00",     "9:30",     "22-1-2024"));
+// allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "17:00",    "21-1-2024"));
+// allItems.push(new taskOnGivenDay("BiOlOgIV2",   "HOUSE",        "2:00",     "11:30",    "22-1-2024"));
+// allItems.push(new taskOnGivenDay("BiOlOgI",     "MiToCoNDrIa",  "0:20",     10,         "20-1-2024"));
+
+
+
+//Input from MinSkoleApp (Mortens del)
+allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
+allItems.push(new taskOnGivenDay("Math", "", "1:00", "9:35", "20-1-2024"));
+allItems.push(new taskOnGivenDay("Danish", "", "1:00", "10:45", "20-1-2024"));
+allItems.push(new taskOnGivenDay("English", "", "1:00", "12:15", "20-1-2024"));
+allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "13:25", "20-1-2024"));
+allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "14:30", "20-1-2024"));
 
 console.log(allItems);
 
 function displayAllTasks() {
-    console.log("TasksShouldBeShown");
     showMultipleDays();
 
-    for (let i = 0; i < allItems.length; i++) {
+    for (let i = 0; i < allItems.length; i++) 
+    {
         let task = allItems[i];
-        //makes sure "school" tasks only gets shown if they're just made
-        if (!(task instanceof taskOnGivenDay)) {
-            if (allItems[i].type == "school") {
-                const existingSchoolTask = allItems.find(item =>
-                    item.type === "school" && item.ID === allItems[i].ID
-                );
 
-                // If not, add the new school task
-                if (!existingSchoolTask) {
-                    const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
-                    task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
-                    allItems[i] = task; 
+        if(task.date)
+        {
+            //makes sure "school" tasks only gets shown if they're just made
+            if (!(task instanceof taskOnGivenDay)) 
+            {
+                if (allItems[i].type == "school") 
+                {
+                    const existingSchoolTask = allItems.find(item =>
+                        item.type === "school" && item.ID === allItems[i].ID
+                    );
+    
+                    // If not, add the new school task
+                    if (!existingSchoolTask) 
+                    {
+                        const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
+                        if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
+                            task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
+                            allItems[i] = task; 
+                        } else {console.error("Some information missing:"); console.log(allItems[i]); }
+                    } else {
+                        allItems.splice(i, 1);
+                        i--; 
+                    }
                 } else {
-                    allItems.splice(i, 1);
-                    i--; 
+                    // Projects -> Convert into instance of taskOnGivenDay
+                    const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
+                    if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date)
+                    {
+                        task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
+                        allItems[i] = task; 
+                    } else {console.error("Some information missing"); console.log(allItems[i]);}
                 }
-            } else {
-                // Projects -> Convert into instance of taskOnGivenDay
-                const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
-                task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
-                allItems[i] = task;
             }
-        }
-
-        // Show task
-        if (typeof task.showDaysTask === 'function') {
-            task.showDaysTask();
+    
+            // Show task
+            if (typeof task.showDaysTask === 'function') {
+                task.showDaysTask();
+            }
         }
     }
 
@@ -178,7 +200,7 @@ function getMonthsLength(thisMonth, thisYear = year) //input int -> 12, int -> 2
 {
     const monthsLength = {
         1 : 31,
-        2: thisYear % 4 == 0 && thisYear % 100 != 0 ? 29 : 28,
+        2: thisYear % 4 == 0 && thisYear % 100 != 0 || thisYear % 400 == 0 ? 29 : 28,
         3: 31,
         4: 30,
         5: 31,
@@ -250,84 +272,6 @@ function showMultipleDays()
         calendarDropLocation.addEventListener("dragenter", dragEnterDays);
         calendarDropLocation.addEventListener("dragleave", dragLeaveDays);
         calendarDropLocation.addEventListener("drop", dragDropDays);
-        
-        //Show tasks 
-        // for (let key in tasksFromLocalStorage)
-        // {
-        //     const localStorageTask = tasksFromLocalStorage[key];
-        //     if (localStorageTask.date == elements)
-        //     {
-        //         // const randomDivclassName = localStorageTask.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
-
-        //         // const randomDiv = document.createElement("span");
-        //         // randomDiv.classList.add(randomDivclassName);
-        //         // randomDiv.style.position = "absolute";
-        //         // randomDiv.style.top = `${localStorageTask.top}%`;
-        //         // randomDiv.style.height = `${localStorageTask.height}%`;
-        //         // randomDiv.style.width = `100%`; //Change this later!
-        //         // randomDiv.style.backgroundColor = "233";
-        //         // randomDiv.id = localStorageTask.ID;
-        //         // randomDiv.innerText = `${localStorageTask.taskName} / ${localStorageTask.taskSubtaskName}`;
-        //         // dropLocation.appendChild(randomDiv);
-        //         const className = localStorageTask.type === "school" ? "calender-tasks-school" : "calender-tasks-project";
-        //         const thisTask = document.createElement("div");
-        //         thisTask.setAttribute("id", `${localStorageTask.ID}`);
-
-        //         thisTask.addEventListener("click", () => onPress(true, thisTask));
-                
-        //         if(className == "calender-tasks-project"){
-        //             thisTask.setAttribute("onmouseover", "checkElementId(event)");
-        //             thisTask.setAttribute("draggable","true");
-        //         }
-        //         thisTask.classList.add(className);
-        //         thisTask.style.position = 'absolute';
-
-        //         thisTask.style.top = `${localStorageTask.top}%`;
-        //         thisTask.style.height = `${localStorageTask.height}%`;
-        //         // thisTask.style.border = `2px solid black`;
-        //         thisTask.style.zIndex = `2`;
-        //         calendarDropLocation.appendChild(thisTask);
-
-                
-        //         const thisDropLocation = document.getElementById(localStorageTask.date);
-        //         if (thisDropLocation) {
-        //             // thisTask.setAttribute('task-date', '18-1-2024');
-        //             thisDropLocation.appendChild(thisTask);
-        //         } else {
-        //             console.error("Element with class 'calendar-view-day-droplocation' not found");
-        //         }
-
-        //         const firstElement = document.createElement("span");
-        //         firstElement.classList.add("calender-tasks-item-taskName");
-        //         const textContent = localStorageTask.type === "school" ? `${localStorageTask.taskName}` : `${localStorageTask.taskName} / ${localStorageTask.taskSubtaskName}`;
-        //         firstElement.textContent = textContent;
-        //         thisTask.appendChild(firstElement);
-                
-        //         const thirdElement = document.createElement("span");
-        //         thirdElement.classList.add("calender-tasks-item-taskPeriod");
-        //         thirdElement.textContent = `${localStorageTask.startTime} - ${localStorageTask.endTime}`;
-        //         thisTask.appendChild(thirdElement);
-                
-                
-        //         const secondElement = document.createElement("span");
-        //         secondElement.classList.add("calender-tasks-item-taskDuration");
-        //         secondElement.textContent = `${localStorageTask.taskDuration.split(":")[0] > 0 ? localStorageTask.taskDuration.split(":")[0] + ' h ' : ''}${localStorageTask.taskDuration.split(":")[1]} m`;
-        //         thisTask.appendChild(secondElement);
-
-
-        //         if (localStorageTask.type !== "school") {
-        //             const fourthElement = document.createElement("button");
-        //             fourthElement.classList.add("calender-tasks-item-button");
-        //             fourthElement.addEventListener("click", (event) => {
-        //                 deleteTask(localStorageTask.ID);
-        //                 event.stopPropagation();
-        //                 onPress(false);
-        //             });                    fourthElement.textContent = localStorageTask.taskDone ? "J" : "X";
-        //             thisTask.appendChild(fourthElement);
-        //         }
-
-        //     }
-        // }
     }
 }
 
@@ -354,7 +298,6 @@ function nextDay(){
         }
     }
     initialDate = [startDay, startMonth, startYear];
-    console.log(initialDate);
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
@@ -374,23 +317,23 @@ function previousDay(){
         }
         if (startMonth < 1) {
             startYear -= 1;
-            startMonth = 1;
+            startMonth = 12;
+            startDay = getMonthsLength(startMonth, startYear);
         }
     }
     initialDate = [startDay, startMonth, startYear];
-    console.log(initialDate);
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
 }
 
-function dragStart(event) {
-    const draggedItem = event.target;
-    event.dataTransfer.setData('text/plain', draggedItem.id);
-}
+// function dragStartDays(event) {
+//     const draggedItem = event.target;
+//     event.dataTransfer.setData('text/plain', draggedItem.id);
+// }
 
 function dragOverDays(event) {
-    console.log("dragOverDays");
+    // console.log("dragOverDays");
     event.preventDefault();
 
     if (calendarDropLocation) {
@@ -399,7 +342,7 @@ function dragOverDays(event) {
 }
 
 function dragEnterDays() {
-    console.log("dragEnterDays");
+    // console.log("dragEnterDays");
 
     if (calendarDropLocation) {
         calendarDropLocation.classList.add('drag-over');
@@ -407,7 +350,7 @@ function dragEnterDays() {
 }
 
 function dragLeaveDays() {
-    console.log("dragLeaveDays");
+    // console.log("dragLeaveDays");
 
     if (calendarDropLocation) {
         calendarDropLocation.classList.remove('drag-over');
@@ -416,11 +359,11 @@ function dragLeaveDays() {
 
 function dragDropDays(event) {
     event.preventDefault();
-    console.log("dragDropDays");
+    // console.log("dragDropDays");
 
     const draggedItemId = event.dataTransfer.getData('text/plain');
     const draggedItem = document.getElementById(draggedItemId);
-    console.log(draggedItem)
+    // console.log(draggedItem)
 
     if (draggedItem) {
         const rect = this.getBoundingClientRect();
@@ -463,10 +406,10 @@ function dragDropDays(event) {
             for (let i = 0; i<allItems.length; i++)
             {
                 const task = allItems[i]
-                console.log(task.ID)
-                console.log(task.taskPlacement)
+                // console.log(task.ID)
+                // console.log(task.taskPlacement)
                 if(draggedItem.id == task.ID){
-                    console.log(task)
+                    // console.log(task)
                     task.taskPlacement = relativePercentage+5;
 
                     if(canBeDropped) {
@@ -546,28 +489,31 @@ function updateVisibleElements() {
     containers.forEach(function (container) {
         var spans = container.querySelectorAll('span');
         var containerWidth = container.clientWidth;
+        var containerHeight = container.clientHeight;
         var totalSpanWidth = 0;
+        var totalSpanHeight = 0;
+        var currentLineHeight = 0;
 
         container.style.display = 'flex';
+        container.style.flexWrap = 'wrap'; // Allow flex items to wrap
         container.style.justifyContent = 'center';
         container.style.alignItems = 'center';
-        container.style.whiteSpace = 'nowrap';
         
         spans.forEach(function (span, i) {
             totalSpanWidth += span.clientWidth;
+            totalSpanHeight += span.clientHeight;
 
             if (i === 0) {
                 span.style.visibility = 'visible';
                 span.style.position = 'static';
-
-                
             } else {
-                if (containerWidth >= totalSpanWidth + i * gapValue + 2 * containerPadding) {
+                if (containerHeight >= totalSpanHeight + currentLineHeight) {
                     span.style.visibility = 'visible';
                     span.style.position = 'static';
                 } else {
                     span.style.visibility = 'hidden';
                     span.style.position = 'absolute';
+                    currentLineHeight = totalSpanHeight; // Start a new line
                 }
             }
         });
@@ -575,7 +521,7 @@ function updateVisibleElements() {
         // Set the visibility and position of the remove button (4th span)
         var removeButton = container.querySelector('button');
         if (removeButton) {
-            if (containerWidth >= totalSpanWidth + (spans.length) * gapValue + 2 * containerPadding) {
+            if (containerHeight >= totalSpanHeight + currentLineHeight) {
                 removeButton.style.visibility = 'visible';
                 removeButton.style.position = 'static';
             } else {
@@ -591,9 +537,9 @@ function updateVisibleElements() {
             container.style.gap = `${singleGapValue}px`;  // Set gap based on the variable
 
             const span = visibleElements[0];
-            const fontSizeToFit = (containerWidth / span.textContent.length)*1.5; // Adjust this as needed
+            const fontSizeToFit = (containerWidth / span.textContent.length) * 2; // Adjust this as needed
 
-            if(fontSizeToFit > 20){
+            if (fontSizeToFit > 20) {
                 span.style.fontSize = "20px";
             } else {
                 span.style.fontSize = `${fontSizeToFit}px`;

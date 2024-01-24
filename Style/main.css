@@ -339,12 +339,13 @@ table.fixed td:nth-of-type(3) {
 
 /*Calender CSS*/ 
 .calender{
+  /* visibility: hidden; */
   display: grid;
   grid-template-columns: 10% 90%;
   /*grid-template-rows: 12% minmax(auto, 67vh); /* ___ ((maxTime+2)-minTime)/2     | eks.  ((22+2)-6)/2 */
   height: 90vh;
   overflow: auto;
-  border-radius: 30px
+  border-radius: 15px
 }
 .calender-title {
   grid-column: 1/3;
@@ -458,8 +459,9 @@ table.fixed td:nth-of-type(3) {
 .calender-tasks-item-button-subtask-view{
   margin-top: 10px;
   width: 40%;
-  height: 30px;
-  background-color:red;
+  border-radius: 10px;
+  height: auto;
+  background-color: #c42104;
   font-size: 20px;
   color: white;
 }
@@ -563,7 +565,7 @@ table.fixed td:nth-of-type(3) {
 }
 
 .change-page-button button{
-  border-radius: 30px;
+  border-radius: 15px;
   background-color: var(--banner);
   font-size: 20px;
   color: white;
@@ -583,7 +585,7 @@ table.fixed td:nth-of-type(3) {
   cursor: grab;
   grid-template-columns: 40% 30% 0% 30%;
   padding: 10px;
-  border-radius: 30px;
+  border-radius: 15px;
 }
 
 .calender-task-8 {
@@ -600,14 +602,15 @@ table.fixed td:nth-of-type(3) {
 
 
 .calender-currentTime{
-  background-color: #c46e04;
-  height: 5px;
+  border: none;
+  border-top: 5px dashed #C46E04;
+
   width: 100%;
   z-index: 4;
   opacity: 0.5;
 }
 .calender-startendtime{
-  background-color: #04c44e;
+  background-color: #C46E04; /* ____following: #04c44e can also be used!*/
   height: 5px;
   width: 100%;
   z-index: 3;
@@ -640,7 +643,7 @@ table.fixed td:nth-of-type(3) {
 .calendar-task-more-info{
   /* background-color: #19456C; */
   padding: 10px;
-  border-radius: 30px;
+  border-radius: 15px;
   width: 100%;
 }
 .calendar-groupTaskName-school{
@@ -666,7 +669,7 @@ table.fixed td:nth-of-type(3) {
 .view-task{
   background-color: #19456C;
   /* padding: 20px; */
-  border-radius: 30px;
+  border-radius: 15px;
   height: 75%;
   width: 100%;
 
@@ -681,8 +684,8 @@ table.fixed td:nth-of-type(3) {
 
 }
 .task-view-more-info-button button{
-  background-color: #04c44e;
-  border-radius: 30px;
+  background-color: #1d6539;
+  border-radius: 15px;
   font-size: 20px;
   color: white;
   height: 50px;
@@ -707,6 +710,7 @@ table.fixed td:nth-of-type(3) {
   width: 50px;
   height: auto;
   z-index: 7;
+  cursor: pointer;
 }
 
 .settings-overlay{
@@ -717,7 +721,7 @@ table.fixed td:nth-of-type(3) {
   width: 80vw;
   height: 80vh;
   background-color: #4a4a4a;
-  border-radius: 30px;
+  border-radius: 15px;
   z-index: 6;
 
   padding: 40px;
@@ -782,7 +786,7 @@ table.fixed td:nth-of-type(3) {
 
 /* calendar-view */
 #calendar-main{
-  margin: 40px 40px 40px 40px; /*change to _______  margin: 40px 40px 0 40px;  */
+  margin: 40px 40px 0px 70px; /*change to _______  margin: 40px 40px 0 40px;  */
   display: grid;
   grid-template-columns: 60% 35%;
   grid-gap: 5%;
@@ -791,14 +795,14 @@ table.fixed td:nth-of-type(3) {
 }
 #calendar-change-later-to-subtasks{
   background-color: #4a4a4a;
-  border-radius: 30px;
+  border-radius: 15px;
 }
 #calendar-view{
   background-color: #1d6539;
-  border-radius: 30px;
+  border-radius: 15px;
   display: flex;
   flex-direction: row;
-  overflow: auto;
+  overflow: hidden;
 }
 
 #calendar-view-all-days {
@@ -816,6 +820,7 @@ table.fixed td:nth-of-type(3) {
 }
 
 .calendar-view-left-image{
+  background-color: var(--banner);
   display: flex;
   flex: row;
   width: 60px;
@@ -825,8 +830,10 @@ table.fixed td:nth-of-type(3) {
   width: 50%;
   height: auto;
   align-self: center;
+  cursor: pointer;
 }
 #calendar-view-left-previous{
+  cursor: pointer;
   transform: rotate(180deg);
   width: 50%;
   height: auto;
@@ -837,7 +844,7 @@ table.fixed td:nth-of-type(3) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin: 0 3px;
+  margin: 0 0 0 3px;
 }
 
 
@@ -845,7 +852,7 @@ table.fixed td:nth-of-type(3) {
   position: relative;
   width: 60px;
   height: 100%;
-  background-color: #c46e04;
+  background-color: var(--bg1);
 }
 
 .calendar-view-day-text{
@@ -863,4 +870,5 @@ table.fixed td:nth-of-type(3) {
   background-color: var(--bg1);
   display: flex;
   flex: 1;
+  overflow: hidden;
 }

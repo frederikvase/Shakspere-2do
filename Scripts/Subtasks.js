@@ -43,7 +43,7 @@ class SubTask{
         thisSubtask.setAttribute("draggable", "true");
         thisSubtask.addEventListener("dragstart", dragStart);
         thisSubtask.addEventListener("dragend", dragEnd);
-        thisSubtask.setAttribute("onmouseover", "checkElementId(event)");
+        // thisSubtask.setAttribute("onmouseover", "checkElementId(event)");
 
         subtaskHolder.appendChild(thisSubtask);
 
@@ -75,7 +75,6 @@ let draggableItems = [
     {taskName : "Math - Functions",     subtaskName : "KAP 10",         duration : "2:00"},
     {taskName : "Programming",          subtaskName : "View multiple days",   duration : "4:00"},
     {taskName : "Danish Assignment",    subtaskName : "Discussion",     duration : "2:30"},
-   
 ];
 
 for (let i = 0; i < draggableItems.length; i++) {
@@ -159,12 +158,14 @@ function onPress(valueShowViewMore, element = null)
                 groupButton.classList.add("calender-tasks-item-button-subtask-view");
                 groupButton.innerText = "Delete task"
                 groupButton.addEventListener("click", () => {
-                    deleteTask(element.id);
+                    // deleteTask(element.id);
                     onPress(false);
 
                     //View-days
                     deleteTask(element.id, allItems);
-                    localStorage.setItem("all-tasks", JSON.stringify(allItems))
+                    displayAllTasks();
+
+                    // localStorage.setItem("all-tasks", JSON.stringify(allItems))
                 })
                 info.appendChild(groupButton);
             }
