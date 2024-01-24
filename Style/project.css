@@ -1,32 +1,116 @@
-.project
+ul table 
 {
-    cursor: pointer;
+    position: relative;
+  
+    margin: 5px 5% 0px 5%;
+  
+    table-layout: fixed;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 90%;
+  
+    border-radius: 15px;
+    list-style-type: none;
+  
+    background-color: var(--bg2);
+    outline-color: var(--bg1);
+    outline-width: 3px;
+    outline-style: solid;
+  
+    font-size: 18px;
+  
+    user-select: none;
+  }
+
+/* .project, .task
+{
     position: relative;
 
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 
-    table-layout: fixed;
     width: 90%;
 
     border-radius: 15px;
     list-style-type: none;
 
     background-color: var(--bg2);
-    outline-color: var(--bg1);
-    outline-width: 3px;
+    outline-width: 5px;
+    
     outline-style: solid;
 
     font-size: 18px;
 
     user-select: none;
+} */
+
+.project
+{
+    outline-color: var(--banner);
+}
+
+.elementText
+{
+    margin: auto;
 }
 
 .content 
 {
-    padding: 0 18px;
+    padding-bottom: 5px;
+    background-color: var(--bg1);
     display: none;
     overflow: hidden;
-    background-color: #f1f1f1;
+}
+
+span
+{
+    cursor: pointer;
+}
+
+.settingDots
+{
+    position: absolute;
+    right: 5px;
+    top: 0;
+    margin: 2px;
+    padding: 0px 3px 0px 3px;
+    border-radius: 15px;
+    border: 3px solid var(--bg1);
+}
+
+.addProject 
+{
+    position: absolute;
+    right: 100px;
+    top: 0;
+    margin: 2px;
+    padding: 0px 8.5px 0px 8.5px;
+    border-radius: 15px;
+    border: 3px solid red;
+
+    font-size: small;
+}
+.addProject:hover 
+{
+    background-color: red;
+    color: white;
+}
+
+.addTask 
+{
+    position: absolute;
+    right: 25px;
+    top: 0;
+    margin: 2px;
+    padding: 0px 8.5px 0px 8.5px;
+    border-radius: 15px;
+    border: 3px solid green;
+
+    font-size: small;
+}
+.addTask:hover 
+{
+    background-color: green;
+    color: white;
 }

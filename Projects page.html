@@ -7,14 +7,17 @@
         <!-- Stylesheets -->
         <link rel="stylesheet" href="Style/main.css">
         <link rel="stylesheet" href="Style/project.css">
+        <link rel="stylesheet" href="Style/task.css">
         
         <!-- Title and Icons -->
         <title>DoDue</title>
+
     </head>
 
-    <body style="text-align: center;" onload="reload()">
+    <body onload="reload()">
+        
         <!-- Header -->
-        <div id="myDIV" class="header">
+        <div class="header">
             <h2 style="margin:-25px">DoDue</h2>
         </div>
         
@@ -24,36 +27,69 @@
         <ul id="myUL">
         </ul>
 
-        <!-- Modal for Adding Projects -->
+        <!-- Modal for editting Projects -->
         <div style="text-align: left;" id="EditProjectModal" class="modal">
             <div class="modal-content">
-                <span class="closeModal">&times;</span>
-                <h2 id="projectTitle" class="projectTitle">Title placeholder</h2>
+                <span id="closeEditProjectModal" class="closeModal">&times;</span>
+                <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
 
-                <span onclick="deleteProject()" style="float:right; background-color: red" class="projectsButton">Delete project</span>
+                <span id="deleteProject" class="projectsButton deleteButton">Delete project</span>
+            </div>
+        </div>
+
+        <!-- Modal for editting Tasks -->
+        <div style="text-align: left;" id="EditTaskModal" class="modal">
+            <div class="modal-content">
+                <span id="closeEditTaskModal" class="closeModal">&times;</span>
+                <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
+
+                <span id="deleteTask" class="projectsButton deleteButton">Delete Task</span>
+            </div>
+        </div>
+
+        <!-- Modal for adding tasks -->
+        <div style="text-align: left;" id="AddTaskModal" class="modal">
+            <div class="modal-content">
+                <div style="display: flex; flex-direction: row;">
+                    <input id="taskName" class="projectName" placeholder="Write task name" autocomplete="off"></input>
+                    <span id="closeTaskModal" class="closeModal">&times;</span>
+                </div>
+
+                <span>Estimated time: </span>
+                <input id="taskTime" type="number" autocomplete="off" placeholder="0">
+                <span> minutes</span>
+
+                <br>
+
+                <span onclick="addTask()" class="modalButton">Add</span>
             </div>
         </div>
 
         <br>
 
-        <span onclick="openAddProjectModal()" class="projectsButton">Add new project</span>
+
+        <span onclick="openModal('AddProjectModal')" class="projectsButton">Add new project</span>
         <div style="text-align: left;" id="AddProjectModal" class="modal">
+
             <div class="modal-content">              
-                <input id="projectName" class="projectName" placeholder="Write project name"></input>
+                <input id="projectName" class="projectName" placeholder="Write project name" autocomplete="off"></input>
+                
                 <p id="projectTitle"><b>Optional:</b></p>
+
                 <p>Due date: 
                     <input type="date" id="date"></input>
                 </p>
 
                 <br>
                 <span onclick="addProject()" class="projectsButton" id="projectAdder">Add new project</span>
-                <span onclick="addSubProject()" class="projectsButton" id="subProjectAdder">Add new sub-project</span>
-
             </div>
         </div>
 
         <!-- Scripts -->
-        <script type="text/javascript" src="Scripts/Projects.js"></script>
-        <script type="text/javascript" src="Scripts/ProjectModal.js"></script>
+        <script type="text/javascript" src="Scripts/ProjectsPage.js"></script>
+        <script type="text/javascript" src="Scripts/Project.js"></script>
+        <script type="text/javascript" src="Scripts/Task.js"></script>
+        <script type="text/javascript" src="Scripts/Modals.js"></script>
+
     </body>
 </html>

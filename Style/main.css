@@ -1,34 +1,39 @@
-:root {
-    --bg1: #1a2f42;
-    --bg2: #e3e3e3;
-    --banner: #c46e04;
+:root 
+{
+  --bg1: #1a2f42;
+  --bg2: #e3e3e3;
+  --banner: #c46e04;
 
   --fontSize: calc((1vw + 1vh));
 }
 
-body {
+body 
+{
   margin: 0;
   min-width: 250px;
   background-color: var(--bg1);
   color: var(--bg2);
 
-  background-size: cover;
+  text-align: center;
 }
 
-h2 {
+h2 
+{
   font: var(--fontSize)/250% 'Forte';
   font-size: 250%;
   margin: -35px;
   color: inherit;
 }
 
-h3 {
+h3
+{
   font: var(--fontSize)/200% 'Berlin Sans FB';
   font-size: 200%;
   color: inherit;
 }
 
-pre {
+pre 
+{
     font: var(--fontSize)/170% 'Berlin Sans FB';
     font-size: 170%;
     color: inherit;
@@ -36,176 +41,35 @@ pre {
     padding-top: 0px;
 }
 
-* {
+* 
+{
   box-sizing: border-box;
 }
 
-ul {
-    font: var(--fontSize)/170% 'Berlin Sans FB';
-    margin: 1;
-    padding: 0;
-    color: black;
-
-    background: inherit;
-
-    text-align: center;
+ul 
+{
+  font: var(--fontSize)/170% 'Berlin Sans FB';
+  color: black;
+  background: inherit;
+  padding-inline-start: 0px;
 }
 
-ul li {
-  cursor: pointer;
-  position: relative;
-  padding: 12px 8px 12px 40px;
-  
-  margin-left: 5%;
-  margin-right: 5%;
-  margin-bottom: 0px;
-
-  border-radius: 15px;
-  list-style-type: none;
-
-  outline-color: var(--bg1);
-  outline-width: 3px;
-  outline-style: solid;
-
-  font-size: 18px;
-
-  user-select: none;
-}
-
-ul table {
-  cursor: pointer;
-  position: relative;
-
-  margin-left: 5%;
-  margin-right: 5%;
-  margin-bottom: 0px;
-
-  table-layout: fixed;
-  width: 90%;
-
-  border-radius: 15px;
-  list-style-type: none;
-
-  background-color: var(--bg2);
-  outline-color: var(--bg1);
-  outline-width: 3px;
-  outline-style: solid;
-
-  font-size: 18px;
-
-  user-select: none;
-}
-
-ul table td {
-  padding: 12px 8px 12px 40px;
-}
-
-.dateUL {
-  cursor: pointer;
-  position: relative;
-  padding: 5px 2px 5px 4px;
-  
-  margin-left: 2px;
-  margin-right: 2px;
-  margin-bottom: 3px;
-  
-  float: left;
-  width: 15%;
-
-  border-radius: 15px;
-  list-style-type: none;
-
-  background: #83B8BF;
-}
-
-ul table:hover {
-    transition: 0.3s;
-    background: var(--banner);
-    color: var(--bg2);
-
-}
-
-ul table.checked {
-  background: var(--banner);
-  color: var(--bg2);
-  text-decoration: line-through;
-}
-
-ul table.unchecked {
-  color: var(--bg1);
-  text-decoration: none;
-
-}
-
-ul li.checked::before {
-  content: '';
-  position: absolute;
-  border-color: var(--bg2);
-  border-style: solid;
-  border-width: 0 2px 2px 0;
-  top: 10px;
-  left: 16px;
-  transform: rotate(45deg);
-  height: 15px;
-  width: 7px;
-}
-
-.projectTitle
+.modalTitle
 {
   text-align: center; 
   margin-top: -0px; 
   margin-bottom: -15px;
 }
 
-.close {
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 17px 16px 12px 16px;
-  border-radius: 15px;
-
-}
-
-.close:hover {
-  background-color: #f44336;
-  color: white;
-}
-
-.header {
-  background-color: var(--banner);
+.header 
+{
   padding: 30px 40px;
   color: var(--bg2);
-  text-align: center;
+  background-color: var(--banner);
 }
 
-.header:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-input {
-  margin: 0;
-}
-
-.in {
-  border-width: none;
-  border-style: hidden;
-  margin-right: 5px;
-  border-radius: 5px;
-  width: auto;
-  align-content: center;
-  text-align: center;
-
-  padding: 10px;
-  float: center;
-  font-size: 16px;
-
-  color: var(--bg1);
-  background-color: var(--bg2);
-}
-
-.projectsButton {
+.projectsButton 
+{
   background: var(--bg2);
   font: var(--fontSize)/170% 'Berlin Sans FB';
   color: var(--bg1);
@@ -223,12 +87,20 @@ input {
   border-radius: 5px;
 }
 
-.projectsButton:hover {
+.deleteButton
+{
+  float:right; 
+  background-color: red;
+}
+
+.projectsButton:hover 
+{
   background-color: var(--banner);
   color: var(--bg2);
 }
 
-.modal {
+.modal 
+{
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -241,7 +113,8 @@ input {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+.modal-content 
+{
   background-color: var(--bg2);
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
@@ -251,20 +124,29 @@ input {
   color: var(--bg1);
 }
 
-.closeModal {
+.flexDirectionRow 
+{
+  display: flex;
+  flex-direction: row;
+}
+
+.closeModal 
+{
   color: #aaa;
   float: right;
   font-size: 40px;
   font-weight: bold;
 }
 
-.closeModal:hover, .closeModal:focus {
+.closeModal:hover, .closeModal:focus 
+{
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
 
-.collapsible {
+.collapsible 
+{
   background-color: var(--bg2);
   color: var(--bg1);
   border-radius: 20px 20px 0px 0px;
@@ -277,13 +159,15 @@ input {
   font-size: 15px;
 }
 
-.active, .collapsible:hover {
+.active, .collapsible:hover 
+{
   background-color: var(--bg2);
 }
 
-.content {
+.content 
+{
   padding: 0 18px;
-  text-align: left;
+  text-align: center;
 
   display: none;
   overflow: hidden;
@@ -292,58 +176,33 @@ input {
   color: var(--bg1);
 }
 
-button {
+button 
+{
   outline-style: none;
   padding: 5px 15px 5px 15px;
   font-weight: bold;
   color: var(--bg1);
 }
 
-body::-webkit-scrollbar {
+body::-webkit-scrollbar 
+{
   display: none;
 }
 
-body {
+body 
+{
   font-family: Arial, Helvetica, sans-serif;
 }
 
-input {
+input 
+{
   width: 300px;
   padding: 7px;
 }
 
-.ui-state-highlight {
-  border: 0 !important;
-}
 
-.ui-state-highlight a {
-  background: var(--bg1) !important;
-  border: var(--bg1);
-  color: #fff !important;
-}
-
-table.fixed {
-  table-layout: fixed;
-  width: 100%;
-}
-
-table.fixed td {
-  overflow: hidden;
-}
-
-table.fixed td:nth-of-type(1) {
-  width: 33.33%;
-}
-
-table.fixed td:nth-of-type(2) {
-  width: 33.33%;
-}
-
-table.fixed td:nth-of-type(3) {
-  width: 33.33%;
-}
-
-.projectName {
+.projectName 
+{
   font-family: 'Berlin Sans FB';
   font-size: xx-large;
   background-color: var(--bg2);
