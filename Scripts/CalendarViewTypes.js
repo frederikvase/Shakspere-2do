@@ -9,12 +9,13 @@ let schoolID = 100;
 let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
 
 class taskOnGivenDay{
-    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${1800}`)
+    constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${1800}`, IDFromSubtask = null)
     {
         this.taskName           = taskName;         //String -> "English Essay"
         this.taskSubtaskName    = taskSubtaskName;  //String -> "Indledning"
         this.taskDuration       = taskDuration;     //String -> "1:30"
         this.taskPlacement      = taskPlacement     //Float -> 10  OR   -> string "11:30"
+        this.IDFromSubtask      = IDFromSubtask
         //this.ID | this.date | this.type | this.startTime | this.endTime | this.top | this.height
 
         // console.log(date + " | " + this.taskSubtaskName + this.taskName)
@@ -119,15 +120,6 @@ class taskOnGivenDay{
 showMultipleDays();
 displayAllTasks();
 
-// allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     65,         "20-1-2024"));
-// allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "18:00",    "20-1-2024"));
-// allItems.push(new taskOnGivenDay("BiOlOgIV2",   "POWER HOUSE",  "2:00",     "9:30",     "22-1-2024"));
-// allItems.push(new taskOnGivenDay("Samfundsfag", "rAnDoM",       "1:00",     "17:00",    "21-1-2024"));
-// allItems.push(new taskOnGivenDay("BiOlOgIV2",   "HOUSE",        "2:00",     "11:30",    "22-1-2024"));
-// allItems.push(new taskOnGivenDay("BiOlOgI",     "MiToCoNDrIa",  "0:20",     10,         "20-1-2024"));
-
-
-
 //Input from MinSkoleApp (Mortens del)
 allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
 allItems.push(new taskOnGivenDay("Math", "", "1:00", "9:35", "20-1-2024"));
@@ -159,9 +151,9 @@ function displayAllTasks() {
                     // If not, add the new school task
                     if (!existingSchoolTask) 
                     {
-                        const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
+                        const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
                         if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
-                            task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
+                            task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
                             allItems[i] = task; 
                         } else {console.error("Some information missing:"); console.log(allItems[i]); }
                     } else {
@@ -170,10 +162,10 @@ function displayAllTasks() {
                     }
                 } else {
                     // Projects -> Convert into instance of taskOnGivenDay
-                    const { taskName, taskSubtaskName, taskDuration, taskPlacement, date } = allItems[i];
+                    const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
                     if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date)
                     {
-                        task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date);
+                        task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
                         allItems[i] = task; 
                     } else {console.error("Some information missing"); console.log(allItems[i]);}
                 }
@@ -183,6 +175,9 @@ function displayAllTasks() {
             if (typeof task.showDaysTask === 'function') {
                 task.showDaysTask();
             }
+        } else {
+            allItems.splice(i,1),
+            i--;
         }
     }
 
@@ -327,11 +322,6 @@ function previousDay(){
     updateVisibleElements();
 }
 
-// function dragStartDays(event) {
-//     const draggedItem = event.target;
-//     event.dataTransfer.setData('text/plain', draggedItem.id);
-// }
-
 function dragOverDays(event) {
     // console.log("dragOverDays");
     event.preventDefault();
@@ -363,7 +353,7 @@ function dragDropDays(event) {
 
     const draggedItemId = event.dataTransfer.getData('text/plain');
     const draggedItem = document.getElementById(draggedItemId);
-    // console.log(draggedItem)
+    // console.log(draggedItemId)
 
     if (draggedItem) {
         const rect = this.getBoundingClientRect();
@@ -400,7 +390,7 @@ function dragDropDays(event) {
             const originalSubtaskName = draggedItem.querySelector('.subtask-taskName li').textContent;
             const originalTaskName = draggedItem.querySelector('.subtask-taskName').textContent.replace(originalSubtaskName, '').trim()
             const spanTaskDuration = draggedItem.querySelector('.subtask-taskDuration').textContent;
-            allItems.push(new taskOnGivenDay(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage, dropLocationId));
+            allItems.push(new taskOnGivenDay(originalTaskName, originalSubtaskName, spanTaskDuration, relativePercentage, dropLocationId, draggedItemId));
 
         } else { //Alredy in calendar
             for (let i = 0; i<allItems.length; i++)
@@ -413,19 +403,22 @@ function dragDropDays(event) {
                     task.taskPlacement = relativePercentage+5;
 
                     if(canBeDropped) {
-                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, dropLocationId))
+                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, dropLocationId, task.IDFromSubtask))
                         allItems.splice(i,1);
                     }
                 }
             }
         }        
         displayAllTasks();
+
+        var element = document.getElementById(draggedItemId);
+        element.parentNode.removeChild(element);   
+        // updateSubtaskView();
     } else {
         alert("No Item Found!");
     }
 }
 
-// Function to update the draggable state after dropping
 function updateDraggableState() {
     const projectTasks = document.querySelectorAll('.calender-tasks-project');
     projectTasks.forEach(task => {
@@ -433,7 +426,6 @@ function updateDraggableState() {
         task.addEventListener("dragstart", dragStart);
     });
 }
-
 
 function isPlacedAtSameTimeButForViewMoreDays(arr = allItems) {
     let initialDate = [dayNumber, month, year];

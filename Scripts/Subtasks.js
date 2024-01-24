@@ -1,6 +1,8 @@
 let allSubtasks = [];
 let showTasks = false;
 
+let addSubtasks = [] //new prop delete this one!
+
 class SubTask{
     constructor(taskName, subtaskName, duration)
     {
@@ -29,7 +31,7 @@ class SubTask{
                 duration : this.duration}
             );
         }
-        this.showSubtask();
+        // this.showSubtask();
     }
 
     showSubtask()
@@ -77,9 +79,47 @@ let draggableItems = [
     {taskName : "Danish Assignment",    subtaskName : "Discussion",     duration : "2:30"},
 ];
 
-for (let i = 0; i < draggableItems.length; i++) {
-    new SubTask(draggableItems[i].taskName, draggableItems[i].subtaskName, draggableItems[i].duration);
+
+
+function updateSubtaskView()
+{
+    for (let i = 0; i < draggableItems.length; i++) {
+        addSubtasks.push(new SubTask(draggableItems[i].taskName, draggableItems[i].subtaskName, draggableItems[i].duration));
+    }
+
+    shownELements = [];
+    //Only show subtasks, that are not placed!    
+    let allItemsDuplicate = JSON.parse(localStorage.getItem("all-tasks")) || [];
+    for (let i = 0; i<addSubtasks.length; i++){
+        shouldBeShown = true;
+        console.log("NEW PART");
+        for (let key in allItemsDuplicate){
+            task = allItemsDuplicate[key];
+    
+            console.log(`if ${task.IDFromSubtask} ==  ${addSubtasks[i].ID}`)
+            if(task.IDFromSubtask == addSubtasks[i].ID){
+                shouldBeShown = false;
+                console.log("-----THEN FALSE")
+            }
+        }
+    
+        if (shouldBeShown){
+            console.log("----TRUTH: Following should be shown")
+            // addSubtasks[i].showSubtask();
+            shownELements.push(addSubtasks[i])
+            console.log(addSubtasks[i]);
+        }
+    
+        //Update layout___
+    }
+    console.log(shownELements)
+    for(let obj in shownELements){
+        shownELements[obj].showSubtask();
+    }
 }
+
+updateSubtaskView();
+
 
 const viewMore = document.getElementsByClassName("task-view-more-info");
 viewMore[0].addEventListener("click", () => onPress(false));
@@ -158,10 +198,10 @@ function onPress(valueShowViewMore, element = null)
                 groupButton.classList.add("calender-tasks-item-button-subtask-view");
                 groupButton.innerText = "Delete task"
                 groupButton.addEventListener("click", () => {
-                    // deleteTask(element.id);
                     onPress(false);
 
                     //View-days
+                    console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
                     deleteTask(element.id, allItems);
                     displayAllTasks();
 
