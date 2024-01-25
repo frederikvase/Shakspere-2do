@@ -1,0 +1,46 @@
+.ToDo, .box
+{
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #112232;
+    height: 85vh;
+    overflow: auto;
+}
+
+#projectpage-main
+{
+    margin: 20px 20px 0px 50px; /*change to _______  margin: 40px 40px 0 40px;  */
+    display: grid;
+    grid-template-columns: 60% 35%;
+    grid-gap: 5%;
+    grid-template-rows: 90vh;
+    overflow: auto;
+}
+
+::-webkit-scrollbar 
+{
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+#todo-dragable
+{
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: auto;
+  
+    height: 75%;
+    overflow: auto;
+}
+
+.todo-item
+{
+    background-color: #19456C;
+    display: grid;
+    grid-template-columns: 40% 30% 0% 30%;
+    padding: 10px;
+    border-radius: 15px;
+
+    margin-bottom: 15px;
+
+}

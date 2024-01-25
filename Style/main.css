@@ -57,13 +57,14 @@ ul
 .modalTitle
 {
   text-align: center; 
-  margin-top: -0px; 
+  margin-top: 0px; 
   margin-bottom: -15px;
 }
 
 .header 
 {
-  padding: 30px 40px;
+  height: 15vh;
+
   color: var(--bg2);
   background-color: var(--banner);
 }
@@ -194,7 +195,7 @@ body
   font-family: Arial, Helvetica, sans-serif;
 }
 
-input 
+input :not(.checkmarkContainer)
 {
   width: 300px;
   padding: 7px;

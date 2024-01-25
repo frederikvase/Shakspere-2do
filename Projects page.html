@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="Style/main.css">
         <link rel="stylesheet" href="Style/project.css">
         <link rel="stylesheet" href="Style/task.css">
+        <link rel="stylesheet" href="Style/sideBox.css">
         
         <!-- Title and Icons -->
         <title>DoDue</title>
@@ -18,70 +19,85 @@
         
         <!-- Header -->
         <div class="header">
-            <h2 style="margin:-25px">DoDue</h2>
+            <h2 style="height: 10vh">DoDue</h2>
         </div>
         
-        <h3 style="margin:5px">Ongoing projects:</h3>
+        <div id="projectpage-main">
+            <!-- Project list elements -->
+            <div class="box">
+                <h3 style="margin:5px">Ongoing projects:</h3>
 
-        <!-- To-Do List Items -->
-        <ul id="myUL">
-        </ul>
+                <!-- To-Do List Items -->
+                <ul id="myUL" style="align-content: right;">
+                </ul>
 
-        <!-- Modal for editting Projects -->
-        <div style="text-align: left;" id="EditProjectModal" class="modal">
-            <div class="modal-content">
-                <span id="closeEditProjectModal" class="closeModal">&times;</span>
-                <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
+                <!-- Modal for editting Projects -->
+                <div style="text-align: left;" id="EditProjectModal" class="modal">
+                    <div class="modal-content">
+                        <span id="closeEditProjectModal" class="closeModal">&times;</span>
+                        <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
 
-                <span id="deleteProject" class="projectsButton deleteButton">Delete project</span>
-            </div>
-        </div>
-
-        <!-- Modal for editting Tasks -->
-        <div style="text-align: left;" id="EditTaskModal" class="modal">
-            <div class="modal-content">
-                <span id="closeEditTaskModal" class="closeModal">&times;</span>
-                <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
-
-                <span id="deleteTask" class="projectsButton deleteButton">Delete Task</span>
-            </div>
-        </div>
-
-        <!-- Modal for adding tasks -->
-        <div style="text-align: left;" id="AddTaskModal" class="modal">
-            <div class="modal-content">
-                <div style="display: flex; flex-direction: row;">
-                    <input id="taskName" class="projectName" placeholder="Write task name" autocomplete="off"></input>
-                    <span id="closeTaskModal" class="closeModal">&times;</span>
+                        <span id="deleteProject" class="projectsButton deleteButton">Delete project</span>
+                    </div>
                 </div>
 
-                <span>Estimated time: </span>
-                <input id="taskTime" type="number" autocomplete="off" placeholder="0">
-                <span> minutes</span>
+                <!-- Modal for editting Tasks -->
+                <div style="text-align: left;" id="EditTaskModal" class="modal">
+                    <div class="modal-content">
+                        <span id="closeEditTaskModal" class="closeModal">&times;</span>
+                        <h2 id="projectTitle" class="modalTitle">Title placeholder</h2>
+
+                        <span id="deleteTask" class="projectsButton deleteButton">Delete Task</span>
+                    </div>
+                </div>
+
+                <!-- Modal for adding tasks -->
+                <div style="text-align: left;" id="AddTaskModal" class="modal">
+                    <div class="modal-content">
+                        <div style="display: flex; flex-direction: row;">
+                            <input id="taskName" class="projectName" placeholder="Write task name" autocomplete="off"></input>
+                            <span id="closeTaskModal" class="closeModal">&times;</span>
+                        </div>
+
+                        <span>Estimated time: </span>
+                        <input id="taskTime" type="number" autocomplete="off" placeholder="0">
+                        <span> minutes</span>
+
+                        <br>
+
+                        <span onclick="addTask()" class="modalButton">Add</span>
+                    </div>
+                </div>
 
                 <br>
 
-                <span onclick="addTask()" class="modalButton">Add</span>
+                <span onclick="openModal('AddProjectModal')" class="projectsButton">Add new project</span>
+                <div style="text-align: left;" id="AddProjectModal" class="modal">
+
+                    <div class="modal-content">              
+                        <input id="projectName" class="projectName" placeholder="Write project name" autocomplete="off"></input>
+                        
+                        <p id="projectTitle"><b>Optional:</b></p>
+
+                        <p>Due date: 
+                            <input type="date" id="date"></input>
+                        </p>
+
+                        <br>
+                        <span onclick="addProject()" class="projectsButton" id="projectAdder">Add new project</span>
+                    </div>
+                </div>
             </div>
-        </div>
+            
+            <!-- Sidebox -->
+            <div class="ToDo">
+                <h1> Selected tasks </h1>
 
-        <br>
-
-
-        <span onclick="openModal('AddProjectModal')" class="projectsButton">Add new project</span>
-        <div style="text-align: left;" id="AddProjectModal" class="modal">
-
-            <div class="modal-content">              
-                <input id="projectName" class="projectName" placeholder="Write project name" autocomplete="off"></input>
-                
-                <p id="projectTitle"><b>Optional:</b></p>
-
-                <p>Due date: 
-                    <input type="date" id="date"></input>
-                </p>
-
-                <br>
-                <span onclick="addProject()" class="projectsButton" id="projectAdder">Add new project</span>
+                <div class="task-view-dragAndDrop">
+                    <div id="todo-draggable">
+                       <!-- These draggable tasks is made in Subtasks -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -90,6 +106,7 @@
         <script type="text/javascript" src="Scripts/Project.js"></script>
         <script type="text/javascript" src="Scripts/Task.js"></script>
         <script type="text/javascript" src="Scripts/Modals.js"></script>
+        <script type="text/javascript" src="Scripts/Subtasks.js"></script>
 
     </body>
 </html>

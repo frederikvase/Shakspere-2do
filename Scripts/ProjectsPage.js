@@ -31,6 +31,8 @@ class Task extends ListElement
     {
         super(name, path, "task");
         this.time = parseFloat(time);
+
+        this.checked = -1;
     }
 }
 
@@ -61,6 +63,8 @@ function reload()
     {
         document.getElementById("myUL").appendChild(getHTMLElement(elements[i]));
     }
+
+    initSideBox();
 }
 
 function setPath(element, path)
@@ -99,92 +103,28 @@ function getTime(element)
 function getHTMLElement(element)
 {
     let container = document.createElement("div");
-    let table = document.createElement("table");
+    container.className = "container";
     
-    if (element.type === "project")
-    {
-        table.className = "project";
-    }
-    else
-    {
-        table.className = "task";
-    }
-    
-    
-    let row = table.insertRow();
-    document.getElementById("myUL").appendChild(table);
-    
-    // Display time in leftmost cell
-    let time = row.insertCell();
-    if (element.time > 0)
-    {
-        time.textContent = element.time + " minutes ";
-        time.className = "elementText";
-    }
-    time.style.width = "15%"; 
-    row.appendChild(time);
-
-    // Display name in middle cell
-    let text = row.insertCell();
-    text.innerHTML = element.name + (element.opened || element.type == "task" || element.content.length === 0 ? "" : " <b>...</b>");
-    text.style.width = "70%";
-    row.appendChild(text);
-
-    // Create a table cell for labour time
-    let rightCell = row.insertCell();
-    rightCell.style.width = "15%";
-    rightCell.style.float = "left";
-    row.appendChild(rightCell);
-
-    // Append the row to the table
-    table.appendChild(row);
+    let table = getTextTable(element);
     
     container.appendChild(table);
 
     if (element.type === "project")
     {
-        let projectAdder = document.createElement("projectAdder");
-        projectAdder.className = "addProject";
-        projectAdder.onclick = function(event) 
-        {
-            event.stopPropagation();
+        table.appendChild(getProjectAdder(element));
+        table.appendChild(getTaskAdder(element));
 
-            document.getElementById("AddProjectModal").style.display = "block";
-            document.getElementById("projectAdder").onclick = function() {
-                addProject(element);
-            }
-        };
-        projectAdder.appendChild(document.createTextNode("Add Project"));
-        table.appendChild(projectAdder);
-
-        let taskAdder = document.createElement("taskAdder");
-        taskAdder.className = "addTask";
-        taskAdder.onclick = function(event) 
-        {
-            event.stopPropagation();
-            
-            path = element.path.slice();
-            showTaskModal(element);
-        };
-        taskAdder.appendChild(document.createTextNode("Add Task"));
-        table.appendChild(taskAdder);
-
-        let content = document.createElement("table");
-        content.className = "content";
-        for (let i = 0; i < element.content.length; i++)
-        {
-            content.appendChild(getHTMLElement(element.content[i]));
-        }
+        let content = getContent(element);
         container.appendChild(content);
-
-        content.style.display = element.opened ? "block" : "none";
 
         table.onclick = function() 
         { 
             if (typeof element.content === "undefined" || element.content.length === 0)
                 return;
 
-            if (content.style.display === "block") 
+            let text = table.rows.item(0).cells.item(1);
+
+            if (element.opened) 
             {
                 element.opened = false;
                 text.innerHTML = element.name + (element.opened || element.type == "task" || element.content.length === 0 ? "" : " <b>...</b>");
@@ -200,7 +140,128 @@ function getHTMLElement(element)
             localStorage.elements = JSON.stringify(elements);
         };
     }
-        
+    else
+    {
+        let checkmark = document.createElement("span");
+        checkmark.className = (element.checked !== -1) ? "checked" : "unchecked";
+
+        checkmark.onclick = function(event)
+        {
+            event.stopPropagation();
+            checkmark.className = (checkmark.className === "unchecked") ? "checked" : "unchecked";
+
+            if (element.checked === -1)
+            {
+                selectItem(element);
+                element.checked = selectedItems[selectedItems.length - 1].uniqueID;
+            }
+            else
+            {
+                removeItemWithID(element.checked);
+                element.checked = -1;
+            }
+
+            localStorage.elements = JSON.stringify(elements);
+        }
+
+        table.appendChild(checkmark);
+    }
+    
+    table.appendChild(settingDots(element));
+
+    return container;
+}
+
+function getTextTable(element)
+{
+    let table = document.createElement("table");
+    
+    let row = table.insertRow();
+    document.getElementById("myUL").appendChild(table);
+    
+    let time = row.insertCell();
+    if (element.time > 0)
+    {
+        time.textContent = element.time + " min ";
+        time.className = "elementText";
+    }
+    time.style.width = "30%"; 
+    row.appendChild(time);
+
+    let text = row.insertCell();
+    text.innerHTML = element.name + (element.opened || element.type == "task" || element.content.length === 0 ? "" : " <b>...</b>");
+    text.style.width = "40%";
+    row.appendChild(text);
+
+    let rightCell = row.insertCell();
+    rightCell.style.width = "40%";
+    rightCell.style.float = "left";
+    row.appendChild(rightCell);
+
+    table.appendChild(row);
+
+    if (element.type === "project")
+    {
+        table.className = "project";
+    }
+    else
+    {
+        table.className = "task";
+    }
+
+    return table;
+}
+
+function getProjectAdder(project)
+{
+    let projectAdder = document.createElement("projectAdder");
+    projectAdder.className = "addProject";
+    projectAdder.onclick = function(event) 
+    {
+        event.stopPropagation();
+
+        document.getElementById("AddProjectModal").style.display = "block";
+        document.getElementById("projectAdder").onclick = function() {
+            addProject(project);
+        }
+    };
+    projectAdder.appendChild(document.createTextNode("Add Project"));
+
+    return projectAdder;
+}
+
+function getTaskAdder(project)
+{
+    let taskAdder = document.createElement("taskAdder");
+    taskAdder.className = "addTask";
+    taskAdder.onclick = function(event) 
+    {
+        event.stopPropagation();
+
+        path = project.path.slice();
+        showTaskModal(project);
+    };
+    taskAdder.appendChild(document.createTextNode("Add Task"));
+
+    return taskAdder;
+}
+
+function getContent(element)
+{
+    let content = document.createElement("table");
+    content.className = "content";
+    for (let i = 0; i < element.content.length; i++)
+    {
+        content.appendChild(getHTMLElement(element.content[i]));
+    }
+    
+    content.style.display = element.opened ? "block" : "none";
+
+    return content;
+}
+
+function settingDots(element)
+{
     let span = document.createElement("span");
     span.className = "settingDots";
     span.innerHTML = "<b>&#8942</b>";
@@ -225,9 +286,8 @@ function getHTMLElement(element)
             };
         }
     };
-    table.appendChild(span);
 
-    return container;
+    return span;
 }
 
 function deleteSelectedItem()
@@ -279,4 +339,31 @@ function getElementFromContent(element, elementPath)
 
     const index = elementPath.shift();
     return getElementFromContent(element.content[index], elementPath);
+}
+
+function selectItem(element)
+{
+    let fullPath = getFullPathName(element.path.slice());
+
+    let sideElement = new SideElement(element.name, fullPath, element.time / 60);
+    selectedItems.push(sideElement);
+    localStorage.selectedItems = JSON.stringify(selectedItems);
+    
+    displaySideElement(sideElement)
+}
+
+function getFullPathName(path)
+{
+    let index = path.shift();
+    let pathName = elements[index].name;
+
+    let element = elements[index];
+    while (path.length > 0)
+    {
+        index = path.shift();
+        element = element.content[index];
+        pathName += "/" + element.name;
+    }
+
+    return pathName;
 }
