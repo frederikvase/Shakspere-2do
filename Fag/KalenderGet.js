@@ -8,9 +8,9 @@ app.use(express.json());
 
 let information = []; // Placeholder for storing the information
 
-async function CountToKomma(input, StartPos = 0) {
+function CountToKomma(input,StartPos = 0) {
     for (let i = StartPos; i < input.length; i++) {
-        if (input[i] == ",") {
+        if(input[i] == ",") {
             return i;
         } else if (input[i] == "é" && input[i - 1] == 'f') {
             return input.length;
@@ -45,6 +45,7 @@ async function Kalender(userMail, userPassword, dag, maaned, aar) {
 
     let subjects = []
     for (let i = 0; i < altRem.length; i++) {
+        console.log(altRem[i].split('').slice(11,CountToKomma(altRem[i],11)).join(''));
         subjects.push({
             [`${dag}-${maaned}-${aar}`]: {
                 fag:        altRem[i].split('').slice(11,CountToKomma(altRem[i],11)).join(''),
@@ -55,9 +56,6 @@ async function Kalender(userMail, userPassword, dag, maaned, aar) {
 
     }
 
-    console.log("-----------SUBJEJEJ-----------")
-    console.log(subjects)
-    console.log("-----------SUBJEJEJ-----------")
     await browser.close();
 
     return subjects;
