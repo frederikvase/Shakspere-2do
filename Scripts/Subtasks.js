@@ -94,27 +94,27 @@ function updateSubtaskView()
     let allItemsDuplicate = JSON.parse(localStorage.getItem("all-tasks")) || [];
     for (let i = 0; i<addSubtasks.length; i++){
         shouldBeShown = true;
-        console.log("NEW PART");
+        // console.log("NEW PART");
         for (let key in allItemsDuplicate){
             task = allItemsDuplicate[key];
     
-            console.log(`if ${task.IDFromSubtask} ==  ${addSubtasks[i].ID}`)
+            // console.log(`if ${task.IDFromSubtask} ==  ${addSubtasks[i].ID}`)
             if(task.IDFromSubtask == addSubtasks[i].ID){
                 shouldBeShown = false;
-                console.log("-----THEN FALSE")
+                // console.log("-----THEN FALSE")
             }
         }
     
         if (shouldBeShown){
-            console.log("----TRUTH: Following should be shown")
+            // console.log("----TRUTH: Following should be shown")
             // addSubtasks[i].showSubtask();
             shownELements.push(addSubtasks[i])
-            console.log(addSubtasks[i]);
+            // console.log(addSubtasks[i]);
         }
     
         //Update layout___
     }
-    console.log(shownELements)
+    // console.log(shownELements)
     for(let obj in shownELements){
         shownELements[obj].showSubtask();
     }
@@ -203,7 +203,7 @@ function onPress(valueShowViewMore, element = null)
                     onPress(false);
 
                     //View-days
-                    console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
+                    // console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
                     deleteTask(element.id, allItems);
                     displayAllTasks();
 

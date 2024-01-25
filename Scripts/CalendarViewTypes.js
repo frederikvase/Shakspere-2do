@@ -1,4 +1,141 @@
-// import { postData } from '../Fag/KalenderGet';
+
+console.log("RUNNING THIS SCRIPT info")
+//Add logic here:
+
+// Example assuming there's a button with id "updateButton" in your calendarviewtypes
+// Assuming there's a button in your calendarviewtypes with id "updateButton"
+// Assuming there's a button in your calendarviewtypes with id "updateButton"
+const updateButton = document.createElement("button");
+const appendHere = document.getElementById("calendar-main");
+appendHere.appendChild(updateButton);
+
+const fetchData = async (dag, maaned, aar) => {
+    const url = 'http://localhost:3000/get-information';
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ dag, maaned, aar }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from backend');
+        }
+
+        const responseData = await response.json();
+        console.log(responseData); // Process the fetched data here
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+// Call the fetchData function with your desired parameters
+const dag = 24;
+const maaned = 1;
+const aar = 2024;
+
+fetchData(dag, maaned, aar);
+
+
+
+// updateButton.addEventListener("click", async () => {
+//     const dag = 24;
+//     const maaned = 1;
+//     const aar = 2024;
+
+//     try {
+//         // POST request to add information
+//         //CALL BACKEND FUNCTION
+
+//         // GET request to retrieve information
+//         const getInfoResponse = await fetch('http://localhost:3000/get-information');
+
+//         if (!getInfoResponse.ok) {
+//             throw new Error('Failed to get information from the server');
+//         }
+
+//         const infoData = await getInfoResponse.json();
+//         console.log('Information retrieved successfully:', infoData);
+//     } catch (error) {
+//         console.error('Error:', error);
+//         // Handle errors here
+//     }
+// });
+
+
+// updateButton.addEventListener("click", async () => {
+//     console.log("Button clicked")
+//     const dag = 24;
+//     const maaned = 1;
+//     const aar = 2024;
+
+//     try {
+//         const response = await fetch('http://localhost:3000/add-information', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: "JSON.stringify({ dag, maaned, aar })"
+//         });
+//         console.log(JSON.stringify("{ dag, maaned, aar }"))
+//         console.log("respsone done!=", response)
+
+//         if (!response.ok) {
+//             throw new Error('Failed to post information to the server');
+//         }
+//         console.log("Can get data?")
+//         const rawData = await response.text();
+//         console.log('Raw response data:', rawData);
+//         // console.log('Data posted successfully:', data);
+
+//         // Now, if needed, retrieve the information from the backend
+//         console.log("moving on to get-information!")
+//         const getInfoResponse = await fetch('http://localhost:3000/get-information');
+//         if (!getInfoResponse.ok) {
+//             throw new Error('Failed to get information from the server');
+//         }
+
+//         // Log the raw response data to inspect it
+//         console.log('Raw response data:', await getInfoResponse.text());
+
+//         const infoData = await getInfoResponse.json();
+//         console.log('information retrieved successfully:', infoData);
+//     } catch (error) {
+//         console.log("Oh no ERROR", error)
+//         // console.error('Error:', error);
+//         // Handle errors here
+//     }
+//     // console.log("ended?")
+// });
+
+
+
+
+
+
+
+// async function fetchSubjectsOnDayFromServer(day, month, year) {
+//     try {
+//         const response = await fetch(`http://localhost:3000/access-subjects?day=${day}&month=${month}&year=${year}`);
+//         if (!response.ok) {
+//             throw new Error('Failed to fetch data');
+//         }
+//         const data = await response.json();
+//         console.log(data)
+//         return data;
+//     } catch (error) {
+//         console.error('Error:', error);
+//         return null;
+//     }
+// }
+
+// fetchSubjectsOnDayFromServer(24, 1, 2024);
+
+
+
 // 
 // async function CountToKomma(input, StartPos = 0) {
 //     for (let i = StartPos; i < input.length; i++) {
@@ -226,7 +363,7 @@ allItems.push(new taskOnGivenDay("English", "", "1:00", "12:15", "20-1-2024"));
 allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "13:25", "20-1-2024"));
 allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "14:30", "20-1-2024"));
 
-console.log(allItems);
+// console.log(allItems);
 
 function displayAllTasks() {
     showMultipleDays();
