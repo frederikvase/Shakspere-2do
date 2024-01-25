@@ -165,15 +165,26 @@ ul li.checked::before {
 }
 
 .header {
+  height: 15vh;
+  /* padding: 0; */
   background-color: var(--banner);
-  padding: 30px 40px;
   color: var(--bg2);
+  text-align: center;
+}
+
+.header-title {
+  /* height: 15vh; */
+  font-size: 50px;
+  background-color: var(--banner);
+  color: var(--bg2);
+  display: grid;
+  place-items: center;
   text-align: center;
 }
 
 .header:after {
   content: "";
-  display: table;
+  /* display: tables; */
   clear: both;
 }
 
@@ -549,7 +560,7 @@ table.fixed td:nth-of-type(3) {
   border-radius: 20px;
   padding: 20px;
   background-color: #1a2f42;
-  height: 90vh;
+  height: 85vh;
   overflow: auto;
   
 }
@@ -786,11 +797,11 @@ table.fixed td:nth-of-type(3) {
 
 /* calendar-view */
 #calendar-main{
-  margin: 40px 40px 0px 70px; /*change to _______  margin: 40px 40px 0 40px;  */
+  margin: 20px 20px 0px 50px; /*change to _______  margin: 40px 40px 0 40px;  */
   display: grid;
   grid-template-columns: 60% 35%;
   grid-gap: 5%;
-  grid-template-rows: 90vh;
+  grid-template-rows: 85vh;
   overflow: auto;
 }
 #calendar-change-later-to-subtasks{
@@ -872,3 +883,6 @@ table.fixed td:nth-of-type(3) {
   flex: 1;
   overflow: hidden;
 }
+
+
+

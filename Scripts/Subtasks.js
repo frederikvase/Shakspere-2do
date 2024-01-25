@@ -72,11 +72,13 @@ class SubTask{
 //Subtask being shown: __Should be loaded from localStorage (Frederik's Part)
 //Tasknames can't contain "/" since that's being used to .split("/") in function onPress()
 let draggableItems = [
-    {taskName : "English Essay",        subtaskName : "Introduction",   duration : "0:45"},
-    {taskName : "Math - Functions",     subtaskName : "KAP 9",          duration : "1:30"},
-    {taskName : "Math - Functions",     subtaskName : "KAP 10",         duration : "2:00"},
-    {taskName : "Programming",          subtaskName : "View multiple days",   duration : "4:00"},
-    {taskName : "Danish Assignment",    subtaskName : "Discussion",     duration : "2:30"},
+    {taskName : "English Essay",        subtaskName : "Introduction",           duration : "0:45"},
+    {taskName : "Math - Functions",     subtaskName : "KAP 9",                  duration : "1:30"},
+    {taskName : "Math - Functions",     subtaskName : "KAP 10",                 duration : "2:00"},
+    {taskName : "Danish Assignment",    subtaskName : "Discussion",             duration : "2:30"},
+    {taskName : "Programming",          subtaskName : "View multiple days",     duration : "4:00"},
+    {taskName : "Blah",                 subtaskName : "View multiple days",     duration : "4:00"},
+    {taskName : "BlAH Blah",            subtaskName : "View multiple days",     duration : "4:00"},
 ];
 
 

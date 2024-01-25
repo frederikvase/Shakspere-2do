@@ -1,4 +1,94 @@
-let viewDaysAmount = 2;
+// import { postData } from '../Fag/KalenderGet';
+// 
+// async function CountToKomma(input, StartPos = 0) {
+//     for (let i = StartPos; i < input.length; i++) {
+//       if (input[i] == ",") {
+//         return i;
+//       } else if (input[i] == "é" && input[i - 1] == 'f') {
+//         return input.length;
+//       } else if (input[i] == "K" && input[i + 1] == "l") {
+//         return 17;
+//       }
+//     }
+//     throw new Error('No komma in string: ' + input);
+//   }
+
+// async function Kalender(userMail, userPassword, dag, maaned, aar) {
+// if (dag < 10) dag = '0' + dag;
+// if (maaned < 10) maaned = '0' + maaned;
+
+// let url = "https://selvbetjening.aarhustech.dk/WebTimeTable/default.aspx?viewdate=" + dag + "-" + maaned + "-" + aar
+
+// const browser = await playwright.chromium.launch();
+// const page = await browser.newPage();
+
+// await page.goto(url);
+// await page.type("#userNameInput", userMail);
+// await page.type("#passwordInput", userPassword);
+// await page.click("#submitButton");
+// await page.waitForNavigation();
+
+// const alt = await page.evaluate(() => {
+//     return Array.from(document.querySelectorAll("#day0Col")).map(x => x.textContent)
+// });
+
+// const altRem = alt.join(",").split('\n').filter(y => y != '');
+
+// let skoleFag = new Map();
+
+// for (let i = 0; i < altRem.length; i++) {
+//     skoleFag.set(i, {
+//     fag: altRem[i].split('').slice(11, CountToKomma(altRem[i], 11)).join(''),
+//     tidStart: altRem[i].split('').slice(0, 5).join(''),
+//     tidSlut: altRem[i].split('').slice(6, 11).join('')
+//     });
+// }
+// await browser.close();
+
+// return skoleFag;
+// }
+
+// async function GetAsyncValueToVar(inputFunction, outputVar) {
+//     outputVar = await inputFunction;
+//     console.log(outputVar);
+//   }
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     document.getElementById('openWindowButton').addEventListener('click', function() {
+//         // RunAutomation();
+//         postData();
+//     });
+
+//     // ... other code that interacts with the DOM ...
+// });
+
+
+// let anotherVal;
+
+// await console(GetAsyncValueToVar(Kalender(username, kode, 24, 1, 2024), anotherVal));
+// console.log(anotherVal)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let viewDaysAmount = 3;
 let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
 const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
@@ -121,6 +211,14 @@ showMultipleDays();
 displayAllTasks();
 
 //Input from MinSkoleApp (Mortens del)
+// let val;
+// let kode = ""
+
+
+
+
+
+
 allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
 allItems.push(new taskOnGivenDay("Math", "", "1:00", "9:35", "20-1-2024"));
 allItems.push(new taskOnGivenDay("Danish", "", "1:00", "10:45", "20-1-2024"));
@@ -237,7 +335,7 @@ function ouputNumberOfDays(startingDate, viewAmountOfDays = viewDaysAmount) //in
 
 function showMultipleDays()
 {
-    tasksFromLocalStorage = JSON.parse(localStorage.getItem("shown-tasks"));
+    let tasksFromLocalStorage = JSON.parse(localStorage.getItem("shown-tasks"));
     
     const calendarViewAllDays = document.getElementById("calendar-view-all-days");
     calendarViewAllDays.innerHTML = ""; // Clear existing content

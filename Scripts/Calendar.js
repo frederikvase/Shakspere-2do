@@ -143,6 +143,13 @@ function addTimeStampsV2(wakeUp, bedtime) //adds to view-more-days calendar
     }
 }
 
+function convertMinToTime(amountOfMin) //input: int 90 -> ouput: string: "1:30" 
+{
+    let hours = Math.floor(amountOfMin/60)
+    let min = amountOfMin % 60;
+    return `${hours}-${min}`
+}
+
 function addTaskToCalendar(taskName, taskDuration, taskPlacement, taskDone = false, taskSubtask = "")
 {
     allCalendarTasks.push([taskName, taskDuration, taskPlacement, taskDone, taskSubtask]);
@@ -262,16 +269,8 @@ document.addEventListener("DOMContentLoaded", function()
 
       console.log(getComputedStyle(imageBox).height + " | " + getComputedStyle(dayBox).height) //___ how are they not equal?!?!?
     } else {
-        console.error("Not foun: 'calendar-view-day-text'");
+        // console.error("Not foun: 'calendar-view-day-text'");
+        imageBox.style.height = "25px";
     }
 
 });
-
-
-
-
-
-
-
-
-
