@@ -7,10 +7,62 @@
         <link rel="stylesheet" href="Style/main.css">
         
         <!-- Title and Icons -->
-        <title>Calender</title>
+        <title>DoDue</title>
     </head>
 
-    <body style="text-align: center;" onload="reload()">
+    <body style="text-align: center;">
+        <div id="myDIV" class="header">
+            <h2 class="header-title">DoDue</h2>
+        </div>
+        <div id="calendar-main">
+            <div class="settings">
+                <img id="settings-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Windows_Settings_icon.svg/2184px-Windows_Settings_icon.svg.png"/>
+            </div>
+            <div id="calendar-view">
+                <div class="calendar-view-left">
+                    <div class="calendar-view-left-image">
+                        <img id="calendar-view-left-previous" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
+                        <img id="calendar-view-left-next" src="https://cdn.icon-icons.com/icons2/2543/PNG/512/next_icon_152222.png"/>
+                    </div>
+                    <section id="calendar-view-left-timelines"></section>
+                </div>
+                <div id="calendar-view-all-days"> 
 
+                </div>
+            </div>
+            <div class="ToDo">
+                <h1> Subtasks </h1>
+                <div class="task-view-dragAndDrop">
+                    <div class="ToDo-dragable" id="todo-draggable">
+                       <!-- These draggable tasks is made in Subtasks -->
+                    </div>
+                    <div class="change-page-button">
+                        <button>Add Another Task</button>
+                    </div>
+                </div>
+                <div class="task-view-more-info">
+                    <div class="view-task">
+                        <!-- Added from: function onPress(value, element = null) -->
+                    </div>
+                    <div class="task-view-more-info-button">
+                        <button>Ok! Go back</button>
+                    </div>
+                </div>
+            </div>  
+            <!-- <button id="openWindowButton">Open Window</button> -->
+
+        </div>
+        
     </body>
+    <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/playwright@1.14.0"></script> -->
+
+    <script src="Scripts/Calendar.js"></script>
+    <script src="Scripts/DragAndDrop.js"></script>
+    <script src="Scripts/Settings.js"></script>
+    <script src="Scripts/Subtasks.js"></script>
+    <script src="Fag/KalenderGet.js"></script>
+    <script src="Scripts/CalendarViewTypes.js"></script>
+
+    <!-- <script src="myJS.js"></script> -->
+
 </html>
