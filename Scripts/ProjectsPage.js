@@ -367,3 +367,8 @@ function getFullPathName(path)
 
     return pathName;
 }
+
+function goToCalendarView()
+{
+    window.location.href = "Calender.html";
+}

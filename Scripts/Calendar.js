@@ -274,3 +274,8 @@ document.addEventListener("DOMContentLoaded", function()
     }
 
 });
+
+function goToProjectsPage()
+{
+    window.location.href = "Projects page.html"
+}
