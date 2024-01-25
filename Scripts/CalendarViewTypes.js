@@ -1,13 +1,6 @@
 
 console.log("RUNNING THIS SCRIPT info")
-//Add logic here:
 
-// Example assuming there's a button with id "updateButton" in your calendarviewtypes
-// Assuming there's a button in your calendarviewtypes with id "updateButton"
-// Assuming there's a button in your calendarviewtypes with id "updateButton"
-const updateButton = document.createElement("button");
-const appendHere = document.getElementById("calendar-main");
-appendHere.appendChild(updateButton);
 
 const fetchData = async (dag, maaned, aar) => {
     const url = 'http://localhost:3000/get-information';
@@ -36,8 +29,11 @@ const fetchData = async (dag, maaned, aar) => {
 const dag = 24;
 const maaned = 1;
 const aar = 2024;
-
-fetchData(dag, maaned, aar);
+// fetchData(dag, maaned, aar);
+for (let i = 23; i<35; i++){
+    fetchData(i, maaned, aar);
+    console.log("day: " + i);
+}
 
 
 

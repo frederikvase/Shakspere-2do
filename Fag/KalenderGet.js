@@ -35,7 +35,7 @@ function CountToKomma(input, StartPos = 0) {
     throw new Error('No komma in string: ' + input);
 }
 
-async function Kalender(userMail, userPassword, dag, maaned, aar) {
+async function Kalender(browser, userMail, userPassword, dag, maaned, aar) {
     try {
         if (dag < 10) dag = '0' + dag;
         if (maaned < 10) maaned = '0' + maaned;
@@ -78,12 +78,19 @@ async function Kalender(userMail, userPassword, dag, maaned, aar) {
 app.post('/get-information', async (req, res) => {
     const { dag, maaned, aar } = req.body;
 
+    let localBrowser; // Define a local browser variable
+
     try {
-        const result = await Kalender(schoolUsername, schoolPassword, dag, maaned, aar);
+        localBrowser = await puppeteer.launch({ executablePath: "chrome\\chrome-win\\chrome.exe" });
+        const result = await Kalender(localBrowser, schoolUsername, schoolPassword, dag, maaned, aar);
         res.send(result); // Sending scraped data as response
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (localBrowser) {
+            await localBrowser.close(); // Ensure proper cleanup
+        }
     }
 });
 
