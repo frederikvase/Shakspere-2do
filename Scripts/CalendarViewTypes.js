@@ -19,7 +19,8 @@ const fetchData = async (dag, maaned, aar) => {
         }
 
         const responseData = await response.json();
-        console.log(responseData); // Process the fetched data here
+        // console.log(responseData); // Process the fetched data here ////always check if this is working :)
+        return responseData
     } catch (error) {
         console.error('Error:', error);
     }
@@ -27,191 +28,13 @@ const fetchData = async (dag, maaned, aar) => {
 
 // Call the fetchData function with your desired parameters
 const dag = 24;
-const maaned = 1;
+const maaned = 2;
 const aar = 2024;
 // fetchData(dag, maaned, aar);
-for (let i = 23; i<35; i++){
-    fetchData(i, maaned, aar);
-    console.log("day: " + i);
-}
-
-
-
-// updateButton.addEventListener("click", async () => {
-//     const dag = 24;
-//     const maaned = 1;
-//     const aar = 2024;
-
-//     try {
-//         // POST request to add information
-//         //CALL BACKEND FUNCTION
-
-//         // GET request to retrieve information
-//         const getInfoResponse = await fetch('http://localhost:3000/get-information');
-
-//         if (!getInfoResponse.ok) {
-//             throw new Error('Failed to get information from the server');
-//         }
-
-//         const infoData = await getInfoResponse.json();
-//         console.log('Information retrieved successfully:', infoData);
-//     } catch (error) {
-//         console.error('Error:', error);
-//         // Handle errors here
-//     }
-// });
-
-
-// updateButton.addEventListener("click", async () => {
-//     console.log("Button clicked")
-//     const dag = 24;
-//     const maaned = 1;
-//     const aar = 2024;
-
-//     try {
-//         const response = await fetch('http://localhost:3000/add-information', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: "JSON.stringify({ dag, maaned, aar })"
-//         });
-//         console.log(JSON.stringify("{ dag, maaned, aar }"))
-//         console.log("respsone done!=", response)
-
-//         if (!response.ok) {
-//             throw new Error('Failed to post information to the server');
-//         }
-//         console.log("Can get data?")
-//         const rawData = await response.text();
-//         console.log('Raw response data:', rawData);
-//         // console.log('Data posted successfully:', data);
-
-//         // Now, if needed, retrieve the information from the backend
-//         console.log("moving on to get-information!")
-//         const getInfoResponse = await fetch('http://localhost:3000/get-information');
-//         if (!getInfoResponse.ok) {
-//             throw new Error('Failed to get information from the server');
-//         }
-
-//         // Log the raw response data to inspect it
-//         console.log('Raw response data:', await getInfoResponse.text());
-
-//         const infoData = await getInfoResponse.json();
-//         console.log('information retrieved successfully:', infoData);
-//     } catch (error) {
-//         console.log("Oh no ERROR", error)
-//         // console.error('Error:', error);
-//         // Handle errors here
-//     }
-//     // console.log("ended?")
-// });
-
-
-
-
-
-
-
-// async function fetchSubjectsOnDayFromServer(day, month, year) {
-//     try {
-//         const response = await fetch(`http://localhost:3000/access-subjects?day=${day}&month=${month}&year=${year}`);
-//         if (!response.ok) {
-//             throw new Error('Failed to fetch data');
-//         }
-//         const data = await response.json();
-//         console.log(data)
-//         return data;
-//     } catch (error) {
-//         console.error('Error:', error);
-//         return null;
-//     }
+// for (let i = 23; i<35; i++){
+//     fetchData(i, maaned, aar);
+//     console.log("day: " + i);
 // }
-
-// fetchSubjectsOnDayFromServer(24, 1, 2024);
-
-
-
-// 
-// async function CountToKomma(input, StartPos = 0) {
-//     for (let i = StartPos; i < input.length; i++) {
-//       if (input[i] == ",") {
-//         return i;
-//       } else if (input[i] == "é" && input[i - 1] == 'f') {
-//         return input.length;
-//       } else if (input[i] == "K" && input[i + 1] == "l") {
-//         return 17;
-//       }
-//     }
-//     throw new Error('No komma in string: ' + input);
-//   }
-
-// async function Kalender(userMail, userPassword, dag, maaned, aar) {
-// if (dag < 10) dag = '0' + dag;
-// if (maaned < 10) maaned = '0' + maaned;
-
-// let url = "https://selvbetjening.aarhustech.dk/WebTimeTable/default.aspx?viewdate=" + dag + "-" + maaned + "-" + aar
-
-// const browser = await playwright.chromium.launch();
-// const page = await browser.newPage();
-
-// await page.goto(url);
-// await page.type("#userNameInput", userMail);
-// await page.type("#passwordInput", userPassword);
-// await page.click("#submitButton");
-// await page.waitForNavigation();
-
-// const alt = await page.evaluate(() => {
-//     return Array.from(document.querySelectorAll("#day0Col")).map(x => x.textContent)
-// });
-
-// const altRem = alt.join(",").split('\n').filter(y => y != '');
-
-// let skoleFag = new Map();
-
-// for (let i = 0; i < altRem.length; i++) {
-//     skoleFag.set(i, {
-//     fag: altRem[i].split('').slice(11, CountToKomma(altRem[i], 11)).join(''),
-//     tidStart: altRem[i].split('').slice(0, 5).join(''),
-//     tidSlut: altRem[i].split('').slice(6, 11).join('')
-//     });
-// }
-// await browser.close();
-
-// return skoleFag;
-// }
-
-// async function GetAsyncValueToVar(inputFunction, outputVar) {
-//     outputVar = await inputFunction;
-//     console.log(outputVar);
-//   }
-
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     document.getElementById('openWindowButton').addEventListener('click', function() {
-//         // RunAutomation();
-//         postData();
-//     });
-
-//     // ... other code that interacts with the DOM ...
-// });
-
-
-// let anotherVal;
-
-// await console(GetAsyncValueToVar(Kalender(username, kode, 24, 1, 2024), anotherVal));
-// console.log(anotherVal)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -347,6 +170,53 @@ displayAllTasks();
 // let val;
 // let kode = ""
 
+
+
+// | fag | startid | slutid |dato:
+//[[day1...], [day2...], [day3...]]
+//[[{}, {}, {}], [{}, {}, {}, {}, {}, {}], [{}, {}]]
+
+// for (let element of arrWithSchoolTasks){
+//     allItems.push(new taskOnGivenDay(element.fag, "", "1:00", element.tidStart, element.dato))
+// }
+
+async function returnSchoolSubjects(initialDate, amountOfDays) {
+    let allValues = [];
+    const getDays = ouputNumberOfDays(initialDate, amountOfDays);
+
+    for (let values of getDays) {
+        const setDay = parseInt(values.split("-")[0]);
+        const setMonth = parseInt(values.split("-")[1]);
+        const setYear = parseInt(values.split("-")[2]);
+
+        try {
+            const res = await fetchData(setDay, setMonth, setYear);
+            console.log(res);
+            allValues.push(res);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    console.log(allValues);
+
+    for (let elements of allValues) {
+        for (let key in elements) {
+            const theDay = elements[key];
+            let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, theDay.dato);
+            allItems.push(item); // Add the task to allItems
+            item.showDaysTask(); // Display the task on the screen not working :(
+        }
+    }
+
+    console.log("tasks added?");
+    console.log(allItems);
+    displayAllTasks();
+    return allValues;
+}
+
+
+returnSchoolSubjects(initialDate, viewDaysAmount);
 
 
 
