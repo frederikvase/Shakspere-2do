@@ -1,6 +1,4 @@
-
 console.log("RUNNING THIS SCRIPT info")
-
 
 const fetchData = async (dag, maaned, aar) => {
     const url = 'http://localhost:3000/get-information';
@@ -26,26 +24,17 @@ const fetchData = async (dag, maaned, aar) => {
     }
 };
 
-// Call the fetchData function with your desired parameters
-const dag = 24;
-const maaned = 2;
-const aar = 2024;
-// fetchData(dag, maaned, aar);
-// for (let i = 23; i<35; i++){
-//     fetchData(i, maaned, aar);
-//     console.log("day: " + i);
-// }
-
-
-
-
-
-
-
+function removeExtraZerosFromDate(date) //Input: "07-01-2024" -> "7-1-2024"
+{
+    const day = parseInt(date.split("-")[0])
+    const month = parseInt(date.split("-")[1])
+    const year = parseInt(date.split("-")[2])
+    return `${day}-${month}-${year}`
+}
 
 
 let viewDaysAmount = 3;
-let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
+let initialDate = [dayNumber+3, month, year]; //Should change onClick -> nextDay
 
 const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
 
@@ -167,23 +156,10 @@ showMultipleDays();
 displayAllTasks();
 
 //Input from MinSkoleApp (Mortens del)
-// let val;
-// let kode = ""
-
-
-
-// | fag | startid | slutid |dato:
-//[[day1...], [day2...], [day3...]]
-//[[{}, {}, {}], [{}, {}, {}, {}, {}, {}], [{}, {}]]
-
-// for (let element of arrWithSchoolTasks){
-//     allItems.push(new taskOnGivenDay(element.fag, "", "1:00", element.tidStart, element.dato))
-// }
-
 async function returnSchoolSubjects(initialDate, amountOfDays) {
     let allValues = [];
+    amountOfDays+=10;   
     const getDays = ouputNumberOfDays(initialDate, amountOfDays);
-
     for (let values of getDays) {
         const setDay = parseInt(values.split("-")[0]);
         const setMonth = parseInt(values.split("-")[1]);
@@ -193,24 +169,19 @@ async function returnSchoolSubjects(initialDate, amountOfDays) {
             const res = await fetchData(setDay, setMonth, setYear);
             console.log(res);
             allValues.push(res);
+
+            for (let key in res) {
+                const theDay = res[key];
+                let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
+                allItems.push(item); // Add the task to allItems
+                item.showDaysTask(); // Display the task on the screen not working :(
+            }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     }
 
-    console.log(allValues);
-
-    for (let elements of allValues) {
-        for (let key in elements) {
-            const theDay = elements[key];
-            let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, theDay.dato);
-            allItems.push(item); // Add the task to allItems
-            item.showDaysTask(); // Display the task on the screen not working :(
-        }
-    }
-
-    console.log("tasks added?");
-    console.log(allItems);
+    console.log("All items should be added now?");
     displayAllTasks();
     return allValues;
 }
@@ -218,8 +189,60 @@ async function returnSchoolSubjects(initialDate, amountOfDays) {
 
 returnSchoolSubjects(initialDate, viewDaysAmount);
 
+function getPreviousAndNextDays(givenDate = initialDate, amountToEachSide = 5) //[16, 5, 2024]  ,    5
+{
+    let returningDays = []
+    returningDays.push(givenDate);
+
+    //NEXT DAYS:
+    let startDay = givenDate[0];
+    let startMonth = givenDate[1];
+    let startYear = givenDate[2];
+
+    for (let i = 0; i < amountToEachSide; i++) 
+    {
+        startDay += 1;
+
+        if (startDay > getMonthsLength(startMonth, startYear)) 
+        {
+            startDay = 1;
+            startMonth += 1;
+        }
+        if (startMonth > 12) {
+            startYear += 1;
+            startMonth = 1;
+        }
+        returningDays.push([startDay, startMonth, startYear])
+    }
+
+    //PREVIOUS DAYS:
+    startDay = givenDate[0];
+    startMonth = givenDate[1];
+    startYear = givenDate[2];
+
+    for (let i = 0; i < amountToEachSide; i++) 
+    {
+        startDay -= 1;
+
+        if (startDay < 1) 
+        {
+            startMonth -= 1;
+            startDay = getMonthsLength(startMonth, startYear);
+        }
+        if (startMonth < 1)
+        {
+            startYear -= 1;
+            startMonth = 12;
+            startDay = getMonthsLength(startMonth, startYear);
+        }
+        returningDays.push([startDay, startMonth, startYear])
+    }
+
+    return returningDays;
+}
 
 
+console.log(getPreviousAndNextDays());
 
 
 allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
@@ -283,8 +306,8 @@ function displayAllTasks() {
     }
 
     isPlacedAtSameTimeButForViewMoreDays(allItems);
-    updateVisibleElements();
     updateDraggableState();
+    updateVisibleElements();
 
     localStorage.setItem("all-tasks", JSON.stringify(allItems));
 }
@@ -381,10 +404,12 @@ function nextDay(){
     let startMonth = initialDate[1];
     let startYear = initialDate[2];
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 1; i++) 
+    {
         startDay += 1;
 
-        if (startDay > getMonthsLength(startMonth, startYear)) {
+        if (startDay > getMonthsLength(startMonth, startYear)) 
+        {
             startDay = 1;
             startMonth += 1;
         }
@@ -570,7 +595,6 @@ function isPlacedAtSameTimeButForViewMoreDays(arr = allItems) {
         }
     }
 }
-
 
 function updateVisibleElements() {
     var containers = document.querySelectorAll('.calendar-is-task');

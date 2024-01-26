@@ -71,18 +71,12 @@ class SubTask{
 
 //Subtask being shown: __Should be loaded from localStorage (Frederik's Part)
 //Tasknames can't contain "/" since that's being used to .split("/") in function onPress()
-
 let tasksFromProjectsPage = JSON.parse(localStorage.getItem("selectedItems")) || [];
-
 let draggableItems = [];
+
 for (elements of tasksFromProjectsPage){
-
-
-    console.log(elements);
     draggableItems.push({taskName : elements.taskName, subtaskName : elements.subtaskName, duration : convertDecimalIntoHours(elements.duration) })
 }
-console.log(tasksFromProjectsPage);
-
 
 // let draggableItems = [
 //     {taskName : "English Essay",        subtaskName : "Introduction",           duration : "0:45"},
