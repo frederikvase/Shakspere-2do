@@ -9,24 +9,40 @@ const initialInformation = {
     bedtime: "21:00",
     placementInterval: "0:10",
     timeLines: "1:00",
-    schoolUsername : false,
-    schoolPassword : false,
+    schoolUsername: false,
+    schoolPassword: false,
+    displayAmountOfDays: 3,
 };
 
 // Get and set localStorage
 let settingsInformation = JSON.parse(localStorage.getItem("settingsInformation")) || initialInformation;
 localStorage.setItem("settingsInformation", JSON.stringify(settingsInformation));
 
-function openOrCloseOverlay(currentState = isSettingsOpen) //Handles clicking on settings
+let displayedAmountOfDaysBeforeBeingSaved = settingsInformation.displayAmountOfDays;
+let changeViewDaysText;
+
+function changeAmountOfDaysShown(changeByValue) 
+{
+    displayedAmountOfDaysBeforeBeingSaved += changeByValue;
+
+    if (displayedAmountOfDaysBeforeBeingSaved < 1) {
+        displayedAmountOfDaysBeforeBeingSaved = 1;
+    } else if (displayedAmountOfDaysBeforeBeingSaved > 6) {
+        displayedAmountOfDaysBeforeBeingSaved = 6;
+    }
+    console.log("buttonClicked" + displayedAmountOfDaysBeforeBeingSaved);
+    changeViewDaysText.innerText = displayedAmountOfDaysBeforeBeingSaved; // Update the text content
+}
+
+function openOrCloseOverlay(currentState = isSettingsOpen) 
 {
     //True -> overlay opened, false -> overlay closed 
     let nextState = !currentState;
     isSettingsOpen = nextState;
 
-    if(nextState) //If settings should be open
-    {
+    if (nextState) { //If settings should be open
         openSettingsOverlay();
-        
+
         //Create a black overlay begind the settingsOverlay
         const backgroundOverlay = document.createElement("div");
         backgroundOverlay.classList.add("calendar-background-overlay");
@@ -34,39 +50,40 @@ function openOrCloseOverlay(currentState = isSettingsOpen) //Handles clicking on
         thisPage.appendChild(backgroundOverlay);
 
     } else { //This statement closes all overlay elements
-        
         //Remove the overlay
         var element = document.getElementsByClassName("settings-overlay")[0];
-        element.parentNode.removeChild(element); 
+        element.parentNode.removeChild(element);
 
         //Remove background overlay 
         var darkOverlay = document.getElementsByClassName("calendar-background-overlay")[0];
-        darkOverlay.parentNode.removeChild(darkOverlay);   
+        darkOverlay.parentNode.removeChild(darkOverlay);
     }
 }
 
-function clickOnKeepChanges(){
+function clickOnKeepChanges() 
+{
     const bedtimeElement = document.querySelector(".settings-inputfield-bedtime");
     settingsInformation.bedtime = bedtimeElement.value || settingsInformation.bedtime;
-    
+
     const wakeupElement = document.querySelector(".settings-inputfield-wakeup");
     settingsInformation.wakeUpTime = wakeupElement.value || settingsInformation.wakeUpTime;
-    
+
     const intervalElement = document.querySelector(".settings-inputfield-interval");
     settingsInformation.placementInterval = intervalElement.value || settingsInformation.placementInterval;
-    
+
     const timeLineElement = document.querySelector(".settings-inputfield-timeLine");
     settingsInformation.timeLines = timeLineElement.value || settingsInformation.timeLines;
-    
+
     const usernameElement = document.querySelector(".settings-inputfield-username");
     settingsInformation.schoolUsername = usernameElement.value || settingsInformation.schoolUsername;
-    
+
     const passwordElement = document.querySelector(".settings-inputfield-password");
     settingsInformation.schoolPassword = passwordElement.value || settingsInformation.schoolPassword;
 
+    settingsInformation.displayAmountOfDays = displayedAmountOfDaysBeforeBeingSaved;
 
     localStorage.setItem("settingsInformation", JSON.stringify(settingsInformation));
-    
+
     //___Find better option than just reloading the page!
     location.reload();
 }
@@ -76,110 +93,131 @@ function openSettingsOverlay()
     const settingsElement = document.getElementsByClassName("settings")[0];
 
     //Title
-        const settingsTitle = document.createElement("span");
-        settingsTitle.classList.add("settings-title");
-        settingsTitle.innerHTML = "Ajust Your Settings";
+    const settingsTitle = document.createElement("span");
+    settingsTitle.classList.add("settings-title");
+    settingsTitle.innerHTML = "Adjust Your Settings";
     //Confirm changes
-        const confirmChoices = document.createElement("button");
-        confirmChoices.innerText = "Keep changes";
-        confirmChoices.classList.add("settings-confirm-button");
-        confirmChoices.addEventListener("click", () => {clickOnKeepChanges(); openOrCloseOverlay();})
+    const confirmChoices = document.createElement("button");
+    confirmChoices.innerText = "Keep changes";
+    confirmChoices.classList.add("settings-confirm-button");
+    confirmChoices.addEventListener("click", () => { clickOnKeepChanges(); openOrCloseOverlay(); });
     //Deny changes
-        const denyChoices = document.createElement("button");
-        denyChoices.innerText = "Discard changes";
-        denyChoices.classList.add("settings-deny-button");
-        denyChoices.addEventListener("click", () => {openOrCloseOverlay();});
-        
+    const denyChoices = document.createElement("button");
+    denyChoices.innerText = "Discard changes";
+    denyChoices.classList.add("settings-deny-button");
+    denyChoices.addEventListener("click", () => { openOrCloseOverlay(); });
+
     //The overlay
-        const settingsOverlay = document.createElement("div");
-        settingsOverlay.classList.add("settings-overlay");
-        settingsElement.appendChild(settingsOverlay);
+    const settingsOverlay = document.createElement("div");
+    settingsOverlay.classList.add("settings-overlay");
+    settingsElement.appendChild(settingsOverlay);
 
     //WakeUpTime
-        const settingsInputWakeUpTime = document.createElement("div")
-        settingsInputWakeUpTime.classList.add("settings-input-wakeup");
+    const settingsInputWakeUpTime = document.createElement("div")
+    settingsInputWakeUpTime.classList.add("settings-input-wakeup");
 
-        const inputWakeUpTime = document.createElement("input");
-        inputWakeUpTime.classList.add("settings-inputfield-wakeup");
-        inputWakeUpTime.placeholder = "Enter your wake up time";
+    const inputWakeUpTime = document.createElement("input");
+    inputWakeUpTime.classList.add("settings-inputfield-wakeup");
+    inputWakeUpTime.placeholder = "Enter your wake up time";
 
-        const textWakeUpTime = document.createElement("span");
-        textWakeUpTime.innerText = `Wake up time - Current: ${settingsInformation.wakeUpTime}`;
+    const textWakeUpTime = document.createElement("span");
+    textWakeUpTime.innerText = `Wake up time - Current: ${settingsInformation.wakeUpTime}`;
 
-        settingsInputWakeUpTime.appendChild(textWakeUpTime);
-        settingsInputWakeUpTime.appendChild(inputWakeUpTime);
-    
+    settingsInputWakeUpTime.appendChild(textWakeUpTime);
+    settingsInputWakeUpTime.appendChild(inputWakeUpTime);
+
     //Bedtime
-        const settingsInputBedtime = document.createElement("div")
-        settingsInputBedtime.classList.add("settings-input-bedtime");
+    const settingsInputBedtime = document.createElement("div")
+    settingsInputBedtime.classList.add("settings-input-bedtime");
 
-        const inputBedtime = document.createElement("input");
-        inputBedtime.classList.add("settings-inputfield-bedtime");
-        inputBedtime.placeholder = "Enter your bedtime";
+    const inputBedtime = document.createElement("input");
+    inputBedtime.classList.add("settings-inputfield-bedtime");
+    inputBedtime.placeholder = "Enter your bedtime";
 
-        const textBedtime = document.createElement("span");
-        textBedtime.innerText = `Bedtime - Current: ${settingsInformation.bedtime}`;
+    const textBedtime = document.createElement("span");
+    textBedtime.innerText = `Bedtime - Current: ${settingsInformation.bedtime}`;
 
-        settingsInputBedtime.appendChild(textBedtime);
-        settingsInputBedtime.appendChild(inputBedtime);
-        
+    settingsInputBedtime.appendChild(textBedtime);
+    settingsInputBedtime.appendChild(inputBedtime);
+
     // placementInterval
-        const settingsInputInterval = document.createElement("div")
-        settingsInputInterval.classList.add("settings-input-interval");
-        
-        const inputInterval = document.createElement("input");
-        inputInterval.classList.add("settings-inputfield-interval");
-        inputInterval.placeholder = "Enter placement interval";
-        
-        const textInterval = document.createElement("span");
-        textInterval.innerText = `Placement interval - Current: ${settingsInformation.placementInterval}`;
-        
-        settingsInputInterval.appendChild(textInterval);
-        settingsInputInterval.appendChild(inputInterval);
-        
+    const settingsInputInterval = document.createElement("div")
+    settingsInputInterval.classList.add("settings-input-interval");
+
+    const inputInterval = document.createElement("input");
+    inputInterval.classList.add("settings-inputfield-interval");
+    inputInterval.placeholder = "Enter placement interval";
+
+    const textInterval = document.createElement("span");
+    textInterval.innerText = `Placement interval - Current: ${settingsInformation.placementInterval}`;
+
+    settingsInputInterval.appendChild(textInterval);
+    settingsInputInterval.appendChild(inputInterval);
+
     //TimeLines
-        const settingsInputTimeLine = document.createElement("div")
-        settingsInputTimeLine.classList.add("settings-input-timeLine");
+    const settingsInputTimeLine = document.createElement("div")
+    settingsInputTimeLine.classList.add("settings-input-timeLine");
 
-        const inputTimeLine = document.createElement("input");
-        inputTimeLine.classList.add("settings-inputfield-timeLine");
-        inputTimeLine.placeholder = "Enter time between each line";
+    const inputTimeLine = document.createElement("input");
+    inputTimeLine.classList.add("settings-inputfield-timeLine");
+    inputTimeLine.placeholder = "Enter time between each line";
 
-        const textTimeLine = document.createElement("span");
-        textTimeLine.innerText = `Time indicator - Current: ${settingsInformation.timeLines}`;
+    const textTimeLine = document.createElement("span");
+    textTimeLine.innerText = `Time indicator - Current: ${settingsInformation.timeLines}`;
 
-        settingsInputTimeLine.appendChild(textTimeLine);
-        settingsInputTimeLine.appendChild(inputTimeLine);
-        
+    settingsInputTimeLine.appendChild(textTimeLine);
+    settingsInputTimeLine.appendChild(inputTimeLine);
+
     //School username
-        const settingsInputUsername = document.createElement("div")
-        settingsInputUsername.classList.add("settings-input-username");
+    const settingsInputUsername = document.createElement("div")
+    settingsInputUsername.classList.add("settings-input-username");
 
-        const inputUsername = document.createElement("input");
-        inputUsername.classList.add("settings-inputfield-username");
-        inputUsername.placeholder = "Enter school username";
+    const inputUsername = document.createElement("input");
+    inputUsername.classList.add("settings-inputfield-username");
+    inputUsername.placeholder = "Enter school username";
 
-        const textUsername = document.createElement("span");
-        textUsername.innerText = `Username - Current: ${settingsInformation.schoolUsername}`;
+    const textUsername = document.createElement("span");
+    textUsername.innerText = `Username - Current: ${settingsInformation.schoolUsername}`;
 
-        settingsInputUsername.appendChild(textUsername);
-        settingsInputUsername.appendChild(inputUsername);
-    
+    settingsInputUsername.appendChild(textUsername);
+    settingsInputUsername.appendChild(inputUsername);
+
     //Password
-        const settingsInputPassword = document.createElement("div")
-        settingsInputPassword.classList.add("settings-input-password");
+    const settingsInputPassword = document.createElement("div")
+    settingsInputPassword.classList.add("settings-input-password");
 
-        const inputPassword = document.createElement("input");
-        inputPassword.type = "password"
-        inputPassword.classList.add("settings-inputfield-password");
-        inputPassword.placeholder = "Enter school password";
+    const inputPassword = document.createElement("input");
+    inputPassword.type = "password"
+    inputPassword.classList.add("settings-inputfield-password");
+    inputPassword.placeholder = "Enter school password";
 
-        const textPassword = document.createElement("span");
-        textPassword.innerText = `Password`;
+    const textPassword = document.createElement("span");
+    textPassword.innerText = `Password`;
 
-        settingsInputPassword.appendChild(textPassword);
-        settingsInputPassword.appendChild(inputPassword);
-        
+    settingsInputPassword.appendChild(textPassword);
+    settingsInputPassword.appendChild(inputPassword);
+
+    //Choose amount of days:
+    const changeViewDays = document.createElement("div");
+
+    const buttonOneDayLess = document.createElement("img")
+    buttonOneDayLess.src = "https://static.thenounproject.com/png/3403551-200.png";
+    buttonOneDayLess.style.height = "40px"
+    buttonOneDayLess.style.width = "40px"
+    buttonOneDayLess.addEventListener("click", () => changeAmountOfDaysShown(-1));
+    changeViewDays.appendChild(buttonOneDayLess);
+
+    changeViewDaysText = document.createElement("span"); // Initialize changeViewDaysText
+    changeViewDaysText.innerText = displayedAmountOfDaysBeforeBeingSaved;
+    changeViewDays.appendChild(changeViewDaysText);
+
+    const buttonOneDayMore = document.createElement("img")
+    buttonOneDayMore.src = "https://static.thenounproject.com/png/645446-200.png";
+    buttonOneDayMore.style.height = "40px"
+    buttonOneDayMore.style.width = "40px"
+    buttonOneDayMore.addEventListener("click", () => changeAmountOfDaysShown(1));
+    changeViewDays.appendChild(buttonOneDayMore);
+
     settingsOverlay.appendChild(settingsTitle);
     settingsOverlay.appendChild(settingsInputWakeUpTime);
     settingsOverlay.appendChild(settingsInputBedtime);
@@ -187,7 +225,9 @@ function openSettingsOverlay()
     settingsOverlay.appendChild(settingsInputTimeLine);
     settingsOverlay.appendChild(settingsInputUsername);
     settingsOverlay.appendChild(settingsInputPassword);
-    
+    settingsOverlay.appendChild(changeViewDays);
+
     settingsOverlay.appendChild(denyChoices);
     settingsOverlay.appendChild(confirmChoices);
 }
+

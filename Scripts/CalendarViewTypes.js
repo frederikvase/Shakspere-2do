@@ -1,10 +1,7 @@
-let viewDaysAmount = 3;
-let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
 const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
 
 let schoolID = 100;
-
 
 let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
 
@@ -14,6 +11,9 @@ let allDaysToGetSchool = [];
 informationFromSettings = JSON.parse(localStorage.getItem("settingsInformation"))
 const givenUsername = informationFromSettings.schoolUsername;
 const givenPassWord = informationFromSettings.schoolPassword;
+
+let viewDaysAmount =  informationFromSettings.displayAmountOfDays || 3;
+let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
 
 const fetchData = async (dag, maaned, aar, un = givenUsername, pw = givenPassWord) => {
@@ -35,7 +35,6 @@ const fetchData = async (dag, maaned, aar, un = givenUsername, pw = givenPassWor
             }
     
             const responseData = await response.json();
-            // console.log(responseData); // Process the fetched data here ////always check if this is working :)
             return responseData
         } catch (error) {
             console.error('Error:', error);
@@ -268,14 +267,12 @@ async function givenAnArrOfDaysAddSchoolTask(arr = whichDaysToGet()) //Input: [[
 
         try {
             const res = await fetchData(dayNum, monthNum, yearNum);
-            console.log(res);
 
             for (let key in res) {
                 const theDay = res[key];
                 let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
                 // allItems.push(item); // Add the task to allItems
 
-                console.log(schoolItems)
                 schoolItems.push(item);
                 sessionStorage.setItem("school-tasks", JSON.stringify(schoolItems));
 
@@ -434,6 +431,10 @@ function showMultipleDays()
         calendarDropLocation.classList.add("calendar-view-day-droplocation")
         calendarDropLocation.setAttribute("id", elements)
         daySection.appendChild(calendarDropLocation);
+
+        if(elements == `${dayNumber}-${month}-${year}`){
+            calendarDropLocation.style.backgroundColor = "#1a2a38"
+        }
 
         calendarDropLocation.addEventListener("dragover", dragOverDays);
         calendarDropLocation.addEventListener("dragenter", dragEnterDays);

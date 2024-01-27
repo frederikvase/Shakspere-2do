@@ -750,3 +750,7 @@ input :not(.checkmarkContainer)
   flex: 1;
   overflow: hidden;
 }
+
+.header-title{
+   margin: -35px 0;
+}
