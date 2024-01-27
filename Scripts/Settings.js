@@ -9,8 +9,8 @@ const initialInformation = {
     bedtime: "21:00",
     placementInterval: "0:10",
     timeLines: "1:00",
-    schoolUsername : "",
-    schoolPassword : "",
+    schoolUsername : false,
+    schoolPassword : false,
 };
 
 // Get and set localStorage
@@ -63,6 +63,8 @@ function clickOnKeepChanges(){
     
     const passwordElement = document.querySelector(".settings-inputfield-password");
     settingsInformation.schoolPassword = passwordElement.value || settingsInformation.schoolPassword;
+
+
     localStorage.setItem("settingsInformation", JSON.stringify(settingsInformation));
     
     //___Find better option than just reloading the page!

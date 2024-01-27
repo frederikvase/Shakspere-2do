@@ -9,9 +9,6 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-const schoolUsername = "kasp933i@edu.aarhustech.dk";
-const schoolPassword = "TevRRAHH";
-
 let browser; 
 
 async function initializeBrowser() {
@@ -75,13 +72,13 @@ async function Kalender(browser, userMail, userPassword, dag, maaned, aar) {
 }
 
 app.post('/get-information', async (req, res) => {
-    const { dag, maaned, aar } = req.body;
+    const { dag, maaned, aar, un, pw } = req.body;
 
     let localBrowser; 
 
     try {
         localBrowser = await puppeteer.launch({ executablePath: "chrome\\chrome-win\\chrome.exe" });
-        const result = await Kalender(localBrowser, schoolUsername, schoolPassword, dag, maaned, aar);
+        const result = await Kalender(localBrowser, un, pw, dag, maaned, aar);
         res.send(result); 
     } catch (error) {
         console.error('Error:', error);

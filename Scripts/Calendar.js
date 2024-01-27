@@ -19,6 +19,9 @@ let wakeUp = valuesFromSettings.wakeUpTime            || initialInformation.wake
 let interval = valuesFromSettings.placementInterval   || initialInformation.placementInterval; 
 let timeLine = valuesFromSettings.timeLines           || initialInformation.timeLines;
 
+let  username = valuesFromSettings.username           || "";
+let  password = valuesFromSettings.password           || "";
+
 /* html layout but in js */
 allCalendarTasks = []
 allTimeStamps = []

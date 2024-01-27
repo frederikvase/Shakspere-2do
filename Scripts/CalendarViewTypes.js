@@ -1,28 +1,49 @@
-console.log("RUNNING THIS SCRIPT info")
+let viewDaysAmount = 3;
+let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
-const fetchData = async (dag, maaned, aar) => {
-    const url = 'http://localhost:3000/get-information';
+const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ dag, maaned, aar }),
-        });
+let schoolID = 100;
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch data from backend');
+
+let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
+
+let schoolItems = JSON.parse(sessionStorage.getItem("school-tasks")) || [];
+let allDaysToGetSchool = [];
+
+informationFromSettings = JSON.parse(localStorage.getItem("settingsInformation"))
+const givenUsername = informationFromSettings.schoolUsername;
+const givenPassWord = informationFromSettings.schoolPassword;
+
+
+const fetchData = async (dag, maaned, aar, un = givenUsername, pw = givenPassWord) => {
+    if (givenUsername && givenPassWord)
+    {
+        const url = 'http://localhost:3000/get-information';
+    
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ dag, maaned, aar, un, pw }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from backend');
+            }
+    
+            const responseData = await response.json();
+            // console.log(responseData); // Process the fetched data here ////always check if this is working :)
+            return responseData
+        } catch (error) {
+            console.error('Error:', error);
         }
-
-        const responseData = await response.json();
-        // console.log(responseData); // Process the fetched data here ////always check if this is working :)
-        return responseData
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+    } else {
+        console.log("Please set a username");
+    }   
+} 
 
 function removeExtraZerosFromDate(date) //Input: "07-01-2024" -> "7-1-2024"
 {
@@ -31,17 +52,6 @@ function removeExtraZerosFromDate(date) //Input: "07-01-2024" -> "7-1-2024"
     const year = parseInt(date.split("-")[2])
     return `${day}-${month}-${year}`
 }
-
-
-let viewDaysAmount = 3;
-let initialDate = [dayNumber+3, month, year]; //Should change onClick -> nextDay
-
-const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
-
-let schoolID = 100;
-
-
-let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
 
 class taskOnGivenDay{
     constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${1800}`, IDFromSubtask = null)
@@ -155,40 +165,6 @@ class taskOnGivenDay{
 showMultipleDays();
 displayAllTasks();
 
-//Input from MinSkoleApp (Mortens del)
-async function returnSchoolSubjects(initialDate, amountOfDays) {
-    let allValues = [];
-    amountOfDays+=10;   
-    const getDays = ouputNumberOfDays(initialDate, amountOfDays);
-    for (let values of getDays) {
-        const setDay = parseInt(values.split("-")[0]);
-        const setMonth = parseInt(values.split("-")[1]);
-        const setYear = parseInt(values.split("-")[2]);
-
-        try {
-            const res = await fetchData(setDay, setMonth, setYear);
-            console.log(res);
-            allValues.push(res);
-
-            for (let key in res) {
-                const theDay = res[key];
-                let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
-                allItems.push(item); // Add the task to allItems
-                item.showDaysTask(); // Display the task on the screen not working :(
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    }
-
-    console.log("All items should be added now?");
-    displayAllTasks();
-    return allValues;
-}
-
-
-returnSchoolSubjects(initialDate, viewDaysAmount);
-
 function getPreviousAndNextDays(givenDate = initialDate, amountToEachSide = 5) //[16, 5, 2024]  ,    5
 {
     let returningDays = []
@@ -241,21 +217,93 @@ function getPreviousAndNextDays(givenDate = initialDate, amountToEachSide = 5) /
     return returningDays;
 }
 
+function convertDatesWithNumToDatesWithLetters(arr) //input: [[28, 1, 2024], [29, 1, 2024] ...]  -> ouput: ["28-1-2024", "29,1,2024"]
+{ 
+    let days = [];
+    for (let dateNumbers of arr)
+    {
+        const dayNum = dateNumbers[0];
+        const monthNum = dateNumbers[1];
+        const yearNum = dateNumbers[2];
 
-console.log(getPreviousAndNextDays());
+        days.push(`${dayNum}-${monthNum}-${yearNum}`)
+    }
+    return days;
+}
+
+function whichDaysToGet(daysToHave = getPreviousAndNextDays(), allCurrentlyShowingDays = allDaysToGetSchool)
+{
+    let addedDays = [];
+    
+    let daysThatShouldBeThere = convertDatesWithNumToDatesWithLetters(daysToHave);
+
+    for (let shouldBeThereDays of daysThatShouldBeThere)
+    {
+        let isAlredyAdded = false;
+
+        for (let shownDays of allCurrentlyShowingDays)
+        {
+            if (removeExtraZerosFromDate(shouldBeThereDays) == removeExtraZerosFromDate(shownDays)){
+                isAlredyAdded = true;
+                break;
+            }
+        }
+        if(!isAlredyAdded){
+            //Maybe add task here?___
+            addedDays.push(shouldBeThereDays);
+            allCurrentlyShowingDays.push(shouldBeThereDays)
+        }
+
+    }
+
+    return addedDays;
+}
+
+async function givenAnArrOfDaysAddSchoolTask(arr = whichDaysToGet()) //Input: [["29-1-2024", "30-1-2024" ...] ouput: Task being displayed on screen:
+{
+    for(let days of arr){
+        const dayNum = parseInt(days.split("-")[0]);
+        const monthNum = parseInt(days.split("-")[1]);
+        const yearNum = parseInt(days.split("-")[2]);
+
+        try {
+            const res = await fetchData(dayNum, monthNum, yearNum);
+            console.log(res);
+
+            for (let key in res) {
+                const theDay = res[key];
+                let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
+                // allItems.push(item); // Add the task to allItems
+
+                console.log(schoolItems)
+                schoolItems.push(item);
+                sessionStorage.setItem("school-tasks", JSON.stringify(schoolItems));
+
+                // item.showDaysTask(); 
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        displayAllTasks();
+    }
+}
+
+givenAnArrOfDaysAddSchoolTask();
 
 
-allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Math", "", "1:00", "9:35", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Danish", "", "1:00", "10:45", "20-1-2024"));
-allItems.push(new taskOnGivenDay("English", "", "1:00", "12:15", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "13:25", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "14:30", "20-1-2024"));
-
-// console.log(allItems);
+function displaySchoolTasks()
+{
+    let schoolTasks = JSON.parse(sessionStorage.getItem("school-tasks")) || [];
+    for (let element of schoolTasks){
+        allDaysToGetSchool.push(element.date);
+        let instance = new taskOnGivenDay(element.taskName, "", element.taskDuration, element.taskPlacement, element.date);
+        instance.showDaysTask();
+    }
+}
 
 function displayAllTasks() {
     showMultipleDays();
+    displaySchoolTasks();
 
     for (let i = 0; i < allItems.length; i++) 
     {
@@ -268,22 +316,22 @@ function displayAllTasks() {
             {
                 if (allItems[i].type == "school") 
                 {
-                    const existingSchoolTask = allItems.find(item =>
-                        item.type === "school" && item.ID === allItems[i].ID
-                    );
+                    // const existingSchoolTask = allItems.find(item =>
+                    //     item.type === "school" && item.ID === allItems[i].ID
+                    // );
     
-                    // If not, add the new school task
-                    if (!existingSchoolTask) 
-                    {
-                        const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
-                        if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
-                            task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
-                            allItems[i] = task; 
-                        } else {console.error("Some information missing:"); console.log(allItems[i]); }
-                    } else {
-                        allItems.splice(i, 1);
-                        i--; 
-                    }
+                    // // If not, add the new school task
+                    // if (!existingSchoolTask) 
+                    // {
+                    //     const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
+                    //     if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
+                    //         task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
+                    //         allItems[i] = task; 
+                    //     } else {console.error("Some information missing:"); console.log(allItems[i]); }
+                    // } else {
+                    //     allItems.splice(i, 1);
+                    //     i--; 
+                    // }
                 } else {
                     // Projects -> Convert into instance of taskOnGivenDay
                     const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
@@ -422,6 +470,7 @@ function nextDay(){
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
+    givenAnArrOfDaysAddSchoolTask();
 }
 
 function previousDay(){
@@ -446,6 +495,7 @@ function previousDay(){
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
+    givenAnArrOfDaysAddSchoolTask();
 }
 
 function dragOverDays(event) {
