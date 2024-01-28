@@ -15,6 +15,8 @@ const givenPassWord = informationFromSettings.schoolPassword;
 let viewDaysAmount =  informationFromSettings.displayAmountOfDays || 3;
 let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
+let dragDropOffset
+
 
 const fetchData = async (dag, maaned, aar, un = givenUsername, pw = givenPassWord) => {
     if (givenUsername && givenPassWord)
@@ -270,7 +272,7 @@ async function givenAnArrOfDaysAddSchoolTask(arr = whichDaysToGet()) //Input: [[
 
             for (let key in res) {
                 const theDay = res[key];
-                let item = new taskOnGivenDay(theDay.fag, "", "1:00", theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
+                let item = new taskOnGivenDay(theDay.fag, "", subtractTwoHours(theDay.tidSlut, theDay.tidStart), theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
                 // allItems.push(item); // Add the task to allItems
 
                 schoolItems.push(item);
@@ -508,6 +510,19 @@ function dragOverDays(event) {
     }
 }
 
+function dragStartDays(event) {
+    // console.log("Start DRAG");
+    const theDraggedID = event.target.id; 
+    event.dataTransfer.setData('text/plain', theDraggedID); 
+    this.classList.add("hold");
+    setTimeout(() => (this.classList.add("invisible")), 0);
+
+
+    const theItem = document.getElementById(theDraggedID)
+    let topOfTask = theItem.getBoundingClientRect().top;
+    dragDropOffset = event.clientY - topOfTask;
+}
+
 function dragEnterDays() {
     // console.log("dragEnterDays");
 
@@ -524,7 +539,8 @@ function dragLeaveDays() {
     }
 }
 
-function dragDropDays(event) {
+function dragDropDays(event) 
+{
     event.preventDefault();
     // console.log("dragDropDays");
 
@@ -548,8 +564,9 @@ function dragDropDays(event) {
         // Check if the drop location is valid
         let canBeDropped = true;
         while (!(getMonthsLength(parseInt(dropLocationId.split("-")[1]), parseInt(dropLocationId.split("-")[2])) && parseInt(dropLocationId.split("-")[0]) <= getMonthsLength(parseInt(dropLocationId.split("-")[1]), parseInt(dropLocationId.split("-")[2])))) {
-            if (runningVal > 2) {
+            if (runningVal > 20) {
                 alert("Mistake, please try again!");
+                location.reload(); //___Not the best solution
                 canBeDropped = false;
                 break;
             } else {
@@ -572,15 +589,19 @@ function dragDropDays(event) {
         } else { //Alredy in calendar
             for (let i = 0; i<allItems.length; i++)
             {
-                const task = allItems[i]
-                // console.log(task.ID)
-                // console.log(task.taskPlacement)
-                if(draggedItem.id == task.ID){
-                    // console.log(task)
-                    task.taskPlacement = relativePercentage+5;
+                //Extra value to task.taskPlacement:
+                const alredyDroppedRelativeY = event.clientY - rect.top - dragDropOffset
+                let newRelativePercentage = (alredyDroppedRelativeY / rect.height) * 100;
+                let offsetVal = parseFloat(calculatePlacement3(interval).split("%")[0]);
+                const offsetRemainder = newRelativePercentage % offsetVal;
+                newRelativePercentage -= offsetRemainder;
 
+                //Other:
+                const task = allItems[i]
+
+                if(draggedItem.id == task.ID){
                     if(canBeDropped) {
-                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, dropLocationId, task.IDFromSubtask))
+                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, newRelativePercentage, dropLocationId, task.IDFromSubtask))
                         allItems.splice(i,1);
                     }
                 }
@@ -588,8 +609,11 @@ function dragDropDays(event) {
         }        
         displayAllTasks();
 
-        var element = document.getElementById(draggedItemId);
-        element.parentNode.removeChild(element);   
+        //___might need to bring this back?
+        // var element = document.getElementById(draggedItemId);
+        // element.parentNode.removeChild(element);   
+
+
         // updateSubtaskView();
     } else {
         alert("No Item Found!");
@@ -600,7 +624,7 @@ function updateDraggableState() {
     const projectTasks = document.querySelectorAll('.calender-tasks-project');
     projectTasks.forEach(task => {
         task.setAttribute("draggable", "true");
-        task.addEventListener("dragstart", dragStart);
+        task.addEventListener("dragstart", dragStartDays);
     });
 }
 

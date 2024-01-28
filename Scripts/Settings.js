@@ -199,24 +199,33 @@ function openSettingsOverlay()
 
     //Choose amount of days:
     const changeViewDays = document.createElement("div");
+    changeViewDays.classList.add("settings-input-changeViewDays")
+
+    const viewDaysInfo = document.createElement("span");
+    viewDaysInfo.innerText = "How many days do you wanto to view?"
+    changeViewDays.appendChild(viewDaysInfo);
 
     const buttonOneDayLess = document.createElement("img")
     buttonOneDayLess.src = "https://static.thenounproject.com/png/3403551-200.png";
     buttonOneDayLess.style.height = "40px"
     buttonOneDayLess.style.width = "40px"
     buttonOneDayLess.addEventListener("click", () => changeAmountOfDaysShown(-1));
-    changeViewDays.appendChild(buttonOneDayLess);
 
     changeViewDaysText = document.createElement("span"); // Initialize changeViewDaysText
     changeViewDaysText.innerText = displayedAmountOfDaysBeforeBeingSaved;
-    changeViewDays.appendChild(changeViewDaysText);
 
     const buttonOneDayMore = document.createElement("img")
     buttonOneDayMore.src = "https://static.thenounproject.com/png/645446-200.png";
     buttonOneDayMore.style.height = "40px"
     buttonOneDayMore.style.width = "40px"
     buttonOneDayMore.addEventListener("click", () => changeAmountOfDaysShown(1));
-    changeViewDays.appendChild(buttonOneDayMore);
+
+    
+    const viewDaysInputHolder = document.createElement("section");
+    viewDaysInputHolder.appendChild(buttonOneDayLess);
+    viewDaysInputHolder.appendChild(changeViewDaysText);
+    viewDaysInputHolder.appendChild(buttonOneDayMore);
+    changeViewDays.appendChild(viewDaysInputHolder);
 
     settingsOverlay.appendChild(settingsTitle);
     settingsOverlay.appendChild(settingsInputWakeUpTime);

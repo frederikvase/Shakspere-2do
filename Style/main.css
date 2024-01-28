@@ -63,8 +63,11 @@ ul
 
 .header 
 {
-  height: 15vh;
+  height: 10vh;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--bg2);
   background-color: var(--banner);
 }
@@ -607,6 +610,9 @@ input :not(.checkmarkContainer)
 
 .settings-overlay div{
   margin: 20px 0;
+  display: grid;
+  grid-template-columns: 30% auto;
+  text-align: left;
 }
 
 .settings-title{

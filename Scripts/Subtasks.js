@@ -78,18 +78,6 @@ for (elements of tasksFromProjectsPage){
     draggableItems.push({taskName : elements.taskName, subtaskName : elements.subtaskName, duration : convertDecimalIntoHours(elements.duration) })
 }
 
-// let draggableItems = [
-//     {taskName : "English Essay",        subtaskName : "Introduction",           duration : "0:45"},
-//     {taskName : "Math - Functions",     subtaskName : "KAP 9",                  duration : "1:30"},
-//     {taskName : "Math - Functions",     subtaskName : "KAP 10",                 duration : "2:00"},
-//     {taskName : "Danish Assignment",    subtaskName : "Discussion",             duration : "2:30"},
-//     {taskName : "Programming",          subtaskName : "View multiple days",     duration : "4:00"},
-//     {taskName : "Blah",                 subtaskName : "View multiple days",     duration : "4:00"},
-//     {taskName : "BlAH Blah",            subtaskName : "View multiple days",     duration : "4:00"},
-// ];
-
-
-
 function updateSubtaskView()
 {
     for (let i = 0; i < draggableItems.length; i++) {
@@ -132,10 +120,6 @@ updateSubtaskView();
 
 const viewMore = document.getElementsByClassName("task-view-more-info");
 viewMore[0].addEventListener("click", () => onPress(false));
-
-//When clicked on button "Add another task" -> redirect to another page.
-// const viewTasks = document.getElementsByClassName("task-view-dragAndDrop")
-// viewTasks[0].addEventListener("click", () => onPress(showTasks));
 
 onPress(showTasks);
 
