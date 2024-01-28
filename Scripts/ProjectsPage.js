@@ -314,7 +314,10 @@ function deleteListElement(path, element)
 
     if (path.length === 0)
     {
-        console.log(element);
+        if (element.content[index].type === "task" && element.content[index].checked !== -1)
+        {
+            removeItemWithID(element.content[index].checked);
+        }
 
         element.content.splice(index, 1);
     }

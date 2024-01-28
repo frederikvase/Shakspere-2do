@@ -3,17 +3,17 @@
     border-radius: 20px;
     padding: 20px;
     background-color: #112232;
-    height: 85vh;
+    height: 80vh;
     overflow: auto;
 }
 
 #projectpage-main
 {
-    margin: 20px 20px 0px 50px; /*change to _______  margin: 40px 40px 0 40px;  */
+    margin: 20px 20px 0px 50px;
     display: grid;
     grid-template-columns: 60% 35%;
     grid-gap: 5%;
-    grid-template-rows: 90vh;
+    grid-template-rows: 85vh;
     overflow: auto;
 }
 

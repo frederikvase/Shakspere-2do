@@ -445,7 +445,8 @@ function dragLeaveDays() {
     }
 }
 
-function dragDropDays(event) {
+function dragDropDays(event) 
+{
     event.preventDefault();
     // console.log("dragDropDays");
 
@@ -453,7 +454,8 @@ function dragDropDays(event) {
     const draggedItem = document.getElementById(draggedItemId);
     // console.log(draggedItemId)
 
-    if (draggedItem) {
+    if (draggedItem) 
+    {
         const rect = this.getBoundingClientRect();
         const relativeY = event.clientY - rect.top;
         let relativePercentage = (relativeY / rect.height) * 100;

@@ -21,7 +21,8 @@ h2
 {
   font: var(--fontSize)/250% 'Forte';
   font-size: 250%;
-  margin: -35px;
+  padding-top: 35px;
+  margin-top: -35px; 
   color: inherit;
 }
 
@@ -43,7 +44,7 @@ pre
 
 * 
 {
-  box-sizing: border-box;
+  box-sizing: content-box;
 }
 
 ul 
@@ -67,25 +68,6 @@ ul
 
   color: var(--bg2);
   background-color: var(--banner);
-}
-
-.projectsButton 
-{
-  background: var(--bg2);
-  font: var(--fontSize)/170% 'Berlin Sans FB';
-  color: var(--bg1);
-  padding: 10px;
-  
-  position: relative;
-  float: center;
-
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  
-  cursor: pointer;
-  transition: 0.3s;
-  border-radius: 5px;
 }
 
 .deleteButton
@@ -163,18 +145,6 @@ ul
 .active, .collapsible:hover 
 {
   background-color: var(--bg2);
-}
-
-.content 
-{
-  padding: 0 18px;
-  text-align: center;
-
-  display: none;
-  overflow: hidden;
-
-  background-color: var(--bg2);
-  color: var(--bg1);
 }
 
 button 
@@ -442,20 +412,21 @@ input :not(.checkmarkContainer)
   overflow: auto;
 }
 
-.change-page-button button{
+.bottomButton button
+{
   border-radius: 15px;
   background-color: var(--banner);
   font-size: 20px;
   color: white;
-  height: 50px;
-  width: 100%;
+  height: 35px;
+  width: 55%;
   cursor: pointer;
 }
 
 
-.change-page-button{
+.bottomButton
+{
   padding-top: 20px;
-
 }
 .ToDo-dragable div{
   background-color: #19456C;
