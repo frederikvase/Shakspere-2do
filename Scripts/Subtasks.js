@@ -197,6 +197,7 @@ function onPress(valueShowViewMore, element = null)
                     // console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
                     deleteTask(element.id, allItems);
                     displayAllTasks();
+                    location.reload();
 
                     // localStorage.setItem("all-tasks", JSON.stringify(allItems))
                 })
