@@ -71,17 +71,12 @@ class SubTask{
 
 //Subtask being shown: __Should be loaded from localStorage (Frederik's Part)
 //Tasknames can't contain "/" since that's being used to .split("/") in function onPress()
-let draggableItems = [
-    {taskName : "English Essay",        subtaskName : "Introduction",           duration : "0:45"},
-    {taskName : "Math - Functions",     subtaskName : "KAP 9",                  duration : "1:30"},
-    {taskName : "Math - Functions",     subtaskName : "KAP 10",                 duration : "2:00"},
-    {taskName : "Danish Assignment",    subtaskName : "Discussion",             duration : "2:30"},
-    {taskName : "Programming",          subtaskName : "View multiple days",     duration : "4:00"},
-    {taskName : "Blah",                 subtaskName : "View multiple days",     duration : "4:00"},
-    {taskName : "BlAH Blah",            subtaskName : "View multiple days",     duration : "4:00"},
-];
+let tasksFromProjectsPage = JSON.parse(localStorage.getItem("selectedItems")) || [];
+let draggableItems = [];
 
-
+for (elements of tasksFromProjectsPage){
+    draggableItems.push({taskName : elements.taskName, subtaskName : elements.subtaskName, duration : convertDecimalIntoHours(elements.duration) })
+}
 
 function updateSubtaskView()
 {
@@ -94,27 +89,27 @@ function updateSubtaskView()
     let allItemsDuplicate = JSON.parse(localStorage.getItem("all-tasks")) || [];
     for (let i = 0; i<addSubtasks.length; i++){
         shouldBeShown = true;
-        console.log("NEW PART");
+        // console.log("NEW PART");
         for (let key in allItemsDuplicate){
             task = allItemsDuplicate[key];
     
-            console.log(`if ${task.IDFromSubtask} ==  ${addSubtasks[i].ID}`)
+            // console.log(`if ${task.IDFromSubtask} ==  ${addSubtasks[i].ID}`)
             if(task.IDFromSubtask == addSubtasks[i].ID){
                 shouldBeShown = false;
-                console.log("-----THEN FALSE")
+                // console.log("-----THEN FALSE")
             }
         }
     
         if (shouldBeShown){
-            console.log("----TRUTH: Following should be shown")
+            // console.log("----TRUTH: Following should be shown")
             // addSubtasks[i].showSubtask();
             shownELements.push(addSubtasks[i])
-            console.log(addSubtasks[i]);
+            // console.log(addSubtasks[i]);
         }
     
         //Update layout___
     }
-    console.log(shownELements)
+    // console.log(shownELements)
     for(let obj in shownELements){
         shownELements[obj].showSubtask();
     }
@@ -125,10 +120,6 @@ updateSubtaskView();
 
 const viewMore = document.getElementsByClassName("task-view-more-info");
 viewMore[0].addEventListener("click", () => onPress(false));
-
-//When clicked on button "Add another task" -> redirect to another page.
-// const viewTasks = document.getElementsByClassName("task-view-dragAndDrop")
-// viewTasks[0].addEventListener("click", () => onPress(showTasks));
 
 onPress(showTasks);
 
@@ -203,7 +194,7 @@ function onPress(valueShowViewMore, element = null)
                     onPress(false);
 
                     //View-days
-                    console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
+                    // console.log("UHUNUWHCUBdHCHUCHUCDUCUDCNDUNUCN");
                     deleteTask(element.id, allItems);
                     displayAllTasks();
 

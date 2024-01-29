@@ -1,102 +1,58 @@
-// import { postData } from '../Fag/KalenderGet';
-// 
-// async function CountToKomma(input, StartPos = 0) {
-//     for (let i = StartPos; i < input.length; i++) {
-//       if (input[i] == ",") {
-//         return i;
-//       } else if (input[i] == "é" && input[i - 1] == 'f') {
-//         return input.length;
-//       } else if (input[i] == "K" && input[i + 1] == "l") {
-//         return 17;
-//       }
-//     }
-//     throw new Error('No komma in string: ' + input);
-//   }
-
-// async function Kalender(userMail, userPassword, dag, maaned, aar) {
-// if (dag < 10) dag = '0' + dag;
-// if (maaned < 10) maaned = '0' + maaned;
-
-// let url = "https://selvbetjening.aarhustech.dk/WebTimeTable/default.aspx?viewdate=" + dag + "-" + maaned + "-" + aar
-
-// const browser = await playwright.chromium.launch();
-// const page = await browser.newPage();
-
-// await page.goto(url);
-// await page.type("#userNameInput", userMail);
-// await page.type("#passwordInput", userPassword);
-// await page.click("#submitButton");
-// await page.waitForNavigation();
-
-// const alt = await page.evaluate(() => {
-//     return Array.from(document.querySelectorAll("#day0Col")).map(x => x.textContent)
-// });
-
-// const altRem = alt.join(",").split('\n').filter(y => y != '');
-
-// let skoleFag = new Map();
-
-// for (let i = 0; i < altRem.length; i++) {
-//     skoleFag.set(i, {
-//     fag: altRem[i].split('').slice(11, CountToKomma(altRem[i], 11)).join(''),
-//     tidStart: altRem[i].split('').slice(0, 5).join(''),
-//     tidSlut: altRem[i].split('').slice(6, 11).join('')
-//     });
-// }
-// await browser.close();
-
-// return skoleFag;
-// }
-
-// async function GetAsyncValueToVar(inputFunction, outputVar) {
-//     outputVar = await inputFunction;
-//     console.log(outputVar);
-//   }
-
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     document.getElementById('openWindowButton').addEventListener('click', function() {
-//         // RunAutomation();
-//         postData();
-//     });
-
-//     // ... other code that interacts with the DOM ...
-// });
-
-
-// let anotherVal;
-
-// await console(GetAsyncValueToVar(Kalender(username, kode, 24, 1, 2024), anotherVal));
-// console.log(anotherVal)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let viewDaysAmount = 3;
-let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
 
 const calendarDropLocation = document.querySelector('.calendar-view-day-droplocation');
 
 let schoolID = 100;
 
-
 let allItems = JSON.parse(localStorage.getItem("all-tasks")) || [];
+
+let schoolItems = JSON.parse(sessionStorage.getItem("school-tasks")) || [];
+let allDaysToGetSchool = [];
+
+informationFromSettings = JSON.parse(localStorage.getItem("settingsInformation"))
+const givenUsername = informationFromSettings.schoolUsername;
+const givenPassWord = informationFromSettings.schoolPassword;
+
+let viewDaysAmount =  informationFromSettings.displayAmountOfDays || 3;
+let initialDate = [dayNumber, month, year]; //Should change onClick -> nextDay
+
+let dragDropOffset
+
+
+const fetchData = async (dag, maaned, aar, un = givenUsername, pw = givenPassWord) => {
+    if (givenUsername && givenPassWord)
+    {
+        const url = 'http://localhost:3000/get-information';
+    
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ dag, maaned, aar, un, pw }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from backend');
+            }
+    
+            const responseData = await response.json();
+            return responseData
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    } else {
+        console.log("Please set a username");
+    }   
+} 
+
+function removeExtraZerosFromDate(date) //Input: "07-01-2024" -> "7-1-2024"
+{
+    const day = parseInt(date.split("-")[0])
+    const month = parseInt(date.split("-")[1])
+    const year = parseInt(date.split("-")[2])
+    return `${day}-${month}-${year}`
+}
 
 class taskOnGivenDay{
     constructor(taskName, taskSubtaskName, taskDuration, taskPlacement, date = `${dayNumber}-${month}-${1800}`, IDFromSubtask = null)
@@ -210,26 +166,143 @@ class taskOnGivenDay{
 showMultipleDays();
 displayAllTasks();
 
-//Input from MinSkoleApp (Mortens del)
-// let val;
-// let kode = ""
+function getPreviousAndNextDays(givenDate = initialDate, amountToEachSide = 5) //[16, 5, 2024]  ,    5
+{
+    let returningDays = []
+    returningDays.push(givenDate);
+
+    //NEXT DAYS:
+    let startDay = givenDate[0];
+    let startMonth = givenDate[1];
+    let startYear = givenDate[2];
+
+    for (let i = 0; i < amountToEachSide; i++) 
+    {
+        startDay += 1;
+
+        if (startDay > getMonthsLength(startMonth, startYear)) 
+        {
+            startDay = 1;
+            startMonth += 1;
+        }
+        if (startMonth > 12) {
+            startYear += 1;
+            startMonth = 1;
+        }
+        returningDays.push([startDay, startMonth, startYear])
+    }
+
+    //PREVIOUS DAYS:
+    startDay = givenDate[0];
+    startMonth = givenDate[1];
+    startYear = givenDate[2];
+
+    for (let i = 0; i < amountToEachSide; i++) 
+    {
+        startDay -= 1;
+
+        if (startDay < 1) 
+        {
+            startMonth -= 1;
+            startDay = getMonthsLength(startMonth, startYear);
+        }
+        if (startMonth < 1)
+        {
+            startYear -= 1;
+            startMonth = 12;
+            startDay = getMonthsLength(startMonth, startYear);
+        }
+        returningDays.push([startDay, startMonth, startYear])
+    }
+
+    return returningDays;
+}
+
+function convertDatesWithNumToDatesWithLetters(arr) //input: [[28, 1, 2024], [29, 1, 2024] ...]  -> ouput: ["28-1-2024", "29,1,2024"]
+{ 
+    let days = [];
+    for (let dateNumbers of arr)
+    {
+        const dayNum = dateNumbers[0];
+        const monthNum = dateNumbers[1];
+        const yearNum = dateNumbers[2];
+
+        days.push(`${dayNum}-${monthNum}-${yearNum}`)
+    }
+    return days;
+}
+
+function whichDaysToGet(daysToHave = getPreviousAndNextDays(), allCurrentlyShowingDays = allDaysToGetSchool)
+{
+    let addedDays = [];
+    
+    let daysThatShouldBeThere = convertDatesWithNumToDatesWithLetters(daysToHave);
+
+    for (let shouldBeThereDays of daysThatShouldBeThere)
+    {
+        let isAlredyAdded = false;
+
+        for (let shownDays of allCurrentlyShowingDays)
+        {
+            if (removeExtraZerosFromDate(shouldBeThereDays) == removeExtraZerosFromDate(shownDays)){
+                isAlredyAdded = true;
+                break;
+            }
+        }
+        if(!isAlredyAdded){
+            //Maybe add task here?___
+            addedDays.push(shouldBeThereDays);
+            allCurrentlyShowingDays.push(shouldBeThereDays)
+        }
+
+    }
+
+    return addedDays;
+}
+
+async function givenAnArrOfDaysAddSchoolTask(arr = whichDaysToGet()) //Input: [["29-1-2024", "30-1-2024" ...] ouput: Task being displayed on screen:
+{
+    for(let days of arr){
+        const dayNum = parseInt(days.split("-")[0]);
+        const monthNum = parseInt(days.split("-")[1]);
+        const yearNum = parseInt(days.split("-")[2]);
+
+        try {
+            const res = await fetchData(dayNum, monthNum, yearNum);
+
+            for (let key in res) {
+                const theDay = res[key];
+                let item = new taskOnGivenDay(theDay.fag, "", subtractTwoHours(theDay.tidSlut, theDay.tidStart), theDay.tidStart, removeExtraZerosFromDate(theDay.dato));
+                // allItems.push(item); // Add the task to allItems
+
+                schoolItems.push(item);
+                sessionStorage.setItem("school-tasks", JSON.stringify(schoolItems));
+
+                // item.showDaysTask(); 
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        displayAllTasks();
+    }
+}
+
+givenAnArrOfDaysAddSchoolTask();
 
 
-
-
-
-
-allItems.push(new taskOnGivenDay("Math", "", "1:00", "8:15", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Math", "", "1:00", "9:35", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Danish", "", "1:00", "10:45", "20-1-2024"));
-allItems.push(new taskOnGivenDay("English", "", "1:00", "12:15", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "13:25", "20-1-2024"));
-allItems.push(new taskOnGivenDay("Chemistry", "", "1:00", "14:30", "20-1-2024"));
-
-console.log(allItems);
+function displaySchoolTasks()
+{
+    let schoolTasks = JSON.parse(sessionStorage.getItem("school-tasks")) || [];
+    for (let element of schoolTasks){
+        allDaysToGetSchool.push(element.date);
+        let instance = new taskOnGivenDay(element.taskName, "", element.taskDuration, element.taskPlacement, element.date);
+        instance.showDaysTask();
+    }
+}
 
 function displayAllTasks() {
     showMultipleDays();
+    displaySchoolTasks();
 
     for (let i = 0; i < allItems.length; i++) 
     {
@@ -242,22 +315,22 @@ function displayAllTasks() {
             {
                 if (allItems[i].type == "school") 
                 {
-                    const existingSchoolTask = allItems.find(item =>
-                        item.type === "school" && item.ID === allItems[i].ID
-                    );
+                    // const existingSchoolTask = allItems.find(item =>
+                    //     item.type === "school" && item.ID === allItems[i].ID
+                    // );
     
-                    // If not, add the new school task
-                    if (!existingSchoolTask) 
-                    {
-                        const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
-                        if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
-                            task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
-                            allItems[i] = task; 
-                        } else {console.error("Some information missing:"); console.log(allItems[i]); }
-                    } else {
-                        allItems.splice(i, 1);
-                        i--; 
-                    }
+                    // // If not, add the new school task
+                    // if (!existingSchoolTask) 
+                    // {
+                    //     const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
+                    //     if(allItems[i].taskName && allItems[i].taskSubtaskName && allItems[i].taskDuration && allItems[i].taskPlacement && allItems[i].date){
+                    //         task = new taskOnGivenDay(taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask);
+                    //         allItems[i] = task; 
+                    //     } else {console.error("Some information missing:"); console.log(allItems[i]); }
+                    // } else {
+                    //     allItems.splice(i, 1);
+                    //     i--; 
+                    // }
                 } else {
                     // Projects -> Convert into instance of taskOnGivenDay
                     const { taskName, taskSubtaskName, taskDuration, taskPlacement, date, IDFromSubtask } = allItems[i];
@@ -280,8 +353,8 @@ function displayAllTasks() {
     }
 
     isPlacedAtSameTimeButForViewMoreDays(allItems);
-    updateVisibleElements();
     updateDraggableState();
+    updateVisibleElements();
 
     localStorage.setItem("all-tasks", JSON.stringify(allItems));
 }
@@ -361,6 +434,10 @@ function showMultipleDays()
         calendarDropLocation.setAttribute("id", elements)
         daySection.appendChild(calendarDropLocation);
 
+        if(elements == `${dayNumber}-${month}-${year}`){
+            calendarDropLocation.style.backgroundColor = "#1a2a38"
+        }
+
         calendarDropLocation.addEventListener("dragover", dragOverDays);
         calendarDropLocation.addEventListener("dragenter", dragEnterDays);
         calendarDropLocation.addEventListener("dragleave", dragLeaveDays);
@@ -378,10 +455,12 @@ function nextDay(){
     let startMonth = initialDate[1];
     let startYear = initialDate[2];
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 1; i++) 
+    {
         startDay += 1;
 
-        if (startDay > getMonthsLength(startMonth, startYear)) {
+        if (startDay > getMonthsLength(startMonth, startYear)) 
+        {
             startDay = 1;
             startMonth += 1;
         }
@@ -394,6 +473,7 @@ function nextDay(){
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
+    givenAnArrOfDaysAddSchoolTask();
 }
 
 function previousDay(){
@@ -418,6 +498,7 @@ function previousDay(){
     showMultipleDays();
     displayAllTasks();
     updateVisibleElements();
+    givenAnArrOfDaysAddSchoolTask();
 }
 
 function dragOverDays(event) {
@@ -427,6 +508,19 @@ function dragOverDays(event) {
     if (calendarDropLocation) {
         calendarDropLocation.classList.add('drag-over');
     }
+}
+
+function dragStartDays(event) {
+    // console.log("Start DRAG");
+    const theDraggedID = event.target.id; 
+    event.dataTransfer.setData('text/plain', theDraggedID); 
+    this.classList.add("hold");
+    setTimeout(() => (this.classList.add("invisible")), 0);
+
+
+    const theItem = document.getElementById(theDraggedID)
+    let topOfTask = theItem.getBoundingClientRect().top;
+    dragDropOffset = event.clientY - topOfTask;
 }
 
 function dragEnterDays() {
@@ -471,8 +565,9 @@ function dragDropDays(event)
         // Check if the drop location is valid
         let canBeDropped = true;
         while (!(getMonthsLength(parseInt(dropLocationId.split("-")[1]), parseInt(dropLocationId.split("-")[2])) && parseInt(dropLocationId.split("-")[0]) <= getMonthsLength(parseInt(dropLocationId.split("-")[1]), parseInt(dropLocationId.split("-")[2])))) {
-            if (runningVal > 2) {
+            if (runningVal > 20) {
                 alert("Mistake, please try again!");
+                location.reload(); //___Not the best solution
                 canBeDropped = false;
                 break;
             } else {
@@ -495,15 +590,19 @@ function dragDropDays(event)
         } else { //Alredy in calendar
             for (let i = 0; i<allItems.length; i++)
             {
-                const task = allItems[i]
-                // console.log(task.ID)
-                // console.log(task.taskPlacement)
-                if(draggedItem.id == task.ID){
-                    // console.log(task)
-                    task.taskPlacement = relativePercentage+5;
+                //Extra value to task.taskPlacement:
+                const alredyDroppedRelativeY = event.clientY - rect.top - dragDropOffset
+                let newRelativePercentage = (alredyDroppedRelativeY / rect.height) * 100;
+                let offsetVal = parseFloat(calculatePlacement3(interval).split("%")[0]);
+                const offsetRemainder = newRelativePercentage % offsetVal;
+                newRelativePercentage -= offsetRemainder;
 
+                //Other:
+                const task = allItems[i]
+
+                if(draggedItem.id == task.ID){
                     if(canBeDropped) {
-                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, relativePercentage, dropLocationId, task.IDFromSubtask))
+                        allItems.push(new taskOnGivenDay(task.taskName, task.taskSubtaskName, task.taskDuration, newRelativePercentage, dropLocationId, task.IDFromSubtask))
                         allItems.splice(i,1);
                     }
                 }
@@ -511,8 +610,11 @@ function dragDropDays(event)
         }        
         displayAllTasks();
 
-        var element = document.getElementById(draggedItemId);
-        element.parentNode.removeChild(element);   
+        //___might need to bring this back?
+        // var element = document.getElementById(draggedItemId);
+        // element.parentNode.removeChild(element);   
+
+
         // updateSubtaskView();
     } else {
         alert("No Item Found!");
@@ -523,7 +625,7 @@ function updateDraggableState() {
     const projectTasks = document.querySelectorAll('.calender-tasks-project');
     projectTasks.forEach(task => {
         task.setAttribute("draggable", "true");
-        task.addEventListener("dragstart", dragStart);
+        task.addEventListener("dragstart", dragStartDays);
     });
 }
 
@@ -569,7 +671,6 @@ function isPlacedAtSameTimeButForViewMoreDays(arr = allItems) {
         }
     }
 }
-
 
 function updateVisibleElements() {
     var containers = document.querySelectorAll('.calendar-is-task');

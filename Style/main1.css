@@ -64,8 +64,11 @@ ul
 
 .header 
 {
-  height: 15vh;
+  height: 10vh;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--bg2);
   background-color: var(--banner);
 }
@@ -396,7 +399,7 @@ input :not(.checkmarkContainer)
 .ToDo{
   border-radius: 20px;
   padding: 20px;
-  background-color: #1a2f42;
+  background-color: #112232;
   height: 85vh;
   overflow: auto;
   
@@ -579,6 +582,9 @@ input :not(.checkmarkContainer)
 
 .settings-overlay div{
   margin: 20px 0;
+  display: grid;
+  grid-template-columns: 30% auto;
+  text-align: left;
 }
 
 .settings-title{
@@ -702,7 +708,7 @@ input :not(.checkmarkContainer)
   position: relative;
   width: 60px;
   height: 100%;
-  background-color: var(--bg1);
+  background-color: #112232;
 }
 
 .calendar-view-day-text{
@@ -717,8 +723,12 @@ input :not(.checkmarkContainer)
 
 .calendar-view-day-droplocation{
   position: relative;
-  background-color: var(--bg1);
+  background-color: #112232;
   display: flex;
   flex: 1;
   overflow: hidden;
+}
+
+.header-title{
+   margin: -35px 0;
 }
