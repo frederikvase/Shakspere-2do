@@ -611,8 +611,8 @@ function dragDropDays(event)
         displayAllTasks();
 
         //___might need to bring this back?
-        // var element = document.getElementById(draggedItemId);
-        // element.parentNode.removeChild(element);   
+        var element = document.getElementById(draggedItemId);
+        element.parentNode.removeChild(element);   
 
 
         // updateSubtaskView();

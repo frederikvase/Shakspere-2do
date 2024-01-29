@@ -198,6 +198,7 @@ function onPress(valueShowViewMore, element = null)
                     deleteTask(element.id, allItems);
                     displayAllTasks();
 
+                    location.reload();
                     // localStorage.setItem("all-tasks", JSON.stringify(allItems))
                 })
                 info.appendChild(groupButton);
