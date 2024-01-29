@@ -415,10 +415,11 @@ input :not(.checkmarkContainer)
 .bottomButton button
 {
   border-radius: 15px;
+  margin-top: -20px;
   background-color: var(--banner);
   font-size: 20px;
   color: white;
-  height: 35px;
+  height: 100%;
   width: 55%;
   cursor: pointer;
 }

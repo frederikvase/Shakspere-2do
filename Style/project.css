@@ -82,11 +82,11 @@ ul table
 {
     top: 1px;
     right: 23px;
-    border: 3px solid green;
+    border: 3px solid #66bb6a;
 }
 .addTask:hover 
 {
-    background-color: green;
+    background-color: #66bb6a;
     color: white;
 }
 
