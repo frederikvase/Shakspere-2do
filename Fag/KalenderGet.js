@@ -27,6 +27,10 @@ function CountToKomma(input, StartPos = 0) {
             return input.length;
         } else if (input[i] === "K" && input[i + 1] === "l") {
             return 17;
+        } else if (input[i] === "O" && input[i + 1] === "m") {
+            return 32;
+        } else if (input[i] === "K" && input[i + 1] === "o") {
+            return 27;
         }
     }
     throw new Error('No komma in string: ' + input);
